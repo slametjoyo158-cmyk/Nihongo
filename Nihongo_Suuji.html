@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Belajar Angka & Tingkat SMA Bahasa Jepang</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Noto Sans JP -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        jp: ['"Noto Sans JP"', 'sans-serif'],
+                    },
+                    colors: {
+                        sakura: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                        },
+                        jpblue: {
+                            50: '#f0f9ff',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', 'Noto Sans JP', sans-serif; }
+        .furigana { font-size: 0.75rem; color: #64748b; line-height: 1; }
+        .jp-text { font-family: 'Noto Sans JP', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Header Navigation -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-sakura-600 text-white flex items-center justify-center font-bold text-xl shadow-md">
+                    数
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg text-slate-900 leading-tight">Nihongo Suuji Master</h1>
+                    <p class="text-xs text-slate-500">Panduan Angka, Umur & Tingkat SMA/SMK</p>
+                </div>
+            </div>
+
+            <!-- Tab Buttons -->
+            <nav class="flex bg-slate-100 p-1 rounded-xl text-sm font-medium">
+                <button id="nav-materi" onclick="switchTab('materi')" class="px-4 py-2 rounded-lg bg-white text-sakura-600 shadow-sm transition-all duration-200 flex items-center space-x-2">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Materi & Tabel</span>
+                </button>
+                <button id="nav-kuis" onclick="switchTab('kuis')" class="px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900 transition-all duration-200 flex items-center space-x-2">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <span>Latihan (30 Soal)</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-5xl mx-auto px-4 py-6 flex-grow w-full">
+
+        <!-- TAB 1: MATERI & TABEL REFERENCE -->
+        <section id="section-materi" class="space-y-6">
+            <!-- Banner Intro -->
+            <div class="bg-gradient-to-r from-sakura-600 to-rose-500 rounded-2xl p-6 text-white shadow-lg">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div>
+                        <span class="bg-white/20 text-xs px-3 py-1 rounded-full uppercase tracking-wider font-semibold">Panduan Lengkap</span>
+                        <h2 class="text-2xl font-bold mt-2">Sistem Perhitungan & Angka Bahasa Jepang</h2>
+                        <p class="text-rose-100 text-sm mt-1 max-w-2xl">
+                            Pelajari angka dasar, pengecualian ratusan/ribuan, cara menyatakan umur, hingga penyebutan tingkatan SMA/SMK di Indonesia.
+                        </p>
+                    </div>
+                    <button onclick="speakText('数字の勉強を始めましょう', 'ja-JP')" class="bg-white/10 hover:bg-white/20 text-white border border-white/30 px-4 py-2 rounded-xl text-sm flex items-center space-x-2 backdrop-blur-sm transition">
+                        <i class="fa-solid fa-volume-high"></i>
+                        <span>Dengar Contoh Audio</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Category Filter Sub-tabs -->
+            <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-3">
+                <button onclick="filterMateri('all')" class="materi-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-white">Semua</button>
+                <button onclick="filterMateri('dasar')" class="materi-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-200 text-slate-700 hover:bg-slate-300">0 - 99</button>
+                <button onclick="filterMateri('ratusan')" class="materi-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-200 text-slate-700 hover:bg-slate-300">Ratusan & Ribuan</button>
+                <button onclick="filterMateri('puluh-ribu')" class="materi-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-200 text-slate-700 hover:bg-slate-300">10.000 - 100.000 (万)</button>
+                <button onclick="filterMateri('umur')" class="materi-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-200 text-slate-700 hover:bg-slate-300">Umur (歳)</button>
+                <button onclick="filterMateri('sekolah')" class="materi-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-200 text-slate-700 hover:bg-slate-300">Tingkat SMA/SMK (高校)</button>
+            </div>
+
+            <!-- Cards Container -->
+            <div id="materi-cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Javascript will dynamically inject study cards here -->
+            </div>
+        </section>
+
+        <!-- TAB 2: KUIS 30 SOAL -->
+        <section id="section-kuis" class="hidden space-y-6">
+            
+            <!-- Quiz Active Wrapper -->
+            <div id="quiz-active-card" class="bg-white rounded-2xl border border-slate-200 shadow-md p-6 max-w-3xl mx-auto">
+                
+                <!-- Quiz Header & Progress -->
+                <div class="flex justify-between items-center mb-4 pb-4 border-b border-slate-100">
+                    <div>
+                        <span id="quiz-category-badge" class="bg-sakura-50 text-sakura-600 text-xs font-semibold px-2.5 py-1 rounded-md border border-sakura-100">
+                            Kategori Soal
+                        </span>
+                        <h3 class="text-sm font-semibold text-slate-500 mt-1">Soal <span id="quiz-current-num">1</span> dari <span id="quiz-total-num">30</span></h3>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-slate-400">Skor Terkumpul</span>
+                        <div id="quiz-score-display" class="text-lg font-bold text-sakura-600">0</div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-slate-100 rounded-full h-2 mb-6 overflow-hidden">
+                    <div id="quiz-progress-bar" class="bg-sakura-600 h-2 rounded-full transition-all duration-300" style="width: 3.33%"></div>
+                </div>
+
+                <!-- Question Prompt Box -->
+                <div class="bg-slate-50 rounded-xl p-5 border border-slate-200/80 mb-6 relative">
+                    <div class="text-xs text-slate-400 font-medium mb-1">Pertanyaan:</div>
+                    <div id="question-text" class="text-lg font-bold text-slate-800">
+                        <!-- Question Text -->
+                    </div>
+
+                    <!-- Romaji & Hiragana display -->
+                    <div class="mt-3 p-3 bg-white rounded-lg border border-slate-200 flex items-center justify-between">
+                        <div>
+                            <div id="question-hiragana" class="jp-text text-xl font-medium text-sakura-700"></div>
+                            <div id="question-romaji" class="text-xs font-mono text-slate-500 italic mt-0.5"></div>
+                        </div>
+                        <button id="btn-audio-question" class="w-10 h-10 rounded-full bg-sakura-100 hover:bg-sakura-200 text-sakura-600 flex items-center justify-center transition shadow-sm">
+                            <i class="fa-solid fa-volume-high"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Options Grid -->
+                <div id="options-container" class="grid grid-cols-1 gap-3 mb-6">
+                    <!-- Dynamic option buttons injected here -->
+                </div>
+
+                <!-- Feedback Box -->
+                <div id="feedback-box" class="hidden rounded-xl p-4 mb-6 border">
+                    <div class="flex items-start space-x-3">
+                        <div id="feedback-icon" class="text-2xl"></div>
+                        <div class="flex-grow">
+                            <h4 id="feedback-title" class="font-bold text-sm"></h4>
+                            <p id="feedback-explanation" class="text-xs mt-1 text-slate-600 leading-relaxed"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Navigation Controls -->
+                <div class="flex justify-end pt-2">
+                    <button id="btn-next-question" disabled onclick="nextQuestion()" class="px-6 py-2.5 rounded-xl bg-slate-300 text-slate-500 font-semibold text-sm transition cursor-not-allowed flex items-center space-x-2">
+                        <span>Soal Berikutnya</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Result View (Hidden initially) -->
+            <div id="quiz-result-card" class="hidden bg-white rounded-2xl border border-slate-200 shadow-md p-8 max-w-2xl mx-auto text-center">
+                <div class="w-20 h-20 rounded-full bg-sakura-100 text-sakura-600 flex items-center justify-center text-3xl mx-auto mb-4">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-900">Latihan Selesai!</h2>
+                <p class="text-slate-500 text-sm mt-1">Berikut adalah hasil pencapaian dari 30 soal angka bahasa Jepang Anda.</p>
+
+                <div class="my-6 p-6 bg-slate-50 rounded-2xl border border-slate-200 grid grid-cols-3 gap-4">
+                    <div>
+                        <span class="text-xs text-slate-400 font-medium">Total Soal</span>
+                        <div class="text-2xl font-bold text-slate-800 mt-1">30</div>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 font-medium">Jawaban Benar</span>
+                        <div id="result-correct-count" class="text-2xl font-bold text-emerald-600 mt-1">0</div>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 font-medium">Skor Akhir</span>
+                        <div id="result-final-score" class="text-2xl font-bold text-sakura-600 mt-1">0%</div>
+                    </div>
+                </div>
+
+                <div id="result-evaluation-msg" class="p-4 rounded-xl text-sm font-medium mb-6">
+                    <!-- Message according to score -->
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button onclick="restartQuiz()" class="px-6 py-3 rounded-xl bg-sakura-600 text-white font-semibold text-sm hover:bg-sakura-700 transition shadow-md flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>Ulangi Latihan (30 Soal)</span>
+                    </button>
+                    <button onclick="switchTab('materi')" class="px-6 py-3 rounded-xl bg-slate-100 text-slate-700 font-semibold text-sm hover:bg-slate-200 transition flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-book-open"></i>
+                        <span>Pelajari Kembali Materi</span>
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 mt-8">
+        <div class="max-w-5xl mx-auto px-4 text-center text-xs text-slate-400">
+            Aplikasi Interaktif Belajar Bahasa Jepang &copy; 2026 • Materi Angka, Umur & Tingkat SMA/SMK
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. MATERI DATASET ---
+        const MATERI_DATA = [
+            {
+                category: "dasar",
+                title: "Angka Dasar (0 - 10)",
+                description: "Fondasi utama perhitungan bahasa Jepang.",
+                items: [
+                    { number: "0", kanji: "零 / 〇", hiragana: "ゼロ / れい", romaji: "zero / rei" },
+                    { number: "1", kanji: "一", hiragana: "いち", romaji: "ichi" },
+                    { number: "2", kanji: "二", hiragana: "に", romaji: "ni" },
+                    { number: "3", kanji: "三", hiragana: "さん", romaji: "san" },
+                    { number: "4", kanji: "四", hiragana: "よん / し", romaji: "yon / shi" },
+                    { number: "5", kanji: "五", hiragana: "ご", romaji: "go" },
+                    { number: "6", kanji: "六", hiragana: "ろく", romaji: "roku" },
+                    { number: "7", kanji: "七", hiragana: "なな / しち", romaji: "nana / shichi" },
+                    { number: "8", kanji: "八", hiragana: "はち", romaji: "hachi" },
+                    { number: "9", kanji: "九", hiragana: "きゅう / く", romaji: "kyuu / ku" },
+                    { number: "10", kanji: "十", hiragana: "じゅう", romaji: "juu" }
+                ]
+            },
+            {
+                category: "ratusan",
+                title: "Ratusan (百 - Hyaku) & Pengecualian",
+                description: "Perhatikan perubahan bunyi pada angka 300, 600, dan 800!",
+                items: [
+                    { number: "100", kanji: "百", hiragana: "ひゃく", romaji: "hyaku" },
+                    { number: "300", kanji: "三百", hiragana: "さんびゃく", romaji: "sanbyaku [Pengecualian]" },
+                    { number: "600", kanji: "六百", hiragana: "ろっぴゃく", romaji: "roppyaku [Pengecualian]" },
+                    { number: "800", kanji: "八百", hiragana: "はっぴゃく", romaji: "happyaku [Pengecualian]" },
+                    { number: "1,000", kanji: "千", hiragana: "せん", romaji: "sen" },
+                    { number: "3,000", kanji: "三千", hiragana: "さんぜん", romaji: "sanzen [Pengecualian]" },
+                    { number: "8,000", kanji: "八千", hiragana: "はっせん", romaji: "hassen [Pengecualian]" }
+                ]
+            },
+            {
+                category: "puluh-ribu",
+                title: "Puluh Ribu & Ratus Ribu (万 - Man)",
+                description: "Bahasa Jepang menghitung per kelipatan 4 digit (10.000 / 万 - Man).",
+                items: [
+                    { number: "10,000", kanji: "一万", hiragana: "いちまん", romaji: "ichiman (1 x 10.000)" },
+                    { number: "20,000", kanji: "二万", hiragana: "にまん", romaji: "niman (2 x 10.000)" },
+                    { number: "50,000", kanji: "五万", hiragana: "ごまん", romaji: "goman (5 x 10.000)" },
+                    { number: "100,000", kanji: "十万", hiragana: "じゅうまん", romaji: "juuman (10 x 10.000)" },
+                    { number: "250,000", kanji: "二十五万", hiragana: "にじゅうごまん", romaji: "nijuu goman" }
+                ]
+            },
+            {
+                category: "umur",
+                title: "Hitungan Umur (歳 - Sai)",
+                description: "Perhatikan pengecualian pada umur 1, 8, 10, dan 20 tahun!",
+                items: [
+                    { number: "1 Tahun", kanji: "1歳", hiragana: "いっさい", romaji: "issai [Pengecualian]" },
+                    { number: "8 Tahun", kanji: "8歳", hiragana: "はっさい", romaji: "hassai [Pengecualian]" },
+                    { number: "10 Tahun", kanji: "10歳", hiragana: "じゅっさい / じっさい", romaji: "jussai [Pengecualian]" },
+                    { number: "16 Tahun", kanji: "16歳", hiragana: "じゅうろくさい", romaji: "juuroku sai" },
+                    { number: "17 Tahun", kanji: "17歳", hiragana: "じゅうななさい", romaji: "juunana sai" },
+                    { number: "18 Tahun", kanji: "18歳", hiragana: "じゅうはっさい", romaji: "juuhassai [Pengecualian]" },
+                    { number: "20 Tahun", kanji: "20歳 / 二十歳", hiragana: "はたち", romaji: "hatachi [Khusus]" }
+                ]
+            },
+            {
+                category: "sekolah",
+                title: "Tingkatan SMA & SMK (高校・職業高校)",
+                description: "Istilah dan tingkatan kelas SMA/SMK di Indonesia dalam bahasa Jepang.",
+                items: [
+                    { number: "SMA", kanji: "高校", hiragana: "こうこう", romaji: "koukou" },
+                    { number: "SMK", kanji: "職業高校", hiragana: "しょくぎょうこうこう", romaji: "shokugyou koukou" },
+                    { number: "Sekolah Negeri", kanji: "公立高校", hiragana: "こうりつこうこう", romaji: "kouritsu koukou" },
+                    { number: "SMA Kelas 10", kanji: "高校一年生", hiragana: "こうこう いちねんせい", romaji: "koukou ichi-nensei" },
+                    { number: "SMA Kelas 11", kanji: "高校二年生", hiragana: "こうこう にねんせい", romaji: "koukou ni-nensei" },
+                    { number: "SMA Kelas 12", kanji: "高校三年生", hiragana: "こうこう さんねんせい", romaji: "koukou san-nensei" },
+                    { number: "SMKN 1 Kendal", kanji: "ケンダル第1公立職業高校", hiragana: "けんだる だいいち こうりつ しょくぎょうこうこう", romaji: "Kendaru dai-ichi kouritsu shokugyou koukou" }
+                ]
+            }
+        ];
+
+        // --- 2. 30 QUESTIONS QUIZ DATASET ---
+        const QUIZ_QUESTIONS = [
+            {
+                id: 1,
+                category: "Angka Dasar",
+                prompt: "Bagaimana cara membaca angka 4 dalam bahasa Jepang secara umum?",
+                hiragana: "よん / し",
+                romaji: "yon / shi",
+                options: [
+                    { text: "Yon", romaji: "yon", hiragana: "よん", correct: true },
+                    { text: "Roku", romaji: "roku", hiragana: "ろく", correct: false },
+                    { text: "Hachi", romaji: "hachi", hiragana: "はち", correct: false },
+                    { text: "Nana", romaji: "nana", hiragana: "なな", correct: false }
+                ],
+                explanation: "Angka 4 secara umum dibaca 'yon' (よん). Bunyi 'shi' juga ada tetapi kadang dihindari karena berasosiasi dengan kata kematian (死)."
+            },
+            {
+                id: 2,
+                category: "Ratusan (Pengecualian)",
+                prompt: "Berapakah pembacaan dari angka 300 (三百)?",
+                hiragana: "さんびゃく",
+                romaji: "sanbyaku",
+                options: [
+                    { text: "Sanhyaku", romaji: "sanhyaku", hiragana: "さんひゃく", correct: false },
+                    { text: "Sanbyaku", romaji: "sanbyaku", hiragana: "さんびゃく", correct: true },
+                    { text: "Sanppyaku", romaji: "sanppyaku", hiragana: "さんぴゃく", correct: false },
+                    { text: "Sansen", romaji: "さんせん", hiragana: "さんせん", correct: false }
+                ],
+                explanation: "Angka 300 merupakan pengecualian ratusan di mana 'hyaku' berubah bunyi menjadi 'byaku' (Sanbyaku / さんびゃく)."
+            },
+            {
+                id: 3,
+                category: "Ratusan (Pengecualian)",
+                prompt: "Berapakah pembacaan dari angka 600 (六百)?",
+                hiragana: "ろっぴゃく",
+                romaji: "roppyaku",
+                options: [
+                    { text: "Rokuhyaku", romaji: "rokuhyaku", hiragana: "ろくひゃく", correct: false },
+                    { text: "Roppyaku", romaji: "roppyaku", hiragana: "ろっぴゃく", correct: true },
+                    { text: "Rokubyaku", romaji: "rokubyaku", hiragana: "ろくびゃく", correct: false },
+                    { text: "Rokusen", romaji: "rokusen", hiragana: "ろくせん", correct: false }
+                ],
+                explanation: "Angka 600 mengalami penyerapan bunyi kecil (sokuon) menjadi 'Roppyaku' (ろっぴゃく)."
+            },
+            {
+                id: 4,
+                category: "Ratusan (Pengecualian)",
+                prompt: "Berapakah pembacaan dari angka 800 (八百)?",
+                hiragana: "はっぴゃく",
+                romaji: "happyaku",
+                options: [
+                    { text: "Hachihyaku", romaji: "hachihyaku", hiragana: "はちひゃく", correct: false },
+                    { text: "Happyaku", romaji: "happyaku", hiragana: "はっぴゃく", correct: true },
+                    { text: "Hachibyaku", romaji: "hachibyaku", hiragana: "はちびゃく", correct: false },
+                    { text: "Hassen", romaji: "hassen", hiragana: "はっせん", correct: false }
+                ],
+                explanation: "Angka 800 dibaca 'Happyaku' (はっぴゃく) sebagai pengecualian dari Hachi + Hyaku."
+            },
+            {
+                id: 5,
+                category: "Ribuan (Pengecualian)",
+                prompt: "Bagaimana penyebutan angka 3.000 (三千) dalam bahasa Jepang?",
+                hiragana: "さんぜん",
+                romaji: "sanzen",
+                options: [
+                    { text: "Mansen", romaji: "mansen", hiragana: "まんせん", correct: false },
+                    { text: "Mansen", romaji: "sansen", hiragana: "さんせん", correct: false },
+                    { text: "Sanzen", romaji: "sanzen", hiragana: "さんぜん", correct: true },
+                    { text: "Sanbyaku", romaji: "sanbyaku", hiragana: "さんびゃく", correct: false }
+                ],
+                explanation: "Untuk 3.000, akhiran 'sen' mengalami dakuten menjadi 'zen' -> Sanzen (さんぜん)."
+            },
+            {
+                id: 6,
+                category: "Ribuan (Pengecualian)",
+                prompt: "Bagaimana penyebutan angka 8.000 (八千) dalam bahasa Jepang?",
+                hiragana: "はっせん",
+                romaji: "hassen",
+                options: [
+                    { text: "Hachisen", romaji: "hachisen", hiragana: "はちせん", correct: false },
+                    { text: "Hassen", romaji: "hassen", hiragana: "はっせん", correct: true },
+                    { text: "Hazzen", romaji: "hazzen", hiragana: "はっぜん", correct: false },
+                    { text: "Happyaku", romaji: "happyaku", hiragana: "はっぴゃく", correct: false }
+                ],
+                explanation: "Angka 8.000 dibaca 'Hassen' (はっせん) dengan sokuon (tsu kecil)."
+            },
+            {
+                id: 7,
+                category: "Puluh Ribu (万)",
+                prompt: "Bahasa Jepang untuk angka 10.000 (一万) adalah...",
+                hiragana: "いちまん",
+                romaji: "ichiman",
+                options: [
+                    { text: "Juusen", romaji: "juusen", hiragana: "じゅうせん", correct: false },
+                    { text: "Ichiman", romaji: "ichiman", hiragana: "いちまん", correct: true },
+                    { text: "Juuman", romaji: "juuman", hiragana: "じゅうまん", correct: false },
+                    { text: "Hyakuman", romaji: "hyakuman", hiragana: "ひゃくまん", correct: false }
+                ],
+                explanation: "Unit dasar 10.000 adalah 万 (Man). Maka 10.000 dihitung sebagai 1 unit Man = Ichiman (一万)."
+            },
+            {
+                id: 8,
+                category: "Puluh Ribu (万)",
+                prompt: "Bagaimana menyebutkan 50.000 (五万) dalam bahasa Jepang?",
+                hiragana: "ごまん",
+                romaji: "goman",
+                options: [
+                    { text: "Gosen", romaji: "gosen", hiragana: "ごせん", correct: false },
+                    { text: "Goman", romaji: "goman", hiragana: "ごまん", correct: true },
+                    { text: "Gojuuman", romaji: "gojuuman", hiragana: "ごじゅうまん", correct: false },
+                    { text: "Gohyaku", romaji: "gohyaku", hiragana: "ごひゃく", correct: false }
+                ],
+                explanation: "50.000 adalah 5 dikali 10.000 (5 buah 万) = Goman (五万)."
+            },
+            {
+                id: 9,
+                category: "Ratus Ribu (万)",
+                prompt: "Bagaimana cara menyebutkan 100.000 (十万)?",
+                hiragana: "じゅうまん",
+                romaji: "juuman",
+                options: [
+                    { text: "Juuman", romaji: "juuman", hiragana: "じゅうまん", correct: true },
+                    { text: "Hyakuman", romaji: "hyakuman", hiragana: "ひゃくまん", correct: false },
+                    { text: "Hyakusen", romaji: "hyakusen", hiragana: "ひゃくせん", correct: false },
+                    { text: "Ichiman", romaji: "ichiman", hiragana: "いちまん", correct: false }
+                ],
+                explanation: "100.000 adalah 10 dikali 10.000 (10 buah 万) = Juuman (十万)."
+            },
+            {
+                id: 10,
+                category: "Umur (歳)",
+                prompt: "Penyebutan umur 1 tahun (1歳) yang benar adalah...",
+                hiragana: "いっさい",
+                romaji: "issai",
+                options: [
+                    { text: "Ichisai", romaji: "ichisai", hiragana: "いちさい", correct: false },
+                    { text: "Issai", romaji: "issai", hiragana: "いっさい", correct: true },
+                    { text: "Ison", romaji: "ison", hiragana: "いそん", correct: false },
+                    { text: "Hitosai", romaji: "hitosai", hiragana: "ひとさい", correct: false }
+                ],
+                explanation: "Umur 1 tahun adalah pengecualian, dibaca 'Issai' (いっさい), bukan Ichisai."
+            },
+            {
+                id: 11,
+                category: "Umur (歳)",
+                prompt: "Penyebutan khusus untuk umur 20 tahun (二十歳) adalah...",
+                hiragana: "はたち",
+                romaji: "hatachi",
+                options: [
+                    { text: "Nijuusai", romaji: "nijuusai", hiragana: "にじゅうさい", correct: false },
+                    { text: "Hatachi", romaji: "hatachi", hiragana: "はたち", correct: true },
+                    { text: "Hatsusai", romaji: "hatsusai", hiragana: "はつさい", correct: false },
+                    { text: "Nijuussai", romaji: "nijuussai", hiragana: "にじゅっさい", correct: false }
+                ],
+                explanation: "Umur 20 tahun memiliki sebutan tradisional khusus yaitu 'Hatachi' (はたち), penanda kedewasaan."
+            },
+            {
+                id: 12,
+                category: "Umur (歳)",
+                prompt: "Penyebutan umur 17 tahun (17歳) adalah...",
+                hiragana: "じゅうななさい",
+                romaji: "juunana sai",
+                options: [
+                    { text: "Juushichisai", romaji: "juushichisai", hiragana: "じゅうしちさい", correct: false },
+                    { text: "Juunanagai", romaji: "juunanagai", hiragana: "じゅうなながい", correct: false },
+                    { text: "Juunana sai", romaji: "juunana sai", hiragana: "じゅうななさい", correct: true },
+                    { text: "Jussai", romaji: "jussai", hiragana: "じゅっさい", correct: false }
+                ],
+                explanation: "17 tahun = 10 (juu) + 7 (nana) + sai (歳) = Juunana sai (じゅうななさい)."
+            },
+            {
+                id: 13,
+                category: "Umur (歳)",
+                prompt: "Penyebutan umur 8 tahun (8歳) yang benar adalah...",
+                hiragana: "はっさい",
+                romaji: "hassai",
+                options: [
+                    { text: "Hachisai", romaji: "hachisai", hiragana: "はちさい", correct: false },
+                    { text: "Hassai", romaji: "hassai", hiragana: "はっさい", correct: true },
+                    { text: "Hachissai", romaji: "hachissai", hiragana: "はちっさい", correct: false },
+                    { text: "Hasai", romaji: "hasai", hiragana: "はさい", correct: false }
+                ],
+                explanation: "Umur 8 tahun merupakan pengecualian, dibaca 'Hassai' (はっさい)."
+            },
+            {
+                id: 14,
+                category: "Tingkat SMA",
+                prompt: "Apa istilah umum untuk 'SMA' (Sekolah Menengah Atas) dalam bahasa Jepang?",
+                hiragana: "こうこう",
+                romaji: "koukou",
+                options: [
+                    { text: "Chougakkou", romaji: "chougakkou", hiragana: "ちゅうがっこう", correct: false },
+                    { text: "Koukou", romaji: "koukou", hiragana: "こうこう", correct: true },
+                    { text: "Daigaku", romaji: "daigaku", hiragana: "だいがく", correct: false },
+                    { text: "Shougakkou", romaji: "shougakkou", hiragana: "しょうがっこう", correct: false }
+                ],
+                explanation: "SMA dalam bahasa Jepang disebut 高校 (Koukou), singkatan dari 高等学校 (Koutougakkou)."
+            },
+            {
+                id: 15,
+                category: "Tingkat SMA",
+                prompt: "Bagaimana cara menyebutkan 'Siswa SMA Kelas 10' (SMA Kelas 1) dalam bahasa Jepang?",
+                hiragana: "こうこう いちねんせい",
+                romaji: "koukou ichi-nensei",
+                options: [
+                    { text: "Koukou ichi-nensei", romaji: "koukou ichi-nensei", hiragana: "こうこう いちねんせい", correct: true },
+                    { text: "Koukou juu-nensei", romaji: "koukou juu-nensei", hiragana: "こうこう じゅうねんせい", correct: false },
+                    { text: "Chougakkou ichi-nensei", romaji: "chougakkou ichi-nensei", hiragana: "ちゅうがっこう いちねんせい", correct: false },
+                    { text: "Koukou yon-nensei", romaji: "koukou yon-nensei", hiragana: "こうこう よんねんせい", correct: false }
+                ],
+                explanation: "Di Jepang, tingkat SMA dihitung dari tahun ke-1 sampai ke-3. Maka kelas 10 SMA setara dengan 'Koukou Ichi-nensei' (高校一年生)."
+            },
+            {
+                id: 16,
+                category: "Tingkat SMA",
+                prompt: "Bagaimana cara menyebutkan 'Siswa SMA Kelas 11' (SMA Kelas 2)?",
+                hiragana: "こうこう にねんせい",
+                romaji: "koukou ni-nensei",
+                options: [
+                    { text: "Koukou ni-nensei", romaji: "koukou ni-nensei", hiragana: "こうこう にねんせい", correct: true },
+                    { text: "Koukou juuichi-nensei", romaji: "koukou juuichi-nensei", hiragana: "こうこう じゅういちねんせい", correct: false },
+                    { text: "Daigaku ni-nensei", romaji: "daigaku ni-nensei", hiragana: "だいがく にねんせい", correct: false },
+                    { text: "Koukou san-nensei", romaji: "koukou san-nensei", hiragana: "こうこう さんねんせい", correct: false }
+                ],
+                explanation: "Kelas 11 SMA setara dengan SMA tahun ke-2, yaitu 'Koukou Ni-nensei' (高校二年生)."
+            },
+            {
+                id: 17,
+                category: "Tingkat SMA",
+                prompt: "Bagaimana cara menyebutkan 'Siswa SMA Kelas 12' (SMA Kelas 3)?",
+                hiragana: "こうこう さんねんせい",
+                romaji: "koukou san-nensei",
+                options: [
+                    { text: "Koukou san-nensei", romaji: "koukou san-nensei", hiragana: "こうこう さんねんせい", correct: true },
+                    { text: "Koukou juuni-nensei", romaji: "koukou juuni-nensei", hiragana: "こうこう じゅうにねんせい", correct: false },
+                    { text: "Koukou yon-nensei", romaji: "koukou yon-nensei", hiragana: "こうこう よんねんせい", correct: false },
+                    { text: "Shougakkou san-nensei", romaji: "shougakkou san-nensei", hiragana: "しょうがっこう さんねんせい", correct: false }
+                ],
+                explanation: "Kelas 12 SMA setara dengan SMA tahun ke-3, yaitu 'Koukou San-nensei' (高校三年生)."
+            },
+            {
+                id: 18,
+                category: "Tingkat SMK",
+                prompt: "Apa istilah bahasa Jepang untuk 'SMK' (Sekolah Menengah Kejuruan)?",
+                hiragana: "しょくぎょう こうこう",
+                romaji: "shokugyou koukou",
+                options: [
+                    { text: "Shokugyou koukou", romaji: "shokugyou koukou", hiragana: "しょくぎょう こうこう", correct: true },
+                    { text: "Kouritsu koukou", romaji: "kouritsu koukou", hiragana: "こうりつ こうこう", correct: false },
+                    { text: "Shougakkou", romaji: "shougakkou", hiragana: "しょうがっこう", correct: false },
+                    { text: "Daigaku", romaji: "daigaku", hiragana: "だいがく", correct: false }
+                ],
+                explanation: "SMK (Kejuruan) diterjemahkan sebagai 職業高校 (Shokugyou koukou)."
+            },
+            {
+                id: 19,
+                category: "Tingkat Sekolah",
+                prompt: "Istilah untuk 'Sekolah Negeri' (misal: SMAN / SMKN) dalam bahasa Jepang adalah...",
+                hiragana: "こうりつ",
+                romaji: "kouritsu",
+                options: [
+                    { text: "Shiritsu", romaji: "shiritsu", hiragana: "しりつ", correct: false },
+                    { text: "Kouritsu", romaji: "kouritsu", hiragana: "こうりつ", correct: true },
+                    { text: "Juku", romaji: "juku", hiragana: "じゅく", correct: false },
+                    { text: "Gakkou", romaji: "gakkou", hiragana: "がっこう", correct: false }
+                ],
+                explanation: "Sekolah negeri/publik menggunakan istilah 公立 (Kouritsu). Sedangkan sekolah swasta dinamakan 私立 (Shiritsu)."
+            },
+            {
+                id: 20,
+                category: "Latihan Harga (円)",
+                prompt: "Bagaimana membaca nominal harga 1,500 Yen (千五百円)?",
+                hiragana: "せん ごひゃく えん",
+                romaji: "sen gohyaku en",
+                options: [
+                    { text: "Sen gohyaku en", romaji: "sen gohyaku en", hiragana: "せん ごひゃく えん", correct: true },
+                    { text: "Ichisen gohyaku en", romaji: "ichisen gohyaku en", hiragana: "いちせん ごひゃく えん", correct: false },
+                    { text: "Sen gobyaku en", romaji: "sen gobyaku en", hiragana: "せん ごびゃく えん", correct: false },
+                    { text: "Gosen hyaku en", romaji: "gosen hyaku en", hiragana: "ごせん ひゃく えん", correct: false }
+                ],
+                explanation: "1.500 Yen = 1.000 (sen) + 500 (gohyaku) + Yen (en) = Sen gohyaku en (せんごひゃくえん)."
+            },
+            {
+                id: 21,
+                category: "Latihan Harga (円)",
+                prompt: "Bagaimana cara membaca nominal harga 25,000 Yen (二万五千円)?",
+                hiragana: "にまん ごせん えん",
+                romaji: "niman gosen en",
+                options: [
+                    { text: "Nijuugo sen en", romaji: "nijuugo sen en", hiragana: "にじゅうご せん えん", correct: false },
+                    { text: "Niman gosen en", romaji: "niman gosen en", hiragana: "にまん ごせん えん", correct: true },
+                    { text: "Nijuuman gosen en", romaji: "nijuuman gosen en", hiragana: "にじゅうまん ごせん えん", correct: false },
+                    { text: "Nihyaku gosen en", romaji: "nihyaku gosen en", hiragana: "にひゃく ごせん えん", correct: false }
+                ],
+                explanation: "25.000 = 2 unit 万 (20.000 / niman) + 5.000 (gosen) + en = Niman gosen en."
+            },
+            {
+                id: 22,
+                category: "Angka Campuran",
+                prompt: "Berapakah nilai angka dari 'Kyuu juu kyuu' (九十九)?",
+                hiragana: "きゅうじゅうきゅう",
+                romaji: "kyuu juu kyuu",
+                options: [
+                    { text: "89", romaji: "89", hiragana: "89", correct: false },
+                    { text: "99", romaji: "99", hiragana: "99", correct: true },
+                    { text: "909", romaji: "909", hiragana: "909", correct: false },
+                    { text: "990", romaji: "990", hiragana: "990", correct: false }
+                ],
+                explanation: "Kyuu (9) + Juu (10) + Kyuu (9) = 99."
+            },
+            {
+                id: 23,
+                category: "Angka Campuran",
+                prompt: "Berapakah nilai dari angka 'Yonhyaku' (四百)?",
+                hiragana: "よんひゃく",
+                romaji: "yonhyaku",
+                options: [
+                    { text: "40", romaji: "40", hiragana: "40", correct: false },
+                    { text: "400", romaji: "400", hiragana: "400", correct: true },
+                    { text: "4000", romaji: "4000", hiragana: "4000", correct: false },
+                    { text: "40000", romaji: "40000", hiragana: "40000", correct: false }
+                ],
+                explanation: "Yon (4) + Hyaku (100) = 400 (Yonhyaku)."
+            },
+            {
+                id: 24,
+                category: "Umur (歳)",
+                prompt: "Penyebutan umur 18 tahun (18歳) yang benar adalah...",
+                hiragana: "じゅうはっさい",
+                romaji: "juuhassai",
+                options: [
+                    { text: "Juuhachisai", romaji: "juuhachisai", hiragana: "じゅうはちさい", correct: false },
+                    { text: "Juuhassai", romaji: "juuhassai", hiragana: "じゅうはっさい", correct: true },
+                    { text: "Juuhasai", romaji: "juuhasai", hiragana: "じゅうはさい", correct: false },
+                    { text: "Juuhachissai", romaji: "juuhachissai", hiragana: "じゅうはちっさい", correct: false }
+                ],
+                explanation: "18 tahun = Juu + Hassai = Juuhassai (じゅうはっさい)."
+            },
+            {
+                id: 25,
+                category: "Kalimat Percakapan",
+                prompt: "Terjemahkan kalimat ini: 'Watashi wa koukou ichi-nensei desu' (私は高校一年生です).",
+                hiragana: "わたし は こうこう いちねんせい です",
+                romaji: "watashi wa koukou ichi-nensei desu",
+                options: [
+                    { text: "Saya adalah siswa SMA kelas 10 (tahun ke-1).", romaji: "Saya siswa SMA kelas 10", hiragana: "Saya siswa SMA kelas 10", correct: true },
+                    { text: "Saya adalah siswa SMP kelas 7.", romaji: "Saya siswa SMP kelas 7", hiragana: "Saya siswa SMP kelas 7", correct: false },
+                    { text: "Saya adalah mahasiswa tingkat 1.", romaji: "Saya mahasiswa tingkat 1", hiragana: "Saya mahasiswa tingkat 1", correct: false },
+                    { text: "Saya adalah guru SMA.", romaji: "Saya guru SMA", hiragana: "Saya guru SMA", correct: false }
+                ],
+                explanation: "Watashi (Saya) + Koukou (SMA) + Ichi-nensei (Siswa tingkat 1 / kelas 10)."
+            },
+            {
+                id: 26,
+                category: "Kalimat Percakapan",
+                prompt: "Bagaimana cara mengatakan 'Saya berumur 17 tahun' dalam bahasa Jepang?",
+                hiragana: "わたし は じゅうななさい です",
+                romaji: "Watashi wa juunana sai desu",
+                options: [
+                    { text: "Watashi wa juunana sai desu", romaji: "Watashi wa juunana sai desu", hiragana: "わたし は じゅうななさい です", correct: true },
+                    { text: "Watashi wa juuhassai desu", romaji: "Watashi wa juuhassai desu", hiragana: "わたし は じゅうはっさい です", correct: false },
+                    { text: "Watashi wa hatachi desu", romaji: "Watashi wa hatachi desu", hiragana: "わたし は はたち です", correct: false },
+                    { text: "Watashi wa issai desu", romaji: "Watashi wa issai desu", hiragana: "わたし は いっさい です", correct: false }
+                ],
+                explanation: "17 tahun = Juunana sai. Maka 'Saya berumur 17 tahun' = Watashi wa juunana sai desu."
+            },
+            {
+                id: 27,
+                category: "Nama Sekolah",
+                prompt: "Bagaimana menyebutkan 'SMAN 1' (SMA Negeri 1) secara formal dalam bahasa Jepang?",
+                hiragana: "だい１ こうりつ こうこう",
+                romaji: "Dai-ichi kouritsu koukou",
+                options: [
+                    { text: "Dai-ichi kouritsu koukou", romaji: "Dai-ichi kouritsu koukou", hiragana: "だい１ こうりつ こうこう", correct: true },
+                    { text: "Ichi shiritsu koukou", romaji: "Ichi shiritsu koukou", hiragana: "いち しりつ こうこう", correct: false },
+                    { text: "Kouritsu ichi gakkou", romaji: "Kouritsu ichi gakkou", hiragana: "こうりつ いち がっこう", correct: false },
+                    { text: "Koukou dai-ichi", romaji: "Koukou dai-ichi", hiragana: "こうこう だいいち", correct: false }
+                ],
+                explanation: "Tingkatan 'Ke-1' menggunakan prefix 第1 (Dai-ichi), diikuti Negeri (公立 / Kouritsu) dan SMA (高校 / Koukou)."
+            },
+            {
+                id: 28,
+                category: "Latihan Harga (円)",
+                prompt: "Nominal 3,800 Yen (三千八百円) dibaca sebagai...",
+                hiragana: "さんぜん はっぴゃく えん",
+                romaji: "sanzen happyaku en",
+                options: [
+                    { text: "Sansen hachihyaku en", romaji: "Sansen hachihyaku en", hiragana: "さんせん はちひゃく えん", correct: false },
+                    { text: "Sanzen happyaku en", romaji: "Sanzen happyaku en", hiragana: "さんぜん はっぴゃく えん", correct: true },
+                    { text: "Sanbyaku hassen en", romaji: "Sanbyaku hassen en", hiragana: "さんびゃく はっせん えん", correct: false },
+                    { text: "Sanzen roppyaku en", romaji: "Sanzen roppyaku en", hiragana: "さんぜん ろっぴゃく えん", correct: false }
+                ],
+                explanation: "3.000 (Sanzen) + 800 (Happyaku) + Yen (en) = Sanzen happyaku en."
+            },
+            {
+                id: 29,
+                category: "Puluh Ribu (万)",
+                prompt: "Berapakah nilai dari 'Goman' (五万)?",
+                hiragana: "ごまん",
+                romaji: "goman",
+                options: [
+                    { text: "5,000", romaji: "5,000", hiragana: "5,000", correct: false },
+                    { text: "50,000", romaji: "50,000", hiragana: "50,000", correct: true },
+                    { text: "500,000", romaji: "500,000", hiragana: "500,000", correct: false },
+                    { text: "500", romaji: "500", hiragana: "500", correct: false }
+                ],
+                explanation: "Go (5) x Man (10.000) = 50.000."
+            },
+            {
+                id: 30,
+                category: "Tingkat Sekolah",
+                prompt: "Bagaimana menanyakan kelas berapa seseorang di SMA?",
+                hiragana: "なんねんせい です か",
+                romaji: "Nan-nensei desu ka?",
+                options: [
+                    { text: "Nan-nensei desu ka?", romaji: "Nan-nensei desu ka?", hiragana: "なんねんせい です か", correct: true },
+                    { text: "Nonsai desu ka?", romaji: "Nonsai desu ka?", hiragana: "なんさい です か", correct: false },
+                    { text: "Ikura desu ka?", romaji: "Ikura desu ka?", hiragana: "いくら です か", correct: false },
+                    { text: "Doko desu ka?", romaji: "Doko desu ka?", hiragana: "どこ です か", correct: false }
+                ],
+                explanation: "Menanyakan tingkat kelas menggunakan 何年生 (Nan-nensei desu ka?). Jika menanyakan umur memakai 何歳 (Nansai desu ka?)."
+            }
+        ];
+
+        // --- 3. STATE MANAGEMENT ---
+        let currentQuestionIndex = 0;
+        let quizScore = 0;
+        let selectedOptionIndex = null;
+        let userAnswers = [];
+
+        // --- 4. CORE APPLICATION LOGIC ---
+        window.addEventListener('DOMContentLoaded', () => {
+            renderMateriCards('all');
+            initQuizQuestion();
+        });
+
+        // Speech Synthesis Function
+        function speakText(text, lang = 'ja-JP') {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Stop any active audio
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = lang;
+                utterance.rate = 0.85; // Slightly slower for clear learning
+                window.speechSynthesis.speak(utterance);
+            } else {
+                console.warn('Speech synthesis not supported in this browser.');
+            }
+        }
+
+        // Tab Switcher
+        function switchTab(tab) {
+            const materiSec = document.getElementById('section-materi');
+            const kuisSec = document.getElementById('section-kuis');
+            const navMateri = document.getElementById('nav-materi');
+            const navKuis = document.getElementById('nav-kuis');
+
+            if (tab === 'materi') {
+                materiSec.classList.remove('hidden');
+                kuisSec.classList.add('hidden');
+                navMateri.className = "px-4 py-2 rounded-lg bg-white text-sakura-600 shadow-sm transition-all duration-200 flex items-center space-x-2 font-medium";
+                navKuis.className = "px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900 transition-all duration-200 flex items-center space-x-2 font-medium";
+            } else {
+                materiSec.classList.add('hidden');
+                kuisSec.classList.remove('hidden');
+                navKuis.className = "px-4 py-2 rounded-lg bg-white text-sakura-600 shadow-sm transition-all duration-200 flex items-center space-x-2 font-medium";
+                navMateri.className = "px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900 transition-all duration-200 flex items-center space-x-2 font-medium";
+            }
+        }
+
+        // Render Materi Cards
+        function renderMateriCards(filterCategory) {
+            const container = document.getElementById('materi-cards-container');
+            container.innerHTML = '';
+
+            MATERI_DATA.forEach(group => {
+                if (filterCategory === 'all' || group.category === filterCategory) {
+                    const card = document.createElement('div');
+                    card.className = "bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition";
+
+                    let tableRows = group.items.map(item => `
+                        <tr class="border-b border-slate-100 hover:bg-slate-50/80 transition">
+                            <td class="py-2.5 px-3 font-semibold text-xs text-slate-500">${item.number}</td>
+                            <td class="py-2.5 px-3 jp-text text-base text-slate-800 font-medium">${item.kanji}</td>
+                            <td class="py-2.5 px-3 jp-text text-xs text-sakura-600 font-medium">${item.hiragana}</td>
+                            <td class="py-2.5 px-3 text-xs text-slate-500 italic font-mono">${item.romaji}</td>
+                            <td class="py-2.5 px-3 text-right">
+                                <button onclick="speakText('${item.kanji}', 'ja-JP')" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-sakura-100 text-slate-600 hover:text-sakura-600 text-xs transition inline-flex items-center justify-center">
+                                    <i class="fa-solid fa-volume-high"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+
+                    card.innerHTML = `
+                        <div class="flex items-start justify-between mb-3">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-base">${group.title}</h3>
+                                <p class="text-xs text-slate-500 mt-0.5">${group.description}</p>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-slate-200 text-[10px] uppercase text-slate-400">
+                                        <th class="py-2 px-3">Item</th>
+                                        <th class="py-2 px-3">Kanji/Angka</th>
+                                        <th class="py-2 px-3">Hiragana</th>
+                                        <th class="py-2 px-3">Romaji</th>
+                                        <th class="py-2 px-3 text-right">Audio</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${tableRows}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                }
+            });
+        }
+
+        // Filter Materi Category
+        function filterMateri(cat) {
+            document.querySelectorAll('.materi-filter-btn').forEach(btn => {
+                btn.className = "materi-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-200 text-slate-700 hover:bg-slate-300 transition";
+            });
+            event.target.className = "materi-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-white transition";
+            renderMateriCards(cat);
+        }
+
+        // --- 5. QUIZ LOGIC ---
+        function initQuizQuestion() {
+            const q = QUIZ_QUESTIONS[currentQuestionIndex];
+            selectedOptionIndex = null;
+
+            // UI Elements
+            document.getElementById('quiz-category-badge').innerText = q.category;
+            document.getElementById('quiz-current-num').innerText = currentQuestionIndex + 1;
+            document.getElementById('quiz-total-num').innerText = QUIZ_QUESTIONS.length;
+            document.getElementById('quiz-score-display').innerText = quizScore;
+            
+            // Progress Bar
+            const progressPct = ((currentQuestionIndex + 1) / QUIZ_QUESTIONS.length) * 100;
+            document.getElementById('quiz-progress-bar').style.width = `${progressPct}%`;
+
+            // Prompt
+            document.getElementById('question-text').innerText = q.prompt;
+            document.getElementById('question-hiragana').innerText = q.hiragana;
+            document.getElementById('question-romaji').innerText = `(${q.romaji})`;
+
+            // Audio Button Event
+            document.getElementById('btn-audio-question').onclick = () => speakText(q.hiragana, 'ja-JP');
+
+            // Hide Feedback & Disable Next button initially
+            const feedbackBox = document.getElementById('feedback-box');
+            feedbackBox.classList.add('hidden');
+
+            const nextBtn = document.getElementById('btn-next-question');
+            nextBtn.disabled = true;
+            nextBtn.className = "px-6 py-2.5 rounded-xl bg-slate-200 text-slate-400 font-semibold text-sm transition cursor-not-allowed flex items-center space-x-2";
+
+            // Render Options
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 rounded-xl border border-slate-200 hover:border-sakura-300 hover:bg-sakura-50/50 transition flex items-center justify-between group";
+                btn.onclick = () => selectOption(idx);
+
+                btn.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="opt-indicator w-7 h-7 rounded-lg border border-slate-300 flex items-center justify-center text-xs font-bold text-slate-500 bg-white group-hover:border-sakura-500 group-hover:text-sakura-600">
+                            ${String.fromCharCode(65 + idx)}
+                        </div>
+                        <div>
+                            <span class="font-bold text-slate-800 text-sm">${opt.text}</span>
+                            <div class="text-xs text-sakura-600 jp-text font-medium">${opt.hiragana}</div>
+                            <div class="text-[11px] text-slate-400 italic font-mono">${opt.romaji}</div>
+                        </div>
+                    </div>
+                    <i class="fa-regular fa-circle text-slate-300 group-hover:text-sakura-400"></i>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(index) {
+            if (selectedOptionIndex !== null) return; // Prevent changing after answer
+            selectedOptionIndex = index;
+
+            const q = QUIZ_QUESTIONS[currentQuestionIndex];
+            const isCorrect = q.options[index].correct;
+            const optionBtns = document.querySelectorAll('.option-btn');
+
+            // Record Answer
+            userAnswers.push({ questionId: q.id, selectedIndex: index, isCorrect });
+
+            if (isCorrect) {
+                quizScore += 10;
+                document.getElementById('quiz-score-display').innerText = quizScore;
+            }
+
+            // Highlight Options
+            optionBtns.forEach((btn, idx) => {
+                btn.disabled = true;
+                btn.classList.remove('hover:border-sakura-300', 'hover:bg-sakura-50/50');
+                
+                if (idx === index) {
+                    if (isCorrect) {
+                        btn.className = "option-btn w-full text-left p-4 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-900 transition flex items-center justify-between";
+                    } else {
+                        btn.className = "option-btn w-full text-left p-4 rounded-xl border-2 border-rose-500 bg-rose-50 text-rose-900 transition flex items-center justify-between";
+                    }
+                } else if (q.options[idx].correct) {
+                    btn.className = "option-btn w-full text-left p-4 rounded-xl border-2 border-emerald-400 bg-emerald-50/50 text-emerald-800 transition flex items-center justify-between";
+                }
+            });
+
+            // Show Feedback Box
+            const feedbackBox = document.getElementById('feedback-box');
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackExplanation = document.getElementById('feedback-explanation');
+
+            feedbackBox.classList.remove('hidden');
+
+            if (isCorrect) {
+                feedbackBox.className = "rounded-xl p-4 mb-6 border bg-emerald-50 border-emerald-200 text-emerald-900";
+                feedbackIcon.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600"></i>`;
+                feedbackTitle.innerText = "Jawaban Benar! (正解)";
+                speakText("正解です", "ja-JP");
+            } else {
+                feedbackBox.className = "rounded-xl p-4 mb-6 border bg-rose-50 border-rose-200 text-rose-900";
+                feedbackIcon.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600"></i>`;
+                feedbackTitle.innerText = "Jawaban Belum Tepat (残念)";
+            }
+
+            feedbackExplanation.innerText = q.explanation;
+
+            // Enable Next Button
+            const nextBtn = document.getElementById('btn-next-question');
+            nextBtn.disabled = false;
+            nextBtn.className = "px-6 py-2.5 rounded-xl bg-sakura-600 text-white font-semibold text-sm hover:bg-sakura-700 transition shadow-md flex items-center space-x-2 cursor-pointer";
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < QUIZ_QUESTIONS.length - 1) {
+                currentQuestionIndex++;
+                initQuizQuestion();
+            } else {
+                showQuizResults();
+            }
+        }
+
+        function showQuizResults() {
+            document.getElementById('quiz-active-card').classList.add('hidden');
+            const resultCard = document.getElementById('quiz-result-card');
+            resultCard.classList.remove('hidden');
+
+            const totalQuestions = QUIZ_QUESTIONS.length;
+            const correctCount = userAnswers.filter(a => a.isCorrect).length;
+            const percentage = Math.round((correctCount / totalQuestions) * 100);
+
+            document.getElementById('result-correct-count').innerText = `${correctCount} / ${totalQuestions}`;
+            document.getElementById('result-final-score').innerText = `${percentage}%`;
+
+            const evalMsg = document.getElementById('result-evaluation-msg');
+            if (percentage >= 85) {
+                evalMsg.className = "p-4 rounded-xl text-sm font-medium mb-6 bg-emerald-100 text-emerald-800 border border-emerald-200";
+                evalMsg.innerText = "🎉 Jōzu! (上手) Kemampuan angka dan tingkatan sekolah bahasa Jepang Anda luar biasa!";
+            } else if (percentage >= 60) {
+                evalMsg.className = "p-4 rounded-xl text-sm font-medium mb-6 bg-amber-100 text-amber-800 border border-amber-200";
+                evalMsg.innerText = "👍 Bagus! Anda sudah menguasai sebagian besar materi. Perhatikan pengecualian ratusan/ribuan lagi!";
+            } else {
+                evalMsg.className = "p-4 rounded-xl text-sm font-medium mb-6 bg-rose-100 text-rose-800 border border-rose-200";
+                evalMsg.innerText = "💪 Jangan menyerah! Pelajari kembali modul materi ringkasan dan ulangi latihannya.";
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            quizScore = 0;
+            userAnswers = [];
+            document.getElementById('quiz-result-card').classList.add('hidden');
+            document.getElementById('quiz-active-card').classList.remove('hidden');
+            initQuizQuestion();
+        }
+    </script>
+</body>
+</html>
