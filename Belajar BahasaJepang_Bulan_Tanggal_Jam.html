@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nihongo Toki - Modul Belajar Bulan, Tanggal & Jam Bahasa Jepang</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        jp: ['"Noto Sans JP"', 'sans-serif'],
+                    },
+                    colors: {
+                        sakura: {
+                            50: '#fff5f7',
+                            100: '#ffe3ec',
+                            500: '#ff4d8d',
+                            600: '#e6005c',
+                            700: '#b30047',
+                        },
+                        matcha: {
+                            50: '#f2f9f1',
+                            100: '#deedd9',
+                            500: '#40a036',
+                            600: '#2e7d26',
+                        },
+                        fuji: {
+                            50: '#f0f4ff',
+                            100: '#dbe4ff',
+                            500: '#4361ee',
+                            600: '#3a0ca3',
+                            700: '#1e055a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        [v-cloak] { display: none; }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col antialiased selection:bg-sakura-500 selection:text-white">
+
+    <div id="app" v-cloak class="flex-1 flex flex-col min-h-screen">
+
+        <!-- Top Header Banner -->
+        <header class="bg-gradient-to-r from-fuji-700 via-fuji-600 to-sakura-600 text-white shadow-lg sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16 sm:h-20">
+                    <div class="flex items-center space-x-3 cursor-pointer" @click="activeTab = 'dashboard'">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/20 text-2xl">
+                            🇯🇵
+                        </div>
+                        <div>
+                            <h1 class="font-extrabold text-lg sm:text-2xl tracking-tight leading-none flex items-center gap-2">
+                                Nihongo Toki <span class="text-xs bg-sakura-500/80 px-2 py-0.5 rounded-full font-jp font-normal">日本語の日時</span>
+                            </h1>
+                            <p class="text-xs text-fuji-100 mt-1 font-medium hidden sm:block">Modul Interaktif Bulan, Tanggal & Jam Bahasa Jepang</p>
+                        </div>
+                    </div>
+
+                    <!-- Quick Audio Speaker Status -->
+                    <div class="flex items-center gap-2">
+                        <button @click="testAudio" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold flex items-center gap-1.5 transition border border-white/20">
+                            <span>🔊 Tes Suara</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="bg-fuji-700/80 backdrop-blur-md border-t border-white/10 overflow-x-auto custom-scrollbar">
+                <div class="max-w-7xl mx-auto px-2 sm:px-6 flex space-x-1 sm:space-x-2 py-2">
+                    <button @click="activeTab = 'dashboard'" 
+                            :class="['px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 whitespace-nowrap transition', activeTab === 'dashboard' ? 'bg-white text-fuji-700 shadow-md' : 'text-white/80 hover:bg-white/10 hover:text-white']">
+                        <span>🏠</span> Beranda
+                    </button>
+                    <button @click="activeTab = 'bulan'" 
+                            :class="['px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 whitespace-nowrap transition', activeTab === 'bulan' ? 'bg-white text-fuji-700 shadow-md' : 'text-white/80 hover:bg-white/10 hover:text-white']">
+                        <span>🗓️</span> Modul Bulan (月)
+                    </button>
+                    <button @click="activeTab = 'tanggal'" 
+                            :class="['px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 whitespace-nowrap transition', activeTab === 'tanggal' ? 'bg-white text-fuji-700 shadow-md' : 'text-white/80 hover:bg-white/10 hover:text-white']">
+                        <span>📅</span> Modul Tanggal (日)
+                    </button>
+                    <button @click="activeTab = 'jam'" 
+                            :class="['px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 whitespace-nowrap transition', activeTab === 'jam' ? 'bg-white text-fuji-700 shadow-md' : 'text-white/80 hover:bg-white/10 hover:text-white']">
+                        <span>⏰</span> Modul Jam (時・分)
+                    </button>
+                    <button @click="activeTab = 'quiz'" 
+                            :class="['px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 whitespace-nowrap transition relative', activeTab === 'quiz' ? 'bg-sakura-500 text-white shadow-md' : 'bg-sakura-600/60 text-white hover:bg-sakura-600']">
+                        <span>✏️</span> Latihan Soal (60 Soal)
+                        <span class="w-2 h-2 rounded-full bg-yellow-300 animate-pulse"></span>
+                    </button>
+                </div>
+            </nav>
+        </header>
+
+        <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+            <!-- TAB 1: DASHBOARD / BERANDA -->
+            <div v-if="activeTab === 'dashboard'" class="space-y-8">
+                <!-- Welcome Banner -->
+                <div class="relative overflow-hidden bg-gradient-to-br from-fuji-600 to-fuji-700 text-white rounded-3xl p-6 sm:p-10 shadow-xl">
+                    <div class="relative z-10 max-w-2xl">
+                        <span class="px-3 py-1 bg-sakura-500/30 border border-sakura-400/30 text-sakura-100 rounded-full text-xs font-semibold tracking-wide uppercase">
+                            Selamat Datang 学びましょう
+                        </span>
+                        <h2 class="text-2xl sm:text-4xl font-extrabold mt-3 leading-tight">
+                            Kuasai Penanggalan & Waktu Bahasa Jepang dengan Mudah!
+                        </h2>
+                        <p class="mt-3 text-slate-200 text-sm sm:text-base leading-relaxed">
+                            Pelajari konsep penyebutan nama **Bulan**, **Tanggal**, serta **Jam & Menit** lengkap dengan audio pelafalan, catatan khusus (pengecualian), contoh kalimat, serta **60 latihan soal interaktif** (20 soal per modul).
+                        </p>
+                        <div class="mt-6 flex flex-wrap gap-3">
+                            <button @click="activeTab = 'bulan'" class="px-5 py-2.5 bg-sakura-500 hover:bg-sakura-600 text-white font-bold text-sm rounded-xl transition shadow-lg flex items-center gap-2">
+                                Mulai Belajar Bulan ➔
+                            </button>
+                            <button @click="startQuizDirect('all')" class="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white font-semibold text-sm rounded-xl border border-white/20 transition backdrop-blur-sm flex items-center gap-2">
+                                📝 Uji Kemampuan (Quiz)
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Decorative Japanese Elements -->
+                    <div class="absolute -right-10 -bottom-10 opacity-15 pointer-events-none select-none text-[180px] font-jp font-bold text-white">
+                        日時
+                    </div>
+                </div>
+
+                <!-- Module Overview Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Module 1 Card -->
+                    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80 hover:shadow-md transition flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 bg-sakura-50 text-sakura-600 rounded-2xl flex items-center justify-center text-2xl font-bold mb-4">
+                                月
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-800">Modul 1: Bulan (Gatsu)</h3>
+                            <p class="text-xs text-slate-500 mt-1 font-jp">月 (がつ / がつ)</p>
+                            <p class="text-slate-600 text-sm mt-3 leading-relaxed">
+                                Memahami rumus dasar nama bulan 1–12 serta pengecualian khusus pada bulan April, Juli, dan September.
+                            </p>
+                            <div class="mt-4 flex flex-wrap gap-1.5">
+                                <span class="px-2 py-0.5 bg-slate-100 text-slate-600 text-[11px] font-medium rounded-md">12 Bulan</span>
+                                <span class="px-2 py-0.5 bg-amber-100 text-amber-700 text-[11px] font-medium rounded-md">3 Pengecualian</span>
+                                <span class="px-2 py-0.5 bg-fuji-50 text-fuji-600 text-[11px] font-medium rounded-md">20 Soal Quiz</span>
+                            </div>
+                        </div>
+                        <button @click="activeTab = 'bulan'" class="mt-6 w-full py-2.5 bg-slate-100 hover:bg-sakura-50 hover:text-sakura-600 text-slate-700 font-bold text-sm rounded-xl transition text-center">
+                            Buka Modul Bulan
+                        </button>
+                    </div>
+
+                    <!-- Module 2 Card -->
+                    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80 hover:shadow-md transition flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 bg-fuji-50 text-fuji-600 rounded-2xl flex items-center justify-center text-2xl font-bold mb-4">
+                                日
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-800">Modul 2: Tanggal (Nichi)</h3>
+                            <p class="text-xs text-slate-500 mt-1 font-jp">日 (にち / か)</p>
+                            <p class="text-slate-600 text-sm mt-3 leading-relaxed">
+                                Mempelajari sebutan tanggal 1–31, berfokus pada sebutan khusus tanggal 1–10, tanggal 14, 20, dan 24.
+                            </p>
+                            <div class="mt-4 flex flex-wrap gap-1.5">
+                                <span class="px-2 py-0.5 bg-slate-100 text-slate-600 text-[11px] font-medium rounded-md">Tanggal 1 - 31</span>
+                                <span class="px-2 py-0.5 bg-rose-100 text-rose-700 text-[11px] font-medium rounded-md">Pola Khusus (ついたち, dll)</span>
+                                <span class="px-2 py-0.5 bg-fuji-50 text-fuji-600 text-[11px] font-medium rounded-md">20 Soal Quiz</span>
+                            </div>
+                        </div>
+                        <button @click="activeTab = 'tanggal'" class="mt-6 w-full py-2.5 bg-slate-100 hover:bg-fuji-50 hover:text-fuji-600 text-slate-700 font-bold text-sm rounded-xl transition text-center">
+                            Buka Modul Tanggal
+                        </button>
+                    </div>
+
+                    <!-- Module 3 Card -->
+                    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80 hover:shadow-md transition flex flex-col justify-between">
+                        <div>
+                            <div class="w-12 h-12 bg-matcha-50 text-matcha-600 rounded-2xl flex items-center justify-center text-2xl font-bold mb-4">
+                                時
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-800">Modul 3: Jam & Menit</h3>
+                            <p class="text-xs text-slate-500 mt-1 font-jp">時 (じ) & 分 (ふん/ぷん)</p>
+                            <p class="text-slate-600 text-sm mt-3 leading-relaxed">
+                                Belajar menyatakan Jam (Ji), Menit (Fun/Pun), AM/PM (Gozen/Gogo), serta penggunaan kata "Han" (Setengah).
+                            </p>
+                            <div class="mt-4 flex flex-wrap gap-1.5">
+                                <span class="px-2 py-0.5 bg-slate-100 text-slate-600 text-[11px] font-medium rounded-md">Jam (時) & Menit (分)</span>
+                                <span class="px-2 py-0.5 bg-amber-100 text-amber-700 text-[11px] font-medium rounded-md">Yoji, Shichiji, Kuji</span>
+                                <span class="px-2 py-0.5 bg-fuji-50 text-fuji-600 text-[11px] font-medium rounded-md">20 Soal Quiz</span>
+                            </div>
+                        </div>
+                        <button @click="activeTab = 'jam'" class="mt-6 w-full py-2.5 bg-slate-100 hover:bg-matcha-50 hover:text-matcha-600 text-slate-700 font-bold text-sm rounded-xl transition text-center">
+                            Buka Modul Jam
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Fast Facts / Cheat Card -->
+                <div class="bg-gradient-to-r from-slate-900 to-fuji-700 rounded-3xl p-6 sm:p-8 text-white shadow-md">
+                    <h3 class="text-lg font-bold flex items-center gap-2 text-sakura-100">
+                        <span>💡</span> Tips Emas Belajar Penanggalan Jepang:
+                    </h3>
+                    <ul class="mt-4 space-y-2 text-sm text-slate-200">
+                        <li class="flex items-start gap-2">
+                            <span class="text-amber-400 font-bold">•</span>
+                            <span><b>Urutan Penulisan Tanggal:</b> Berbeda dari Indonesia (Tgl-Bln-Thn), Jepang menggunakan urutan <b>Tahun → Bulan → Tanggal → Hari</b>. Contoh: <i>2026年 8月 5日</i>.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-amber-400 font-bold">•</span>
+                            <span><b>Pengecualian Angka 4, 7, 9:</b> Angka 4 (Shi/Yon), 7 (Shichi/Nana), dan 9 (Ku/Kyū) memiliki perubahan bunyi unik saat menempel pada kata Bulan (月) maupun Jam (時).</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-amber-400 font-bold">•</span>
+                            <span><b>Gunakan Audio:</b> Klik ikon speaker 🔊 pada daftar kosakata di tiap modul untuk mendengarkan pelafalan penutur asli Jepang!</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- TAB 2: MODUL BULAN (月 - GATSU) -->
+            <div v-if="activeTab === 'bulan'" class="space-y-8">
+                <!-- Module Header -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <span class="px-3 py-1 bg-sakura-100 text-sakura-700 text-xs font-bold rounded-full">Modul 1</span>
+                            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-2">Nama-nama Bulan (月 - Gatsu)</h2>
+                            <p class="text-slate-600 text-sm mt-1">
+                                Dalam bahasa Jepang, penyebutan nama bulan sangat sederhana: **Angka (1–12) + 月 (がつ / gatsu)**.
+                            </p>
+                        </div>
+                        <button @click="startQuizForModule('bulan')" class="px-4 py-2.5 bg-sakura-500 hover:bg-sakura-600 text-white font-bold text-sm rounded-xl shadow transition flex items-center gap-2">
+                            <span>✏️</span> Kerjakan Quiz Bulan (20 Soal)
+                        </button>
+                    </div>
+
+                    <!-- Formula Banner -->
+                    <div class="mt-6 p-4 bg-sakura-50 border border-sakura-200 rounded-2xl flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-sakura-500 text-white font-bold text-xl rounded-xl flex items-center justify-center">
+                                式
+                            </div>
+                            <div>
+                                <p class="text-xs text-sakura-700 font-bold uppercase tracking-wider">Rumus Umum Nama Bulan:</p>
+                                <p class="text-base font-extrabold text-slate-800 font-jp">
+                                    [Angka 1~12] + 月 (がつ - gatsu)
+                                </p>
+                            </div>
+                        </div>
+                        <div class="text-xs bg-white text-sakura-700 px-3 py-1.5 rounded-lg border border-sakura-200 font-medium">
+                            Contoh: 1 (Ichi) + 月 (Gatsu) = <b>Ichigatsu</b> (Januari)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Special Warning Box -->
+                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5">
+                    <h3 class="text-amber-800 font-bold text-sm sm:text-base flex items-center gap-2">
+                        <span>⚠️</span> PENTING: Pengecualian Pelafalan Bulan (April, Juli, September)
+                    </h3>
+                    <p class="text-xs sm:text-sm text-amber-900 mt-2 leading-relaxed">
+                        Meskipun angkanya standar, penyebutan bulan ke-4, 7, dan 9 <b>TIDAK</b> menggunakan bacaan angka biasa (Yon, Nana, Kyū), melainkan:
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
+                        <div class="bg-white p-3 rounded-xl border border-amber-200 text-center">
+                            <p class="text-xs text-slate-500">April (Bulan 4)</p>
+                            <p class="text-lg font-bold font-jp text-rose-600">4月 = しがつ</p>
+                            <p class="text-xs font-semibold text-slate-700">Shigatsu <span class="text-rose-500">(Bukan Yon-gatsu)</span></p>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-amber-200 text-center">
+                            <p class="text-xs text-slate-500">Juli (Bulan 7)</p>
+                            <p class="text-lg font-bold font-jp text-rose-600">7月 = しちがつ</p>
+                            <p class="text-xs font-semibold text-slate-700">Shichigatsu <span class="text-rose-500">(Bukan Nana-gatsu)</span></p>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-amber-200 text-center">
+                            <p class="text-xs text-slate-500">September (Bulan 9)</p>
+                            <p class="text-lg font-bold font-jp text-rose-600">9月 = くがつ</p>
+                            <p class="text-xs font-semibold text-slate-700">Kugatsu <span class="text-rose-500">(Bukan Kyū-gatsu)</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table of Months -->
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-5 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800 text-base sm:text-lg">Daftar Lengkap 12 Bulan (1月 〜 12月)</h3>
+                        <span class="text-xs text-slate-500">Klik ikon 🔊 untuk mendengar audio</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-600 text-xs uppercase tracking-wider font-semibold border-b border-slate-200">
+                                    <th class="p-4">Bulan</th>
+                                    <th class="p-4">Kanji</th>
+                                    <th class="p-4">Hiragana</th>
+                                    <th class="p-4">Romaji</th>
+                                    <th class="p-4">Catatan</th>
+                                    <th class="p-4 text-center">Audio</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-sm">
+                                <tr v-for="m in monthList" :key="m.kanji" :class="m.isSpecial ? 'bg-amber-50/50 hover:bg-amber-100/50' : 'hover:bg-slate-50'">
+                                    <td class="p-4 font-bold text-slate-800">{{ m.indo }}</td>
+                                    <td class="p-4 font-jp font-bold text-lg text-fuji-700">{{ m.kanji }}</td>
+                                    <td class="p-4 font-jp text-slate-700">{{ m.hiragana }}</td>
+                                    <td class="p-4 font-medium text-slate-800">
+                                        {{ m.romaji }}
+                                        <span v-if="m.isSpecial" class="ml-1 px-1.5 py-0.5 text-[10px] bg-amber-200 text-amber-800 font-bold rounded">Pengecualian</span>
+                                    </td>
+                                    <td class="p-4 text-xs text-slate-500">{{ m.note }}</td>
+                                    <td class="p-4 text-center">
+                                        <button @click="speak(m.hiragana)" class="w-8 h-8 bg-slate-100 hover:bg-sakura-500 hover:text-white rounded-full flex items-center justify-center transition text-slate-600 shadow-sm mx-auto">
+                                            🔊
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Examples & Additional Vocabulary -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
+                            <span>💬</span> Contoh Kalimat (Bulan)
+                        </h3>
+                        <div class="space-y-4 text-sm">
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                <p class="font-jp font-bold text-fuji-700">今月は何月ですか。</p>
+                                <p class="text-xs text-slate-500 mt-0.5">Kongetsu wa nan-gatsu desu ka?</p>
+                                <p class="text-slate-800 font-medium mt-1">→ Sekarang bulan apa?</p>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                <p class="font-jp font-bold text-fuji-700">今月は八月です。</p>
+                                <p class="text-xs text-slate-500 mt-0.5">Kongetsu wa Hachigatsu desu.</p>
+                                <p class="text-slate-800 font-medium mt-1">→ Sekarang adalah bulan Agustus.</p>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                <p class="font-jp font-bold text-fuji-700">私の誕生月は四月です。</p>
+                                <p class="text-xs text-slate-500 mt-0.5">Watashi no tanjōtsuki wa Shigatsu desu.</p>
+                                <p class="text-slate-800 font-medium mt-1">→ Bulan kelahiran saya adalah bulan April.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
+                            <span>📚</span> Kosa Kata Bulan Penting
+                        </h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                                <div>
+                                    <span class="font-jp font-bold text-slate-800">何月 (なんがつ)</span>
+                                    <span class="text-xs text-slate-500 block">nan-gatsu</span>
+                                </div>
+                                <span class="font-semibold text-slate-700 text-xs bg-white px-2 py-1 rounded border">Bulan apa?</span>
+                            </div>
+                            <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                                <div>
+                                    <span class="font-jp font-bold text-slate-800">先月 (せんげつ)</span>
+                                    <span class="text-xs text-slate-500 block">sengetsu</span>
+                                </div>
+                                <span class="font-semibold text-slate-700 text-xs bg-white px-2 py-1 rounded border">Bulan lalu</span>
+                            </div>
+                            <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                                <div>
+                                    <span class="font-jp font-bold text-slate-800">今月 (こんげつ)</span>
+                                    <span class="text-xs text-slate-500 block">kongetsu</span>
+                                </div>
+                                <span class="font-semibold text-slate-700 text-xs bg-white px-2 py-1 rounded border">Bulan ini</span>
+                            </div>
+                            <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                                <div>
+                                    <span class="font-jp font-bold text-slate-800">来月 (らいげつ)</span>
+                                    <span class="text-xs text-slate-500 block">raigetsu</span>
+                                </div>
+                                <span class="font-semibold text-slate-700 text-xs bg-white px-2 py-1 rounded border">Bulan depan</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: MODUL TANGGAL (日 - NICHI) -->
+            <div v-if="activeTab === 'tanggal'" class="space-y-8">
+                <!-- Module Header -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <span class="px-3 py-1 bg-fuji-100 text-fuji-700 text-xs font-bold rounded-full">Modul 2</span>
+                            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-2">Penyebutan Tanggal (日 - Nichi / Ka)</h2>
+                            <p class="text-slate-600 text-sm mt-1">
+                                Tanggal dalam bahasa Jepang memiliki aturan khusus. **Tanggal 1–10** menggunakan sebutan asli Jepang, sedangkan tanggal lainnya mengikuti rumus **[Angka] + 日 (にち - nichi)** dengan beberapa pengecualian.
+                            </p>
+                        </div>
+                        <button @click="startQuizForModule('tanggal')" class="px-4 py-2.5 bg-fuji-600 hover:bg-fuji-700 text-white font-bold text-sm rounded-xl shadow transition flex items-center gap-2">
+                            <span>✏️</span> Kerjakan Quiz Tanggal (20 Soal)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Special Dates Highlights (1-10, 14, 20, 24) -->
+                <div class="bg-rose-50 border border-rose-200 rounded-2xl p-5">
+                    <h3 class="text-rose-900 font-bold text-sm sm:text-base flex items-center gap-2">
+                        <span>🔥</span> HARUS HAFAL: Sebutan Tanggal Khusus / Pengecualian
+                    </h3>
+                    <p class="text-xs text-rose-800 mt-1">
+                        Tanggal-tanggal ini tidak dibaca dengan "-nichi", melainkan menggunakan kata khusus khas Jepang:
+                    </p>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mt-4">
+                        <div v-for="d in dateSpecialHighlights" :key="d.day" class="bg-white p-3 rounded-xl border border-rose-200 text-center shadow-xs">
+                            <span class="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded">Tgl {{ d.day }}</span>
+                            <p class="text-base font-bold font-jp text-slate-800 mt-1">{{ d.kanji }}</p>
+                            <p class="text-xs font-semibold text-fuji-600 font-jp">{{ d.hiragana }}</p>
+                            <p class="text-[11px] text-slate-500 font-medium">{{ d.romaji }}</p>
+                            <button @click="speak(d.hiragana)" class="mt-1 text-xs text-slate-400 hover:text-sakura-600">🔊 Dengarkan</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Full Dates Grid (1 - 31) -->
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-5 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800 text-base sm:text-lg">Daftar Lengkap Tanggal 1 sampai 31</h3>
+                        <span class="text-xs text-slate-500">Ikon 🌟 = Pengecualian Khusus</span>
+                    </div>
+                    <div class="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                        <div v-for="d in dateFullList" :key="d.day" 
+                             :class="['p-3 rounded-2xl border transition flex items-center justify-between', d.isSpecial ? 'bg-amber-50/80 border-amber-200' : 'bg-slate-50/50 border-slate-200 hover:border-slate-300']">
+                            <div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-xs font-bold text-slate-500">Tgl {{ d.day }}</span>
+                                    <span v-if="d.isSpecial" class="text-amber-500 text-xs">🌟</span>
+                                </div>
+                                <p class="text-lg font-bold font-jp text-slate-800 leading-tight">{{ d.kanji }}</p>
+                                <p class="text-xs font-medium text-fuji-700 font-jp">{{ d.hiragana }} ({{ d.romaji }})</p>
+                            </div>
+                            <button @click="speak(d.hiragana)" class="w-8 h-8 rounded-xl bg-white hover:bg-fuji-500 hover:text-white border border-slate-200 text-slate-600 flex items-center justify-center transition shadow-xs">
+                                🔊
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Examples & Additional Vocabulary -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
+                            <span>💬</span> Contoh Kalimat (Tanggal)
+                        </h3>
+                        <div class="space-y-4 text-sm">
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                <p class="font-jp font-bold text-fuji-700">今日は何日ですか。</p>
+                                <p class="text-xs text-slate-500 mt-0.5">Kyō wa nan-nichi desu ka?</p>
+                                <p class="text-slate-800 font-medium mt-1">→ Hari ini tanggal berapa?</p>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                <p class="font-jp font-bold text-fuji-700">今日は八月五日です。</p>
+                                <p class="text-xs text-slate-500 mt-0.5">Kyō wa Hachigatsu Itsuka desu.</p>
+                                <p class="text-slate-800 font-medium mt-1">→ Hari ini tanggal 5 Agustus.</p>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                <p class="font-jp font-bold text-fuji-700">誕生日は二十日です。</p>
+                                <p class="text-xs text-slate-500 mt-0.5">Tanjōbi wa Hatsuka desu.</p>
+                                <p class="text-slate-800 font-medium mt-1">→ Ulang tahun saya tanggal 20.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
+                            <span>📚</span> Kosa Kata Keterangan Waktu
+                        </h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                                <div>
+                                    <span class="font-jp font-bold text-slate-800">何日 (なんにち)</span>
+                                    <span class="text-xs text-slate-500 block">nan-nichi</span>
+                                </div>
+                                <span class="font-semibold text-slate-700 text-xs bg-white px-2 py-1 rounded border">Tanggal berapa?</span>
+                            </div>
+                            <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                                <div>
+                                    <span class="font-jp font-bold text-slate-800">昨日 (きのう)</span>
+                                    <span class="text-xs text-slate-500 block">kinō</span>
+                                </div>
+                                <span class="font-semibold text-slate-700 text-xs bg-white px-2 py-1 rounded border">Kemarin</span>
+                            </div>
+                            <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                                <div>
+                                    <span class="font-jp font-bold text-slate-800">今日 (きょう)</span>
+                                    <span class="text-xs text-slate-500 block">kyō</span>
+                                </div>
+                                <span class="font-semibold text-slate-700 text-xs bg-white px-2 py-1 rounded border">Hari ini</span>
+                            </div>
+                            <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                                <div>
+                                    <span class="font-jp font-bold text-slate-800">明日 (あした)</span>
+                                    <span class="text-xs text-slate-500 block">ashita</span>
+                                </div>
+                                <span class="font-semibold text-slate-700 text-xs bg-white px-2 py-1 rounded border">Besok</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: MODUL JAM & MENIT (時・分) -->
+            <div v-if="activeTab === 'jam'" class="space-y-8">
+                <!-- Module Header -->
+                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <span class="px-3 py-1 bg-matcha-100 text-matcha-700 text-xs font-bold rounded-full">Modul 3</span>
+                            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-2">Penyebutan Jam & Menit (時・分)</h2>
+                            <p class="text-slate-600 text-sm mt-1">
+                                Menyatakan jam menggunakan akhiran **時 (じ - ji)** dan menit menggunakan **分 (ふん/ぷん - fun/pun)**.
+                            </p>
+                        </div>
+                        <button @click="startQuizForModule('jam')" class="px-4 py-2.5 bg-matcha-600 hover:bg-matcha-700 text-white font-bold text-sm rounded-xl shadow transition flex items-center gap-2">
+                            <span>✏️</span> Kerjakan Quiz Jam (20 Soal)
+                        </button>
+                    </div>
+
+                    <!-- Formula Banner -->
+                    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 bg-matcha-50 border border-matcha-200 rounded-2xl">
+                            <p class="text-xs font-bold text-matcha-700 uppercase">Rumus Jam (Hours):</p>
+                            <p class="text-lg font-extrabold text-slate-800 font-jp mt-1">[Angka 1~12] + 時 (じ - ji)</p>
+                            <p class="text-xs text-slate-600 mt-1">Pengecualian: Jam 4 (Yoji), Jam 7 (Shichiji), Jam 9 (Kuji).</p>
+                        </div>
+                        <div class="p-4 bg-fuji-50 border border-fuji-200 rounded-2xl">
+                            <p class="text-xs font-bold text-fuji-700 uppercase">Rumus Menit (Minutes):</p>
+                            <p class="text-lg font-extrabold text-slate-800 font-jp mt-1">[Angka] + 分 (ふん/ぷん)</p>
+                            <p class="text-xs text-slate-600 mt-1">Berubah menjadi <b>pun (ぷん)</b> pada angka 1, 3, 4, 6, 8, 10.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hours Grid (1ji - 12ji) -->
+                <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-800 text-base sm:text-lg mb-4 flex items-center gap-2">
+                        <span>⏰</span> Penyebutan Jam 1 s.d. 12 (時 - Ji)
+                    </h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                        <div v-for="h in hourList" :key="h.hour" 
+                             :class="['p-3 rounded-2xl border transition flex justify-between items-center', h.isSpecial ? 'bg-amber-50 border-amber-200' : 'bg-slate-50 border-slate-200']">
+                            <div>
+                                <span class="text-xs font-bold text-slate-500">Jam {{ h.hour }}</span>
+                                <p class="text-base font-bold font-jp text-slate-800">{{ h.kanji }}</p>
+                                <p class="text-xs font-semibold text-matcha-700 font-jp">{{ h.hiragana }} ({{ h.romaji }})</p>
+                            </div>
+                            <button @click="speak(h.hiragana)" class="w-7 h-7 rounded-lg bg-white hover:bg-matcha-500 hover:text-white border border-slate-200 text-slate-600 flex items-center justify-center transition text-xs">
+                                🔊
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Minutes Rules & Table -->
+                <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-800 text-base sm:text-lg mb-2 flex items-center gap-2">
+                        <span>⏱️</span> Penyebutan Menit Utama (分 - Fun / Pun)
+                    </h3>
+                    <p class="text-xs text-slate-500 mb-4">
+                        Perhatikan perubahan bunyi dari **fun (ふん)** menjadi **pun (ぷん)** dan pemendekan konsonan (sokuon / つ kecil).
+                    </p>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                        <div v-for="m in minuteList" :key="m.min" class="p-3 bg-slate-50 rounded-2xl border border-slate-200 flex justify-between items-center">
+                            <div>
+                                <span class="text-xs font-bold text-slate-500">{{ m.min }} Menit</span>
+                                <p class="text-base font-bold font-jp text-slate-800">{{ m.kanji }}</p>
+                                <p class="text-xs font-semibold text-fuji-600 font-jp">{{ m.hiragana }} ({{ m.romaji }})</p>
+                            </div>
+                            <button @click="speak(m.hiragana)" class="w-7 h-7 rounded-lg bg-white hover:bg-fuji-500 hover:text-white border border-slate-200 text-slate-600 flex items-center justify-center transition text-xs">
+                                🔊
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AM / PM and "HAN" (Half Past) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-3xl p-6">
+                        <span class="px-2.5 py-1 bg-blue-200 text-blue-800 text-xs font-bold rounded-lg">Pagi / Dini Hari</span>
+                        <h4 class="text-xl font-bold font-jp text-slate-800 mt-2">午前 (ごぜん) - Gozen</h4>
+                        <p class="text-xs text-slate-600 mt-1">Menyatakan **AM** (Jam 00.00 s.d. 12.00 siang).</p>
+                        <p class="text-xs font-bold text-blue-700 mt-3">Contoh: 午前7時 (Gozen Shichiji) = Jam 07:00 Pagi</p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-3xl p-6">
+                        <span class="px-2.5 py-1 bg-amber-200 text-amber-800 text-xs font-bold rounded-lg">Siang / Malam</span>
+                        <h4 class="text-xl font-bold font-jp text-slate-800 mt-2">午後 (ごご) - Gogo</h4>
+                        <p class="text-xs text-slate-600 mt-1">Menyatakan **PM** (Jam 12.00 siang s.d. 24.00 malam).</p>
+                        <p class="text-xs font-bold text-amber-700 mt-3">Contoh: 午後4時 (Gogo Yoji) = Jam 04:00 Sore</p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-3xl p-6">
+                        <span class="px-2.5 py-1 bg-emerald-200 text-emerald-800 text-xs font-bold rounded-lg">Lewat Setengah</span>
+                        <h4 class="text-xl font-bold font-jp text-slate-800 mt-2">半 (はん) - Han</h4>
+                        <p class="text-xs text-slate-600 mt-1">Artinya **Setengah / 30 Menit**.</p>
+                        <p class="text-xs font-bold text-emerald-700 mt-3">Contoh: 8時半 (Hachiji han) = Jam 8 lewat setengah (08:30)</p>
+                    </div>
+                </div>
+
+                <!-- Examples & Useful Phrases -->
+                <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
+                        <span>💬</span> Contoh Percakapan Menanyakan Jam
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                            <p class="font-jp font-bold text-fuji-700">A: 今、何時ですか。</p>
+                            <p class="text-xs text-slate-500">Ima, nan-ji desu ka?</p>
+                            <p class="text-slate-800">→ Sekarang jam berapa?</p>
+                            <hr class="border-slate-200 my-2">
+                            <p class="font-jp font-bold text-matcha-700">B: 今、午後三時半です。</p>
+                            <p class="text-xs text-slate-500">Ima, Gogo San-ji han desu.</p>
+                            <p class="text-slate-800">→ Sekarang jam 3 lewat setengah sore (15:30).</p>
+                        </div>
+
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                            <p class="font-jp font-bold text-fuji-700">A: テストは何時からですか。</p>
+                            <p class="text-xs text-slate-500">Tesuto wa nan-ji kara desu ka?</p>
+                            <p class="text-slate-800">→ Ujian mulai dari jam berapa?</p>
+                            <hr class="border-slate-200 my-2">
+                            <p class="font-jp font-bold text-matcha-700">B: 午前九時からです。</p>
+                            <p class="text-xs text-slate-500">Gozen Ku-ji kara desu.</p>
+                            <p class="text-slate-800">→ Mulai dari jam 9 pagi.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: LATIHAN SOAL (QUIZ CENTER) -->
+            <div v-if="activeTab === 'quiz'" class="space-y-8">
+                
+                <!-- Quiz Selection Screen -->
+                <div v-if="quizState === 'select'" class="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-slate-200 text-center max-w-3xl mx-auto">
+                    <span class="px-3 py-1 bg-sakura-100 text-sakura-700 text-xs font-bold rounded-full">Pusat Quiz Interaktif</span>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-800 mt-2">Pilih Modul Latihan Soal</h2>
+                    <p class="text-slate-600 text-sm mt-2">
+                        Tersedia total <b>60 soal latihan</b> yang dibagi dalam 3 modul. Setiap soal dilengkapi pembahasan lengkap!
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8 text-left">
+                        <div @click="startQuiz('bulan')" class="p-5 rounded-2xl border-2 border-slate-200 hover:border-sakura-500 hover:bg-sakura-50/40 cursor-pointer transition flex flex-col justify-between group">
+                            <div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-2xl">🗓️</span>
+                                    <span class="px-2 py-0.5 bg-sakura-100 text-sakura-700 text-xs font-bold rounded-md">20 Soal</span>
+                                </div>
+                                <h3 class="font-bold text-slate-800 text-lg mt-3 group-hover:text-sakura-600 transition">Modul 1: Bulan (月)</h3>
+                                <p class="text-xs text-slate-500 mt-1">Latihan nama-nama bulan 1-12 dan bentuk pengecualian.</p>
+                            </div>
+                            <span class="mt-4 text-xs font-bold text-sakura-600 flex items-center gap-1">Mulai Quiz Bulan ➔</span>
+                        </div>
+
+                        <div @click="startQuiz('tanggal')" class="p-5 rounded-2xl border-2 border-slate-200 hover:border-fuji-500 hover:bg-fuji-50/40 cursor-pointer transition flex flex-col justify-between group">
+                            <div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-2xl">📅</span>
+                                    <span class="px-2 py-0.5 bg-fuji-100 text-fuji-700 text-xs font-bold rounded-md">20 Soal</span>
+                                </div>
+                                <h3 class="font-bold text-slate-800 text-lg mt-3 group-hover:text-fuji-600 transition">Modul 2: Tanggal (日)</h3>
+                                <p class="text-xs text-slate-500 mt-1">Latihan penyebutan tanggal 1-31, Tsuitachi, Hatsuka, dll.</p>
+                            </div>
+                            <span class="mt-4 text-xs font-bold text-fuji-600 flex items-center gap-1">Mulai Quiz Tanggal ➔</span>
+                        </div>
+
+                        <div @click="startQuiz('jam')" class="p-5 rounded-2xl border-2 border-slate-200 hover:border-matcha-500 hover:bg-matcha-50/40 cursor-pointer transition flex flex-col justify-between group">
+                            <div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-2xl">⏰</span>
+                                    <span class="px-2 py-0.5 bg-matcha-100 text-matcha-700 text-xs font-bold rounded-md">20 Soal</span>
+                                </div>
+                                <h3 class="font-bold text-slate-800 text-lg mt-3 group-hover:text-matcha-600 transition">Modul 3: Jam & Menit</h3>
+                                <p class="text-xs text-slate-500 mt-1">Latihan membaca jam, menit, AM/PM, dan kata Han.</p>
+                            </div>
+                            <span class="mt-4 text-xs font-bold text-matcha-600 flex items-center gap-1">Mulai Quiz Jam ➔</span>
+                        </div>
+
+                        <div @click="startQuiz('all')" class="p-5 rounded-2xl border-2 border-fuji-300 bg-fuji-50/30 hover:border-fuji-600 hover:bg-fuji-100/50 cursor-pointer transition flex flex-col justify-between group">
+                            <div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-2xl">🏆</span>
+                                    <span class="px-2 py-0.5 bg-fuji-600 text-white text-xs font-bold rounded-md">60 Soal (Full)</span>
+                                </div>
+                                <h3 class="font-bold text-slate-800 text-lg mt-3 group-hover:text-fuji-700 transition">Ujian Kombinasi Lengkap</h3>
+                                <p class="text-xs text-slate-500 mt-1">Mengerjakan seluruh 60 soal dari ketiga modul secara berturut-turut.</p>
+                            </div>
+                            <span class="mt-4 text-xs font-bold text-fuji-700 flex items-center gap-1">Mulai Ujian Total ➔</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Quiz View -->
+                <div v-else-if="quizState === 'active'" class="max-w-3xl mx-auto space-y-6">
+                    <!-- Progress Bar & Header -->
+                    <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-4">
+                            <button @click="quizState = 'select'" class="text-xs font-bold text-slate-500 hover:text-slate-800 px-2.5 py-1.5 rounded-lg border">
+                                ✖ Batalkan
+                            </button>
+                            <span class="px-3 py-1 bg-fuji-100 text-fuji-700 text-xs font-bold rounded-full uppercase">
+                                {{ currentQuizTitle }}
+                            </span>
+                        </div>
+
+                        <!-- Progress indicator -->
+                        <div class="w-full sm:w-64 flex flex-col gap-1">
+                            <div class="flex justify-between text-xs font-bold text-slate-600">
+                                <span>Soal {{ currentQuestionIndex + 1 }} / {{ activeQuestionList.length }}</span>
+                                <span>{{ Math.round(((currentQuestionIndex + 1) / activeQuestionList.length) * 100) }}%</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-sakura-500 transition-all duration-300" :style="{ width: ((currentQuestionIndex + 1) / activeQuestionList.length * 100) + '%' }"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question Card -->
+                    <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-200">
+                        <!-- Category Badge -->
+                        <span class="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs font-semibold rounded-md">
+                            Topik: {{ currentQuestion.category }}
+                        </span>
+
+                        <!-- Question Text -->
+                        <h3 class="text-lg sm:text-xl font-extrabold text-slate-800 mt-3 leading-snug">
+                            {{ currentQuestion.question }}
+                        </h3>
+
+                        <!-- Japanese Prompt Preview (If exists) -->
+                        <div v-if="currentQuestion.jpText" class="mt-3 p-3 bg-slate-50 border border-slate-200 rounded-xl font-jp text-lg font-bold text-fuji-700 flex items-center justify-between">
+                            <span>{{ currentQuestion.jpText }}</span>
+                            <button @click="speak(currentQuestion.jpText)" class="text-xs text-slate-500 hover:text-sakura-600 px-2 py-1 bg-white rounded border shadow-xs">
+                                🔊 Dengarkan
+                            </button>
+                        </div>
+
+                        <!-- Answer Options -->
+                        <div class="space-y-3 mt-6">
+                            <button v-for="(opt, idx) in currentQuestion.options" :key="idx"
+                                    @click="selectOption(idx)"
+                                    :disabled="hasAnswered"
+                                    :class="[
+                                        'w-full p-4 rounded-2xl border-2 text-left text-sm font-semibold transition flex items-center justify-between',
+                                        getOptionClass(idx)
+                                    ]">
+                                <span class="flex items-center gap-3">
+                                    <span class="w-7 h-7 rounded-xl flex items-center justify-center font-bold text-xs border"
+                                          :class="selectedOption === idx ? 'bg-fuji-600 text-white border-fuji-600' : 'bg-slate-100 text-slate-600 border-slate-200'">
+                                        {{ ['A', 'B', 'C', 'D'][idx] }}
+                                    </span>
+                                    <span>{{ opt }}</span>
+                                </span>
+                                <span v-if="hasAnswered && idx === currentQuestion.correct" class="text-emerald-600 font-bold text-lg">✓</span>
+                                <span v-if="hasAnswered && selectedOption === idx && idx !== currentQuestion.correct" class="text-rose-600 font-bold text-lg">✕</span>
+                            </button>
+                        </div>
+
+                        <!-- Explanation Box (After Answering) -->
+                        <div v-if="hasAnswered" class="mt-6 p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs sm:text-sm space-y-2">
+                            <p class="font-bold flex items-center gap-1.5" :class="selectedOption === currentQuestion.correct ? 'text-emerald-600' : 'text-rose-600'">
+                                <span v-if="selectedOption === currentQuestion.correct">🎉 Jawaban Anda Benar!</span>
+                                <span v-else>❌ Jawaban Kurang Tepat</span>
+                            </p>
+                            <p class="text-slate-700 leading-relaxed">
+                                <b>Pembahasan:</b> {{ currentQuestion.explanation }}
+                            </p>
+                        </div>
+
+                        <!-- Action Button Next -->
+                        <div class="mt-8 flex justify-end">
+                            <button v-if="hasAnswered" @click="nextQuestion" class="px-6 py-3 bg-sakura-500 hover:bg-sakura-600 text-white font-bold text-sm rounded-xl shadow-md transition flex items-center gap-2">
+                                <span>{{ currentQuestionIndex + 1 < activeQuestionList.length ? 'Soal Berikutnya ➔' : 'Lihat Hasil Quiz 🏆' }}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Result Screen -->
+                <div v-else-if="quizState === 'result'" class="max-w-3xl mx-auto space-y-6">
+                    <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-lg border border-slate-200 text-center space-y-6">
+                        <div class="w-20 h-20 mx-auto rounded-full flex items-center justify-center text-4xl shadow-inner"
+                             :class="quizScorePercentage >= 75 ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'">
+                            {{ quizScorePercentage >= 75 ? '🎉' : '💪' }}
+                        </div>
+
+                        <div>
+                            <span class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-full uppercase">Hasil Quiz {{ currentQuizTitle }}</span>
+                            <h2 class="text-3xl font-extrabold text-slate-800 mt-2">
+                                {{ quizScorePercentage >= 80 ? 'Sugoi! (素晴らしい)' : 'Gambatte! (頑張って)' }}
+                            </h2>
+                            <p class="text-slate-600 text-sm mt-1">
+                                {{ quizScorePercentage >= 80 ? 'Luar biasa! Anda telah menguasai materi ini dengan sangat baik.' : 'Bagus! Pelajari lagi beberapa pengecualian dan coba kembali.' }}
+                            </p>
+                        </div>
+
+                        <!-- Score Stats Box -->
+                        <div class="grid grid-cols-3 gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-200 max-w-md mx-auto text-center">
+                            <div>
+                                <p class="text-xs text-slate-500">Skor Akhir</p>
+                                <p class="text-2xl font-extrabold text-fuji-700">{{ quizScorePercentage }}%</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500">Benar</p>
+                                <p class="text-2xl font-extrabold text-emerald-600">{{ userCorrectCount }}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500">Salah</p>
+                                <p class="text-2xl font-extrabold text-rose-500">{{ activeQuestionList.length - userCorrectCount }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="flex flex-wrap justify-center gap-3 pt-4">
+                            <button @click="startQuiz(activeQuizCategory)" class="px-5 py-2.5 bg-sakura-500 hover:bg-sakura-600 text-white font-bold text-sm rounded-xl shadow transition">
+                                🔄 Ulangi Quiz Ini
+                            </button>
+                            <button @click="quizState = 'select'" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm rounded-xl transition">
+                                📋 Pilih Modul Lain
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-white border-t border-slate-200 mt-auto py-6 text-center text-xs text-slate-500">
+            <div class="max-w-7xl mx-auto px-4">
+                <p class="font-medium">Nihongo Toki - Aplikasi Belajar Bahasa Jepang Interaktif</p>
+                <p class="mt-1 text-slate-400">Materi Bulan (月), Tanggal (日), dan Jam (時・分) lengkap dengan 60 latihan soal.</p>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    activeTab: 'dashboard', // dashboard, bulan, tanggal, jam, quiz
+                    
+                    // Audio Speech Synthesis
+                    speechSynth: null,
+
+                    // Quiz System State
+                    quizState: 'select', // 'select', 'active', 'result'
+                    activeQuizCategory: 'bulan',
+                    currentQuestionIndex: 0,
+                    selectedOption: null,
+                    hasAnswered: false,
+                    userCorrectCount: 0,
+                    userAnswers: [],
+
+                    // DATA MODUL 1: BULAN
+                    monthList: [
+                        { indo: 'Januari', kanji: '1月', hiragana: 'いちがつ', romaji: 'Ichigatsu', isSpecial: false, note: 'Standar (Ichi + Gatsu)' },
+                        { indo: 'Februari', kanji: '2月', hiragana: 'にがつ', romaji: 'Nigatsu', isSpecial: false, note: 'Standar (Ni + Gatsu)' },
+                        { indo: 'Maret', kanji: '3月', hiragana: 'さんがつ', romaji: 'Sangatsu', isSpecial: false, note: 'Standar (San + Gatsu)' },
+                        { indo: 'April', kanji: '4月', hiragana: 'しがつ', romaji: 'Shigatsu', isSpecial: true, note: 'Menggunakan SHI (bukan Yon)' },
+                        { indo: 'Mei', kanji: '5月', hiragana: 'ごがつ', romaji: 'Gogatsu', isSpecial: false, note: 'Standar (Go + Gatsu)' },
+                        { indo: 'Juni', kanji: '6月', hiragana: 'ろくがつ', romaji: 'Rokugatsu', isSpecial: false, note: 'Standar (Roku + Gatsu)' },
+                        { indo: 'Juli', kanji: '7月', hiragana: 'しちがつ', romaji: 'Shichigatsu', isSpecial: true, note: 'Menggunakan SHICHI (bukan Nana)' },
+                        { indo: 'Agustus', kanji: '8月', hiragana: 'はちがつ', romaji: 'Hachigatsu', isSpecial: false, note: 'Standar (Hachi + Gatsu)' },
+                        { indo: 'September', kanji: '9月', hiragana: 'くがつ', romaji: 'Kugatsu', isSpecial: true, note: 'Menggunakan KU (bukan Kyū)' },
+                        { indo: 'Oktober', kanji: '10月', hiragana: 'じゅうがつ', romaji: 'Jūgatsu', isSpecial: false, note: 'Standar (Jū + Gatsu)' },
+                        { indo: 'November', kanji: '11月', hiragana: 'じゅういちがつ', romaji: 'Jūichigatsu', isSpecial: false, note: 'Standar (Jūichi + Gatsu)' },
+                        { indo: 'Desember', kanji: '12月', hiragana: 'じゅうにがつ', romaji: 'Jūnigatsu', isSpecial: false, note: 'Standar (Jūni + Gatsu)' },
+                    ],
+
+                    // DATA MODUL 2: TANGGAL
+                    dateSpecialHighlights: [
+                        { day: 1, kanji: '1日', hiragana: 'ついたち', romaji: 'Tsuitachi' },
+                        { day: 2, kanji: '2日', hiragana: 'ふつか', romaji: 'Futsuka' },
+                        { day: 3, kanji: '3日', hiragana: 'みっか', romaji: 'Mikka' },
+                        { day: 4, kanji: '4日', hiragana: 'よっか', romaji: 'Yokka' },
+                        { day: 5, kanji: '5日', hiragana: 'いつか', romaji: 'Itsuka' },
+                        { day: 6, kanji: '6日', hiragana: 'むいか', romaji: 'Muika' },
+                        { day: 7, kanji: '7日', hiragana: 'なのか', romaji: 'Nanoka' },
+                        { day: 8, kanji: '8日', hiragana: 'ようか', romaji: 'Yōka' },
+                        { day: 9, kanji: '9日', hiragana: 'ここのか', romaji: 'Kokonoka' },
+                        { day: 10, kanji: '10日', hiragana: 'とうか', romaji: 'Tōka' },
+                        { day: 14, kanji: '14日', hiragana: 'じゅうよっか', romaji: 'Jūyokka' },
+                        { day: 20, kanji: '20日', hiragana: 'はつか', romaji: 'Hatsuka' },
+                        { day: 24, kanji: '24日', hiragana: 'にじゅうよっか', romaji: 'Nijūyokka' },
+                    ],
+
+                    dateFullList: [
+                        { day: 1, kanji: '1日', hiragana: 'ついたち', romaji: 'Tsuitachi', isSpecial: true },
+                        { day: 2, kanji: '2日', hiragana: 'ふつか', romaji: 'Futsuka', isSpecial: true },
+                        { day: 3, kanji: '3日', hiragana: 'みっか', romaji: 'Mikka', isSpecial: true },
+                        { day: 4, kanji: '4日', hiragana: 'よっか', romaji: 'Yokka', isSpecial: true },
+                        { day: 5, kanji: '5日', hiragana: 'いつか', romaji: 'Itsuka', isSpecial: true },
+                        { day: 6, kanji: '6日', hiragana: 'むいか', romaji: 'Muika', isSpecial: true },
+                        { day: 7, kanji: '7日', hiragana: 'なのか', romaji: 'Nanoka', isSpecial: true },
+                        { day: 8, kanji: '8日', hiragana: 'ようか', romaji: 'Yōka', isSpecial: true },
+                        { day: 9, kanji: '9日', hiragana: 'ここのか', romaji: 'Kokonoka', isSpecial: true },
+                        { day: 10, kanji: '10日', hiragana: 'とうか', romaji: 'Tōka', isSpecial: true },
+                        { day: 11, kanji: '11日', hiragana: 'じゅういちにち', romaji: 'Jūichinichi', isSpecial: false },
+                        { day: 12, kanji: '12日', hiragana: 'じゅうににち', romaji: 'Jūninichi', isSpecial: false },
+                        { day: 13, kanji: '13日', hiragana: 'じゅうさんにち', romaji: 'Jūsannichi', isSpecial: false },
+                        { day: 14, kanji: '14日', hiragana: 'じゅうよっか', romaji: 'Jūyokka', isSpecial: true },
+                        { day: 15, kanji: '15日', hiragana: 'じゅうごにち', romaji: 'Jūgonichi', isSpecial: false },
+                        { day: 16, kanji: '16日', hiragana: 'じゅうろくにち', romaji: 'Jūroku-nichi', isSpecial: false },
+                        { day: 17, kanji: '17日', hiragana: 'じゅうしちにち', romaji: 'Jūshichi-nichi', isSpecial: false },
+                        { day: 18, kanji: '18日', hiragana: 'じゅうはちにち', romaji: 'Jūhachi-nichi', isSpecial: false },
+                        { day: 19, kanji: '19日', hiragana: 'じゅうくにち', romaji: 'Jūku-nichi', isSpecial: false },
+                        { day: 20, kanji: '20日', hiragana: 'はつか', romaji: 'Hatsuka', isSpecial: true },
+                        { day: 21, kanji: '21日', hiragana: 'にじゅういちにち', romaji: 'Nijūichi-nichi', isSpecial: false },
+                        { day: 22, kanji: '22日', hiragana: 'にじゅうににち', romaji: 'Nijūni-nichi', isSpecial: false },
+                        { day: 23, kanji: '23日', hiragana: 'にじゅうさんにち', romaji: 'Nijūsan-nichi', isSpecial: false },
+                        { day: 24, kanji: '24日', hiragana: 'にじゅうよっか', romaji: 'Nijūyokka', isSpecial: true },
+                        { day: 25, kanji: '25日', hiragana: 'にじゅうごにち', romaji: 'Nijūgo-nichi', isSpecial: false },
+                        { day: 26, kanji: '26日', hiragana: 'にじゅうろくにち', romaji: 'Nijūroku-nichi', isSpecial: false },
+                        { day: 27, kanji: '27日', hiragana: 'にじゅうしちにち', romaji: 'Nijūshichi-nichi', isSpecial: false },
+                        { day: 28, kanji: '28日', hiragana: 'にじゅうはちにち', romaji: 'Nijūhachi-nichi', isSpecial: false },
+                        { day: 29, kanji: '29日', hiragana: 'にじゅうくにち', romaji: 'Nijūku-nichi', isSpecial: false },
+                        { day: 30, kanji: '30日', hiragana: 'さんじゅうにち', romaji: 'Sanjū-nichi', isSpecial: false },
+                        { day: 31, kanji: '31日', hiragana: 'さんじゅういちにち', romaji: 'Sanjūichi-nichi', isSpecial: false },
+                    ],
+
+                    // DATA MODUL 3: JAM & MENIT
+                    hourList: [
+                        { hour: 1, kanji: '1時', hiragana: 'いちじ', romaji: 'Ichiji', isSpecial: false },
+                        { hour: 2, kanji: '2時', hiragana: 'にじ', romaji: 'Niji', isSpecial: false },
+                        { hour: 3, kanji: '3時', hiragana: 'さんじ', romaji: 'Sanji', isSpecial: false },
+                        { hour: 4, kanji: '4時', hiragana: 'よじ', romaji: 'Yoji', isSpecial: true },
+                        { hour: 5, kanji: '5時', hiragana: 'ごじ', romaji: 'Goji', isSpecial: false },
+                        { hour: 6, kanji: '6時', hiragana: 'ろくじ', romaji: 'Rokuji', isSpecial: false },
+                        { hour: 7, kanji: '7時', hiragana: 'しちじ', romaji: 'Shichiji', isSpecial: true },
+                        { hour: 8, kanji: '8時', hiragana: 'はちじ', romaji: 'Hachiji', isSpecial: false },
+                        { hour: 9, kanji: '9時', hiragana: 'くじ', romaji: 'Kuji', isSpecial: true },
+                        { hour: 10, kanji: '10時', hiragana: 'じゅうじ', romaji: 'Jūji', isSpecial: false },
+                        { hour: 11, kanji: '11時', hiragana: 'じゅういちじ', romaji: 'Jūichiji', isSpecial: false },
+                        { hour: 12, kanji: '12時', hiragana: 'じゅうにじ', romaji: 'Jūniji', isSpecial: false },
+                    ],
+
+                    minuteList: [
+                        { min: 1, kanji: '1分', hiragana: 'いっぷん', romaji: 'Ippun' },
+                        { min: 2, kanji: '2分', hiragana: 'にふん', romaji: 'Nifun' },
+                        { min: 3, kanji: '3分', hiragana: 'さんぷん', romaji: 'Sanpun' },
+                        { min: 4, kanji: '4分', hiragana: 'よんぷん', romaji: 'Yonpun' },
+                        { min: 5, kanji: '5分', hiragana: 'ごふん', romaji: 'Gofun' },
+                        { min: 6, kanji: '6分', hiragana: 'ろっぷん', romaji: 'Roppun' },
+                        { min: 7, kanji: '7分', hiragana: 'ななふん', romaji: 'Nanafun' },
+                        { min: 8, kanji: '8分', hiragana: 'はっぷん', romaji: 'Happun' },
+                        { min: 9, kanji: '9分', hiragana: 'きゅうふん', romaji: 'Kyūfun' },
+                        { min: 10, kanji: '10分', hiragana: 'じゅっぷん', romaji: 'Juppun' },
+                        { min: 15, kanji: '15分', hiragana: 'じゅうごふん', romaji: 'Jūgofun' },
+                        { min: 30, kanji: '30分', hiragana: 'さんじゅっぷん', romaji: 'Sanjuppun (Han)' },
+                    ],
+
+                    // 60 PRACTICE QUESTIONS (20 BULAN + 20 TANGGAL + 20 JAM)
+                    questions: {
+                        bulan: [
+                            { category: 'Bulan', question: 'Bahasa Jepang untuk bulan "Januari" adalah...', jpText: '1月', options: ['Ichigatsu', 'Nigatsu', 'Shigatsu', 'Kugatsu'], correct: 0, explanation: '1月 dibaca Ichigatsu (Ichi = 1, Gatsu = Bulan).' },
+                            { category: 'Bulan', question: 'Manakah penyebutan bulan "April" yang benar?', jpText: '4月', options: ['Yongatsu', 'Shigatsu', 'Shichigatsu', 'Yonkatsu'], correct: 1, explanation: 'Bulan April memiliki penyebutan khusus yaitu Shigatsu (しがつ), bukan Yongatsu.' },
+                            { category: 'Bulan', question: 'Penyebutan bulan "Juli" dalam bahasa Jepang adalah...', jpText: '7月', options: ['Nanagatsu', 'Shichigatsu', 'Nanagatsu desu', 'Shigatsu'], correct: 1, explanation: 'Bulan Juli dibaca Shichigatsu (しちがつ), bukan Nanagatsu.' },
+                            { category: 'Bulan', question: 'Bagaimana membaca bulan "September"?', jpText: '9月', options: ['Kyūgatsu', 'Kugatsu', 'Kogatsu', 'Jūgatsu'], correct: 1, explanation: 'Bulan September dibaca Kugatsu (くがつ), bukan Kyūgatsu.' },
+                            { category: 'Bulan', question: 'Bahasa Jepang untuk menanyakan "Bulan berapa?" adalah...', jpText: '何月', options: ['Nan-nichi', 'Nan-ji', 'Nan-gatsu', 'Nan-pun'], correct: 2, explanation: 'Nan-gatsu (何月) digunakan untuk menanyakan bulan.' },
+                            { category: 'Bulan', question: 'Bulan apakah "Jūnigatsu"?', jpText: '12月', options: ['Oktober', 'November', 'Desember', 'September'], correct: 2, explanation: 'Jūnigatsu adalah bulan ke-12 (Desember).' },
+                            { category: 'Bulan', question: 'Bulan "Agustus" dalam bahasa Jepang dibaca...', jpText: '8月', options: ['Hachigatsu', 'Rokugatsu', 'Shichigatsu', 'Gogatsu'], correct: 0, explanation: '8 adalah Hachi, maka Agustus = Hachigatsu (はちがつ).' },
+                            { category: 'Bulan', question: 'Kata "Kongetsu" (今月) berarti...', jpText: '今月', options: ['Bulan lalu', 'Bulan ini', 'Bulan depan', 'Tahun ini'], correct: 1, explanation: 'Kongetsu (今月) artinya bulan ini.' },
+                            { category: 'Bulan', question: 'Kata "Raigetsu" (来月) berarti...', jpText: '来月', options: ['Bulan ini', 'Bulan depan', 'Bulan lalu', 'Dua bulan lagi'], correct: 1, explanation: 'Raigetsu (来月) artinya bulan depan.' },
+                            { category: 'Bulan', question: 'Kata "Sengetsu" (先月) memiliki arti...', jpText: '先月', options: ['Bulan lalu', 'Bulan ini', 'Bulan depan', 'Tahun depan'], correct: 0, explanation: 'Sengetsu (先月) artinya bulan lalu.' },
+                            { category: 'Bulan', question: 'Bahasa Jepang untuk bulan "Mei" adalah...', jpText: '5月', options: ['Gogatsu', 'Sangatsu', 'Rokugatsu', 'Yon-gatsu'], correct: 0, explanation: 'Mei adalah bulan ke-5, dibaca Gogatsu (ごがつ).' },
+                            { category: 'Bulan', question: 'Di antara bulan berikut, manakah yang tergolong PENGECUALIAN cara baca?', jpText: '', options: ['Ichigatsu (1月)', 'Rokugatsu (6月)', 'Shigatsu (4月)', 'Hachigatsu (8月)'], correct: 2, explanation: 'Shigatsu (4月) adalah pengecualian karena memakai "Shi" bukan "Yon".' },
+                            { category: 'Bulan', question: 'Bagaimana cara membaca bulan "Maret"?', jpText: '3月', options: ['Nigatsu', 'Sangatsu', 'Shigatsu', 'Gogatsu'], correct: 1, explanation: 'Maret adalah bulan ke-3, dibaca Sangatsu (さんがつ).' },
+                            { category: 'Bulan', question: 'Bulan "November" dalam bahasa Jepang dibaca...', jpText: '11月', options: ['Jūgatsu', 'Jūichigatsu', 'Jūnigatsu', 'Jūkugatsu'], correct: 1, explanation: '11 (Jūichi) + Gatsu = Jūichigatsu (11月).' },
+                            { category: 'Bulan', question: 'Bulan "Oktober" dibaca...', jpText: '10月', options: ['Jūgatsu', 'Kugatsu', 'Jūichigatsu', 'Tōgatsu'], correct: 0, explanation: '10 (Jū) + Gatsu = Jūgatsu (じゅうがつ).' },
+                            { category: 'Bulan', question: 'Penyebutan bulan "Juni" adalah...', jpText: '6月', options: ['Gogatsu', 'Rokugatsu', 'Shichigatsu', 'Hachigatsu'], correct: 1, explanation: '6 (Roku) + Gatsu = Rokugatsu (ろくがつ).' },
+                            { category: 'Bulan', question: 'Penyebutan bulan "Februari" adalah...', jpText: '2月', options: ['Ichigatsu', 'Nigatsu', 'Futatsu', 'Sangatsu'], correct: 1, explanation: '2 (Ni) + Gatsu = Nigatsu (にがつ).' },
+                            { category: 'Bulan', question: 'Manakah pasangan bulan dan bahasa Jepang yang TEPAT?', jpText: '', options: ['April = Yongatsu', 'Juli = Nanagatsu', 'September = Kugatsu', 'September = Kyūgatsu'], correct: 2, explanation: 'September = Kugatsu (くがつ) adalah bentuk yang benar.' },
+                            { category: 'Bulan', question: 'Terjemahkan: "Bulan lahir saya adalah bulan Oktober."', jpText: '私の誕生月は十月です。', options: ['Watashi no tanjōtsuki wa Shigatsu desu.', 'Watashi no tanjōtsuki wa Jūgatsu desu.', 'Watashi no tanjōtsuki wa Kugatsu desu.', 'Watashi no tanjōtsuki wa Jūnigatsu desu.'], correct: 1, explanation: 'Oktober adalah Jūgatsu (10月).' },
+                            { category: 'Bulan', question: 'Bulan 4, 7, dan 9 secara berturut-turut dibaca...', jpText: '4月, 7月, 9月', options: ['Yongatsu, Nanagatsu, Kyūgatsu', 'Shigatsu, Shichigatsu, Kugatsu', 'Shigatsu, Nanagatsu, Kyūgatsu', 'Yongatsu, Shichigatsu, Kugatsu'], correct: 1, explanation: 'Ketiga bulan ini dibaca Shigatsu, Shichigatsu, Kugatsu.' }
+                        ],
+                        tanggal: [
+                            { category: 'Tanggal', question: 'Bahasa Jepang untuk "Tanggal 1" adalah...', jpText: '1日', options: ['Ichinichi', 'Tsuitachi', 'Futsuka', 'Yokka'], correct: 1, explanation: 'Tanggal 1 dibaca khusus yaitu Tsuitachi (ついたち).' },
+                            { category: 'Tanggal', question: 'Bahasa Jepang untuk "Tanggal 20" memiliki sebutan khusus yaitu...', jpText: '20日', options: ['Nijūnichi', 'Hatsuka', 'Nijūyokka', 'Futatsuka'], correct: 1, explanation: 'Tanggal 20 dibaca khusus yaitu Hatsuka (はつか).' },
+                            { category: 'Tanggal', question: 'Bagaimana menyebut "Tanggal 4"?', jpText: '4日', options: ['Yonnichi', 'Yokka', 'Mikka', 'Itsuka'], correct: 1, explanation: 'Tanggal 4 dibaca Yokka (よっか).' },
+                            { category: 'Tanggal', question: 'Bagaimana menyebut "Tanggal 14"?', jpText: '14日', options: ['Jūyonnichi', 'Jūyokka', 'Jūshinichi', 'Jūmikka'], correct: 1, explanation: 'Tanggal 14 dibaca Jūyokka (じゅうよっか).' },
+                            { category: 'Tanggal', question: 'Kata "Mikka" adalah sebutan untuk tanggal...', jpText: '3日', options: ['Tanggal 2', 'Tanggal 3', 'Tanggal 5', 'Tanggal 6'], correct: 1, explanation: 'Mikka (みっか) artinya tanggal 3.' },
+                            { category: 'Tanggal', question: 'Bagaimana menyebut "Tanggal 24"?', jpText: '24日', options: ['Nijūyonnichi', 'Nijūyokka', 'Nijūshinichi', 'Nijūmikka'], correct: 1, explanation: 'Tanggal 24 dibaca Nijūyokka (にじゅうよっか).' },
+                            { category: 'Tanggal', question: 'Bahasa Jepang untuk "Tanggal 7" adalah...', jpText: '7日', options: ['Nananichi', 'Nanoka', 'Yōka', 'Muika'], correct: 1, explanation: 'Tanggal 7 dibaca Nanoka (なのか).' },
+                            { category: 'Tanggal', question: 'Bahasa Jepang untuk "Tanggal 8" adalah...', jpText: '8日', options: ['Hachinichi', 'Yōka', 'Yokka', 'Nanoka'], correct: 1, explanation: 'Tanggal 8 dibaca Yōka (ようか).' },
+                            { category: 'Tanggal', question: 'Bahasa Jepang untuk "Tanggal 9" adalah...', jpText: '9日', options: ['Kunichi', 'Kokonoka', 'Tōka', 'Itsuka'], correct: 1, explanation: 'Tanggal 9 dibaca Kokonoka (ここのか).' },
+                            { category: 'Tanggal', question: 'Bahasa Jepang untuk "Tanggal 10" adalah...', jpText: '10日', options: ['Jūnichi', 'Tōka', 'Yokka', 'Hatsuka'], correct: 1, explanation: 'Tanggal 10 dibaca Tōka (とうか).' },
+                            { category: 'Tanggal', question: 'Bagaimana menyebut "Tanggal 5"?', jpText: '5日', options: ['Gonichi', 'Itsuka', 'Muika', 'Nanoka'], correct: 1, explanation: 'Tanggal 5 dibaca Itsuka (いつか).' },
+                            { category: 'Tanggal', question: 'Bagaimana menyebut "Tanggal 6"?', jpText: '6日', options: ['Rokunichi', 'Muika', 'Mikka', 'Itsuka'], correct: 1, explanation: 'Tanggal 6 dibaca Muika (むいか).' },
+                            { category: 'Tanggal', question: 'Bahasa Jepang untuk menanyakan "Tanggal berapa?" adalah...', jpText: '何日', options: ['Nan-gatsu', 'Nan-ji', 'Nan-nichi', 'Nan-fun'], correct: 2, explanation: 'Nan-nichi (何日) digunakan untuk menanyakan tanggal.' },
+                            { category: 'Tanggal', question: 'Tanggal 15 dibaca dengan pola standar yaitu...', jpText: '15日', options: ['Jūitsuka', 'Jūgonichi', 'Jūgoka', 'Jūhonichi'], correct: 1, explanation: 'Tanggal 15 dibaca standar: Jūgo (15) + nichi = Jūgonichi.' },
+                            { category: 'Tanggal', question: 'Terjemahkan: "Hari ini tanggal berapa?"', jpText: '今日は何日ですか。', options: ['Kyō wa nan-gatsu desu ka?', 'Kyō wa nan-nichi desu ka?', 'Kyō wa nan-ji desu ka?', 'Kinō wa nan-nichi desu ka?'], correct: 1, explanation: 'Kyō = Hari ini, Nan-nichi = Tanggal berapa.' },
+                            { category: 'Tanggal', question: 'Kata "Kinō" (昨日) artinya...', jpText: '昨日', options: ['Hari ini', 'Kemarin', 'Besok', 'Lusa'], correct: 1, explanation: 'Kinō (昨日) artinya kemarin.' },
+                            { category: 'Tanggal', question: 'Kata "Ashita" (明日) artinya...', jpText: '明日', options: ['Hari ini', 'Kemarin', 'Besok', 'Bulan depan'], correct: 2, explanation: 'Ashita (明日) artinya besok.' },
+                            { category: 'Tanggal', question: 'Bagaimana menyebut "Tanggal 29"?', jpText: '29日', options: ['Nijūkyūnichi', 'Nijūkunichi', 'Nijūkokonoka', 'Nijūninichi'], correct: 1, explanation: 'Tanggal 29 dibaca Nijūku-nichi (にじゅうくにち).' },
+                            { category: 'Tanggal', question: 'Bagaimana menyebut "Tanggal 2"?', jpText: '2日', options: ['Ninichi', 'Futsuka', 'Mikka', 'Tsuitachi'], correct: 1, explanation: 'Tanggal 2 dibaca Futsuka (ふつか).' },
+                            { category: 'Tanggal', question: 'Manakah pasangan tanggal yang SALAH berikut ini?', jpText: '', options: ['1日 = Tsuitachi', '4日 = Yonnichi', '20日 = Hatsuka', '14日 = Jūyokka'], correct: 1, explanation: '4日 dibaca Yokka, bukan Yonnichi.' }
+                        ],
+                        jam: [
+                            { category: 'Jam', question: 'Bahasa Jepang untuk "Jam 4" adalah...', jpText: '4時', options: ['Yonji', 'Yoji', 'Shiji', 'Shichiji'], correct: 1, explanation: 'Jam 4 dibaca Yoji (よじ), bukan Yonji.' },
+                            { category: 'Jam', question: 'Bahasa Jepang untuk "Jam 7" adalah...', jpText: '7時', options: ['Nanaji', 'Shichiji', 'Shiji', 'Yoji'], correct: 1, explanation: 'Jam 7 dibaca Shichiji (しちじ), bukan Nanaji.' },
+                            { category: 'Jam', question: 'Bahasa Jepang untuk "Jam 9" adalah...', jpText: '9時', options: ['Kyūji', 'Kuji', 'Kokonoji', 'Jūji'], correct: 1, explanation: 'Jam 9 dibaca Kuji (くじ), bukan Kyūji.' },
+                            { category: 'Jam', question: 'Penggunaan kata "Gozen" (午前) menyatakan...', jpText: '午前', options: ['Waktu PM (Siang-Malam)', 'Waktu AM (Dini hari - Siang)', 'Setengah jam', 'Jam tepat'], correct: 1, explanation: 'Gozen (午前) artinya AM / Pagi / Dini hari.' },
+                            { category: 'Jam', question: 'Penggunaan kata "Gogo" (午後) menyatakan...', jpText: '午後', options: ['Waktu AM (Pagi)', 'Waktu PM (Siang - Malam)', 'Jam berapa', 'Menit'], correct: 1, explanation: 'Gogo (午後) artinya PM / Siang s.d. Malam.' },
+                            { category: 'Jam', question: 'Kata "Han" (半) dalam penyebutan jam berarti...', jpText: '半', options: ['Jam tepat', 'Setengah / 30 Menit', '15 Menit', 'Kurang'], correct: 1, explanation: 'Han (半) artinya setengah / 30 menit (contoh: 7-ji han = 07.30).' },
+                            { category: 'Jam', question: 'Bagaimana menyebut "1 menit"?', jpText: '1分', options: ['Ichifun', 'Ippun', 'Ichipun', 'Itofun'], correct: 1, explanation: '1 menit dibaca Ippun (いっぷん).' },
+                            { category: 'Jam', question: 'Bagaimana menyebut "3 menit"?', jpText: '3分', options: ['Sanfun', 'Sanpun', 'Samfun', 'Sanbun'], correct: 1, explanation: '3 menit dibaca Sanpun (さんぷん).' },
+                            { category: 'Jam', question: 'Bagaimana menyebut "5 menit"?', jpText: '5分', options: ['Gofun', 'Gopun', 'Gofuu', 'Gohun'], correct: 0, explanation: '5 menit dibaca Gofun (ごふん).' },
+                            { category: 'Jam', question: 'Bagaimana menyebut "10 menit"?', jpText: '10分', options: ['Jūfun', 'Juppun', 'Jūpun', 'Tōfun'], correct: 1, explanation: '10 menit dibaca Juppun / Jippun (じゅっぷん).' },
+                            { category: 'Jam', question: 'Bahasa Jepang untuk "Jam berapa sekarang?" adalah...', jpText: '今、何時ですか。', options: ['Ima, nan-gatsu desu ka?', 'Ima, nan-nichi desu ka?', 'Ima, nan-ji desu ka?', 'Ima, nan-fun desu ka?'], correct: 2, explanation: 'Ima nan-ji desu ka? (今何時ですか) = Sekarang jam berapa?' },
+                            { category: 'Jam', question: 'Bagaimana menyatakan "Jam 3 sore (15:00)"?', jpText: '午後3時', options: ['Gozen San-ji', 'Gogo San-ji', 'Gogo Yoji', 'Gozen Yoji'], correct: 1, explanation: 'Sore/PM = Gogo, Jam 3 = San-ji -> Gogo San-ji.' },
+                            { category: 'Jam', question: 'Bagaimana menyatakan "Jam 6 pagi (06:00)"?', jpText: '午前6時', options: ['Gozen Roku-ji', 'Gogo Roku-ji', 'Gozen Shichiji', 'Gogo Shichiji'], correct: 0, explanation: 'Pagi/AM = Gozen, Jam 6 = Roku-ji -> Gozen Roku-ji.' },
+                            { category: 'Jam', question: 'Penyebutan "15 menit" dalam bahasa Jepang adalah...', jpText: '15分', options: ['Jūgo-pun', 'Jūgo-fun', 'Jūgo-bun', 'Jūippun'], correct: 1, explanation: '15 menit dibaca Jūgo-fun (じゅうごふん).' },
+                            { category: 'Jam', question: 'Manakah di antara jam berikut yang mengalami pembacaan KHUSUS?', jpText: '', options: ['1時 (Ichiji)', '4時 (Yoji)', '5時 (Goji)', '8時 (Hachiji)'], correct: 1, explanation: 'Jam 4 (Yoji) adalah pembacaan khusus.' },
+                            { category: 'Jam', question: 'Bagaimana menyebut "6 menit"?', jpText: '6分', options: ['Rokufun', 'Roppun', 'Rokupun', 'Roppuu'], correct: 1, explanation: '6 menit dibaca Roppun (ろっぷん).' },
+                            { category: 'Jam', question: 'Bagaimana menyebut "8 menit"?', jpText: '8分', options: ['Hachifun', 'Happun', 'Hachipun', 'Hapfun'], correct: 1, explanation: '8 menit dibaca Happun (はっぷん).' },
+                            { category: 'Jam', question: 'Terjemahkan: "Jam 8 lewat 30 menit (08:30)"', jpText: '8時半 / 8時30分', options: ['Hachiji han', 'Hachiji gofun', 'Shichiji han', 'Kuji han'], correct: 0, explanation: '8時半 dibaca Hachiji han.' },
+                            { category: 'Jam', question: 'Manakah gabungan jam dan menit yang BENAR untuk "04:05"?', jpText: '4時5分', options: ['Yonji gofun', 'Yoji gofun', 'Yoji gopun', 'Yonji gopun'], correct: 1, explanation: 'Jam 4 = Yoji, 5 menit = Gofun -> Yoji gofun.' },
+                            { category: 'Jam', question: 'Penyebutan jam 4, 7, dan 9 berturut-turut adalah...', jpText: '4時, 7時, 9時', options: ['Yonji, Nanaji, Kyūji', 'Yoji, Shichiji, Kuji', 'Yoji, Nanaji, Kyūji', 'Yonji, Shichiji, Kuji'], correct: 1, explanation: 'Ketiga jam ini dibaca Yoji, Shichiji, Kuji.' }
+                        ]
+                    }
+                }
+            },
+
+            computed: {
+                activeQuestionList() {
+                    if (this.activeQuizCategory === 'all') {
+                        return [
+                            ...this.questions.bulan,
+                            ...this.questions.tanggal,
+                            ...this.questions.jam
+                        ];
+                    }
+                    return this.questions[this.activeQuizCategory] || [];
+                },
+
+                currentQuestion() {
+                    return this.activeQuestionList[this.currentQuestionIndex] || {};
+                },
+
+                currentQuizTitle() {
+                    if (this.activeQuizCategory === 'bulan') return 'Modul 1: Bulan';
+                    if (this.activeQuizCategory === 'tanggal') return 'Modul 2: Tanggal';
+                    if (this.activeQuizCategory === 'jam') return 'Modul 3: Jam & Menit';
+                    return 'Ujian Total (60 Soal)';
+                },
+
+                quizScorePercentage() {
+                    if (!this.activeQuestionList.length) return 0;
+                    return Math.round((this.userCorrectCount / this.activeQuestionList.length) * 100);
+                }
+            },
+
+            mounted() {
+                if ('speechSynthesis' in window) {
+                    this.speechSynth = window.speechSynthesis;
+                }
+            },
+
+            methods: {
+                // Audio Speech Synthesis for Japanese Text
+                speak(text) {
+                    if (!this.speechSynth) {
+                        alert("Browser Anda tidak mendukung Text-to-Speech audio.");
+                        return;
+                    }
+                    this.speechSynth.cancel(); // Stop ongoing speech
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'ja-JP';
+                    utterance.rate = 0.85; // Slightly slower for language learners
+                    this.speechSynth.speak(utterance);
+                },
+
+                testAudio() {
+                    this.speak("こんにちは！日本語の学習を始めましょう！");
+                },
+
+                startQuizDirect(cat) {
+                    this.activeTab = 'quiz';
+                    this.startQuiz(cat);
+                },
+
+                startQuizForModule(cat) {
+                    this.activeTab = 'quiz';
+                    this.startQuiz(cat);
+                },
+
+                startQuiz(category) {
+                    this.activeQuizCategory = category;
+                    this.currentQuestionIndex = 0;
+                    this.userCorrectCount = 0;
+                    this.selectedOption = null;
+                    this.hasAnswered = false;
+                    this.userAnswers = [];
+                    this.quizState = 'active';
+                },
+
+                selectOption(index) {
+                    if (this.hasAnswered) return;
+                    this.selectedOption = index;
+                    this.hasAnswered = true;
+
+                    if (index === this.currentQuestion.correct) {
+                        this.userCorrectCount++;
+                    }
+
+                    // Optional speech for Japanese question text
+                    if (this.currentQuestion.jpText) {
+                        this.speak(this.currentQuestion.jpText);
+                    }
+                },
+
+                getOptionClass(idx) {
+                    if (!this.hasAnswered) {
+                        return 'border-slate-200 hover:border-fuji-500 hover:bg-fuji-50/50 bg-slate-50/50 text-slate-800';
+                    }
+                    if (idx === this.currentQuestion.correct) {
+                        return 'border-emerald-500 bg-emerald-50 text-emerald-900 font-bold';
+                    }
+                    if (this.selectedOption === idx && idx !== this.currentQuestion.correct) {
+                        return 'border-rose-500 bg-rose-50 text-rose-900 font-bold';
+                    }
+                    return 'border-slate-100 bg-slate-50 text-slate-400 opacity-60';
+                },
+
+                nextQuestion() {
+                    if (this.currentQuestionIndex + 1 < this.activeQuestionList.length) {
+                        this.currentQuestionIndex++;
+                        this.selectedOption = null;
+                        this.hasAnswered = false;
+                    } else {
+                        this.quizState = 'result';
+                    }
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
