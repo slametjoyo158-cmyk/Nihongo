@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nihongo Interactive - Joyo Sensei (SMA/SMK)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        jpRed: '#E60012',
+                        jpSakura: '#FFB7C5',
+                        jpDark: '#1F2937',
+                        jpCream: '#FFFBF5',
+                        jpBlue: '#1E40AF',
+                        jpTeal: '#0D9488'
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        jp: ['Noto Sans JP', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .jp-font { font-family: 'Noto Sans JP', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .tab-btn.active {
+            background-color: #E60012;
+            color: white;
+            box-shadow: 0 4px 12px rgba(230, 0, 18, 0.3);
+        }
+        /* Flashcard flip animation */
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
+
+    <!-- Header Banner -->
+    <header class="bg-gradient-to-r from-red-600 via-rose-600 to-red-700 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-white text-red-600 rounded-2xl flex items-center justify-center text-2xl font-black shadow-md">
+                        ⛩️
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight">Nihongo Interaktif</h1>
+                            <span class="bg-red-800 text-white text-xs px-2.5 py-0.5 rounded-full font-semibold border border-red-400">SMA & SMK</span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-rose-100">Media Pembelajaran Bahasa Jepang Bersama <span class="font-bold underline decoration-amber-300">Joyo Sensei</span></p>
+                    </div>
+                </div>
+
+                <!-- Progress Badge -->
+                <div class="flex items-center justify-between sm:justify-end gap-3">
+                    <div class="bg-red-950/40 px-3 py-1.5 rounded-xl border border-red-400/30 text-xs flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-amber-300"></i>
+                        <span>Materi: Kore, Sore, Are & Posisi</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="flex items-center space-x-1 sm:space-x-2 overflow-x-auto pt-3 pb-1 no-scrollbar text-xs sm:text-sm">
+                <button onclick="switchTab('materi-kosa')" class="tab-btn active px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-compass"></i> Kore / Sore / Are
+                </button>
+                <button onclick="switchTab('materi-benda')" class="tab-btn bg-white/80 hover:bg-white text-slate-700 px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 whitespace-nowrap shadow-sm">
+                    <i class="fa-solid fa-boxes-stacked"></i> Benda (Sekolah/Kelas/Rumah)
+                </button>
+                <button onclick="switchTab('materi-arah')" class="tab-btn bg-white/80 hover:bg-white text-slate-700 px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 whitespace-nowrap shadow-sm">
+                    <i class="fa-solid fa-map-location-dot"></i> Posisi & Arah Jalan
+                </button>
+                <button onclick="switchTab('flashcard')" class="tab-btn bg-white/80 hover:bg-white text-slate-700 px-4 py-2 rounded-xl font-bold transition flex items-center gap-2 whitespace-nowrap shadow-sm">
+                    <i class="fa-solid fa-clone"></i> Flashcard Interaktif
+                </button>
+                <button onclick="switchTab('quiz')" class="tab-btn bg-amber-400 hover:bg-amber-300 text-slate-900 px-4 py-2 rounded-xl font-extrabold transition flex items-center gap-2 whitespace-nowrap shadow-sm">
+                    <i class="fa-solid fa-pen-to-square"></i> Uji Pemahaman (30 Soal)
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+
+        <!-- ================= TAB 1: KORE, SORE, ARE CONCEPT ================= -->
+        <section id="materi-kosa" class="tab-content space-y-6">
+            <!-- Sensei Greeting Banner -->
+            <div class="bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-500 p-4 sm:p-5 rounded-2xl shadow-sm flex items-start gap-4">
+                <div class="text-3xl sm:text-4xl">👨‍🏫</div>
+                <div>
+                    <h2 class="font-bold text-slate-800 text-base sm:text-lg">Konichiwa, Mina-san! (こんにちは、みなさん！)</h2>
+                    <p class="text-sm text-slate-600 mt-1">
+                        Selamat datang di kelas Joyo Sensei. Hari ini kita akan mempelajari kata tunjuk benda dasar dalam Bahasa Jepang: 
+                        <strong class="text-red-600">Kore (これ)</strong>, <strong class="text-red-600">Sore (それ)</strong>, <strong class="text-red-600">Are (あれ)</strong>, dan kata tanya <strong class="text-red-600">Dore (どれ)</strong>.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Concept Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- KORE -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-md hover:shadow-xl transition relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 bg-red-500 text-white text-xs font-black px-4 py-1.5 rounded-bl-2xl">
+                        Dekat Pembicara
+                    </div>
+                    <div class="text-center py-4">
+                        <span class="text-4xl sm:text-5xl font-black text-red-600 jp-font block">これ</span>
+                        <h3 class="text-2xl font-extrabold text-slate-800 mt-1">Kore (これ)</h3>
+                        <p class="text-sm font-semibold text-emerald-600 mt-1">"Ini"</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs sm:text-sm text-slate-600 space-y-2">
+                        <p class="flex items-center gap-2">
+                            <i class="fa-solid fa-hand-pointer text-red-500"></i>
+                            Benda berada <strong>dekat dengan pembicara</strong> (Hanashite / 話し手).
+                        </p>
+                        <div class="pt-2 border-t border-slate-200">
+                            <span class="font-bold text-slate-700 block">Contoh Kalimat:</span>
+                            <p class="text-slate-800 font-semibold mt-0.5">Kore (これ) wa hon (ほん) desu.</p>
+                            <p class="text-xs text-slate-500">= Ini adalah buku.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SORE -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-md hover:shadow-xl transition relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 bg-blue-500 text-white text-xs font-black px-4 py-1.5 rounded-bl-2xl">
+                        Dekat Pendengar
+                    </div>
+                    <div class="text-center py-4">
+                        <span class="text-4xl sm:text-5xl font-black text-blue-600 jp-font block">それ</span>
+                        <h3 class="text-2xl font-extrabold text-slate-800 mt-1">Sore (それ)</h3>
+                        <p class="text-sm font-semibold text-emerald-600 mt-1">"Itu (dekat kamu)"</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs sm:text-sm text-slate-600 space-y-2">
+                        <p class="flex items-center gap-2">
+                            <i class="fa-solid fa-user-group text-blue-500"></i>
+                            Benda berada <strong>dekat dengan lawan bicara</strong> (Kikite / 聞き手).
+                        </p>
+                        <div class="pt-2 border-t border-slate-200">
+                            <span class="font-bold text-slate-700 block">Contoh Kalimat:</span>
+                            <p class="text-slate-800 font-semibold mt-0.5">Sore (それ) wa kaban (かばん) desu.</p>
+                            <p class="text-xs text-slate-500">= Itu adalah tas.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ARE -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-md hover:shadow-xl transition relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 bg-amber-500 text-white text-xs font-black px-4 py-1.5 rounded-bl-2xl">
+                        Jauh dari Kedua Orang
+                    </div>
+                    <div class="text-center py-4">
+                        <span class="text-4xl sm:text-5xl font-black text-amber-600 jp-font block">あれ</span>
+                        <h3 class="text-2xl font-extrabold text-slate-800 mt-1">Are (あれ)</h3>
+                        <p class="text-sm font-semibold text-emerald-600 mt-1">"Itu (jauh di sana)"</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs sm:text-sm text-slate-600 space-y-2">
+                        <p class="flex items-center gap-2">
+                            <i class="fa-solid fa-arrows-left-right-to-line text-amber-500"></i>
+                            Benda berada <strong>jauh dari pembicara maupun lawan bicara</strong>.
+                        </p>
+                        <div class="pt-2 border-t border-slate-200">
+                            <span class="font-bold text-slate-700 block">Contoh Kalimat:</span>
+                            <p class="text-slate-800 font-semibold mt-0.5">Are (あれ) wa tokei (とけい) desu.</p>
+                            <p class="text-xs text-slate-500">= Itu (di sana) adalah jam.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: BENDA-BENDA ================= -->
+        <section id="materi-benda" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-md">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+                    <div>
+                        <h2 class="text-xl font-extrabold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-boxes-stacked text-red-500"></i> Daftar Kosakata Benda (Meishi / 名詞)
+                        </h2>
+                        <p class="text-xs sm:text-sm text-slate-500 mt-1">Setiap kata Romaji selalu didampingi dengan huruf Hiragana & Kanji pendukungnya.</p>
+                    </div>
+                    <!-- Sub Tabs Category -->
+                    <div class="flex items-center space-x-2 bg-slate-100 p-1.5 rounded-2xl text-xs font-bold">
+                        <button onclick="filterBenda('sekolah')" id="btn-sekolah" class="benda-subtab px-3 py-1.5 rounded-xl bg-white text-red-600 shadow-sm">🏫 Sekolah</button>
+                        <button onclick="filterBenda('kelas')" id="btn-kelas" class="benda-subtab px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900">📚 Kelas</button>
+                        <button onclick="filterBenda('rumah')" id="btn-rumah" class="benda-subtab px-3 py-1.5 rounded-xl text-slate-600 hover:text-slate-900">🏠 Rumah</button>
+                    </div>
+                </div>
+
+                <!-- Vocabulary Cards Grid container -->
+                <div id="vocab-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
+                    <!-- Dynamic Vocab injected by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: POSISI & ARAH JALAN ================= -->
+        <section id="materi-arah" class="tab-content hidden space-y-6">
+            <!-- Position & Directions Overview -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left: Posisi Benda (Atas, Bawah, Kanan, Kiri, Depan, Belakang, dll) -->
+                <div class="lg:col-span-2 bg-white rounded-3xl p-6 border border-slate-200 shadow-md space-y-4">
+                    <h2 class="text-lg font-extrabold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-arrows-up-down-left-right text-red-500"></i> Posisi & Arah (Ichi to Houkou / 位置と方向)
+                    </h2>
+                    <p class="text-xs sm:text-sm text-slate-500">Daftar kosakata posisi benda dan petunjuk arah dalam Bahasa Jepang.</p>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="posisi-grid">
+                        <!-- Injected by JS -->
+                    </div>
+
+                    <!-- Sentence Example Box -->
+                    <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-4 mt-4">
+                        <h4 class="font-bold text-indigo-900 text-sm mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-spell-check text-indigo-600"></i> Pola Kalimat Posisi Benda:
+                        </h4>
+                        <div class="bg-white p-3 rounded-xl border border-indigo-100 text-xs sm:text-sm space-y-1">
+                            <p class="font-bold text-slate-800">
+                                [Benda 1] wa [Benda 2] no <span class="text-red-600">[Posisi]</span> ni arimasu (あります) / desu (です).
+                            </p>
+                            <p class="text-slate-600">
+                                Contoh: Hon (ほん) wa tsukue (つくえ) no <strong class="text-red-600">ue (うえ)</strong> ni arimasu.<br>
+                                <span class="text-slate-400 text-xs">= Buku ada di ATAS meja.</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Tempat & Tunjuk Lokasi (Koko, Soko, Asoko, Doko) -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-md space-y-4">
+                    <h2 class="text-lg font-extrabold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-location-dot text-amber-500"></i> Tunjuk Lokasi / Tempat
+                    </h2>
+
+                    <div class="space-y-3">
+                        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 transition flex items-center justify-between">
+                            <div>
+                                <span class="text-lg font-extrabold text-red-600 jp-font">ここ</span>
+                                <span class="text-sm font-bold text-slate-800 ml-2">Koko (ここ)</span>
+                                <p class="text-xs text-slate-500">Di sini (dekat pembicara)</p>
+                            </div>
+                        </div>
+
+                        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 transition flex items-center justify-between">
+                            <div>
+                                <span class="text-lg font-extrabold text-blue-600 jp-font">そこ</span>
+                                <span class="text-sm font-bold text-slate-800 ml-2">Soko (そこ)</span>
+                                <p class="text-xs text-slate-500">Di situ (dekat lawan bicara)</p>
+                            </div>
+                        </div>
+
+                        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 transition flex items-center justify-between">
+                            <div>
+                                <span class="text-lg font-extrabold text-amber-600 jp-font">あそこ</span>
+                                <span class="text-sm font-bold text-slate-800 ml-2">Asoko (あそこ)</span>
+                                <p class="text-xs text-slate-500">Di sana (jauh dari keduanya)</p>
+                            </div>
+                        </div>
+
+                        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 transition flex items-center justify-between">
+                            <div>
+                                <span class="text-lg font-extrabold text-emerald-600 jp-font">どこ</span>
+                                <span class="text-sm font-bold text-slate-800 ml-2">Doko (どこ)</span>
+                                <p class="text-xs text-slate-500">Di mana? (Kata Tanya)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Petunjuk Arah Jalan -->
+                    <div class="pt-4 border-t border-slate-200">
+                        <h3 class="font-bold text-slate-800 text-sm mb-2 flex items-center gap-1.5">
+                            <i class="fa-solid fa-route text-teal-600"></i> Kosakata Arah Jalan:
+                        </h3>
+                        <div class="space-y-2 text-xs">
+                            <div class="p-2 bg-teal-50 rounded-xl border border-teal-100 flex justify-between items-center">
+                                <span><strong class="text-teal-800">Makkugu (まっすぐ)</strong> - Lurus</span>
+                            </div>
+                            <div class="p-2 bg-teal-50 rounded-xl border border-teal-100 flex justify-between items-center">
+                                <span><strong class="text-teal-800">Migi ni magaru (みぎにまがる)</strong> - Belok kanan</span>
+                            </div>
+                            <div class="p-2 bg-teal-50 rounded-xl border border-teal-100 flex justify-between items-center">
+                                <span><strong class="text-teal-800">Hidari ni magaru (ひだりにまがる)</strong> - Belok kiri</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contoh Percakapan Bertanya & Menunjukkan Arah Jalan -->
+            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-md space-y-4">
+                <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+                    <div class="w-10 h-10 bg-teal-100 text-teal-700 rounded-2xl flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-comments"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-extrabold text-slate-800">Contoh Bertanya & Menunjukkan Arah Jalan (Michi Annai / 道案内)</h3>
+                        <p class="text-xs text-slate-500">Pola percakapan saat menanyakan lokasi dan memberikan petunjuk arah kepada orang lain.</p>
+                    </div>
+                </div>
+
+                <!-- Rumus/Ungkapan Kunci -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                    <div class="p-3 bg-amber-50 border border-amber-200 rounded-2xl">
+                        <span class="font-extrabold text-amber-900 block mb-1">1. Ungkapan Permisi / Maaf</span>
+                        <p class="font-bold text-slate-800">Sumimasen (すみません)</p>
+                        <p class="text-slate-500 text-[11px]">= Permisi / Maaf menanyakan jalan</p>
+                    </div>
+                    <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-2xl">
+                        <span class="font-extrabold text-indigo-900 block mb-1">2. Bertanya Lokasi</span>
+                        <p class="font-bold text-slate-800">[Tempat] wa doko desu ka?</p>
+                        <p class="text-xs text-red-600 jp-font">[Tempat] は どこ です か。</p>
+                        <p class="text-slate-500 text-[11px]">= [Tempat] ada di mana?</p>
+                    </div>
+                    <div class="p-3 bg-teal-50 border border-teal-200 rounded-2xl">
+                        <span class="font-extrabold text-teal-900 block mb-1">3. Memberi Petunjuk</span>
+                        <p class="font-bold text-slate-800">... ni magatte kudasai</p>
+                        <p class="text-xs text-teal-700 jp-font">... に まがって ください</p>
+                        <p class="text-slate-500 text-[11px]">= Tolong belok ke ...</p>
+                    </div>
+                </div>
+
+                <!-- Examples Dialogues -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                    <!-- Dialogue 1 -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs sm:text-sm space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                            <span class="font-bold text-red-600 flex items-center gap-1.5"><i class="fa-solid fa-school"></i> Contoh 1: Di Lingkungan Sekolah</span>
+                            <span class="text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded-md font-bold">Bertanya Perpustakaan</span>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="bg-white p-2.5 rounded-xl border border-slate-100">
+                                <p class="font-bold text-slate-800"><span class="text-red-600 font-black">A:</span> Sumimasen, Toshoshitsu (としょしつ) wa doko desu ka?</p>
+                                <p class="text-xs text-red-600 jp-font">すみません、としょしつは どこですか。</p>
+                                <p class="text-xs text-slate-500 italic mt-0.5">= Permisi, perpustakaan ada di mana?</p>
+                            </div>
+                            <div class="bg-white p-2.5 rounded-xl border border-slate-100">
+                                <p class="font-bold text-slate-800"><span class="text-blue-600 font-black">B:</span> Asoko (あそこ) desu. Migi ni magatte (みぎにまがる) kudasai.</p>
+                                <p class="text-xs text-blue-600 jp-font">あそこです。みぎに まがってください。</p>
+                                <p class="text-xs text-slate-500 italic mt-0.5">= Di sana (jauh). Tolong belok kanan.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dialogue 2 -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs sm:text-sm space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                            <span class="font-bold text-teal-600 flex items-center gap-1.5"><i class="fa-solid fa-map-pin"></i> Contoh 2: Di Jalan / Arah Ke Stasiun</span>
+                            <span class="text-[10px] bg-teal-100 text-teal-700 px-2 py-0.5 rounded-md font-bold">Bertanya Stasiun Kereta</span>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="bg-white p-2.5 rounded-xl border border-slate-100">
+                                <p class="font-bold text-slate-800"><span class="text-red-600 font-black">A:</span> Sumimasen, Eki (えき) wa doko desu ka?</p>
+                                <p class="text-xs text-red-600 jp-font">すみません、えきは どこですか。</p>
+                                <p class="text-xs text-slate-500 italic mt-0.5">= Permisi, stasiun ada di mana?</p>
+                            </div>
+                            <div class="bg-white p-2.5 rounded-xl border border-slate-100">
+                                <p class="font-bold text-slate-800"><span class="text-teal-700 font-black">B:</span> Makkugu (まっすぐ) itte, hidari ni magatte (ひだりにまがる) kudasai.</p>
+                                <p class="text-xs text-teal-700 jp-font">まっすぐ いって、ひだりに まがってください。</p>
+                                <p class="text-xs text-slate-500 italic mt-0.5">= Jalan lurus, lalu tolong belok kiri.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 4: FLASHCARD INTERAKTIF ================= -->
+        <section id="flashcard" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-md text-center max-w-2xl mx-auto">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-xs font-bold bg-red-100 text-red-600 px-3 py-1 rounded-full" id="fc-counter">1 / 15</span>
+                    <button onclick="randomizeFlashcard()" class="text-xs font-bold text-slate-500 hover:text-red-600 flex items-center gap-1">
+                        <i class="fa-solid fa-shuffle"></i> Acak Kartu
+                    </button>
+                </div>
+
+                <!-- 3D Flip Card Container -->
+                <div class="perspective-1000 my-6">
+                    <div id="flashcard-inner" onclick="flipCard()" class="w-full h-72 rounded-3xl bg-gradient-to-br from-red-500 to-rose-600 text-white shadow-xl cursor-pointer transition-transform duration-500 transform-style-3d relative flex items-center justify-center p-6">
+                        
+                        <!-- Front Face -->
+                        <div class="absolute inset-0 backface-hidden flex flex-col items-center justify-center p-6 text-center">
+                            <span class="text-xs uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full mb-3">Klik Untuk Balik</span>
+                            <h3 id="fc-front-jp" class="text-5xl font-black jp-font mb-2">これ</h3>
+                            <p id="fc-front-roma" class="text-2xl font-bold text-rose-100">Kore (これ)</p>
+                            <span class="mt-4 text-xs bg-white/10 px-3 py-1 rounded-lg">Kategori: Kata Tunjuk</span>
+                        </div>
+
+                        <!-- Back Face -->
+                        <div class="absolute inset-0 backface-hidden rotate-y-180 bg-slate-900 text-white rounded-3xl flex flex-col items-center justify-center p-6 text-center border-2 border-amber-400">
+                            <span class="text-xs text-amber-400 font-bold mb-2">ARTI & CONTOH</span>
+                            <h4 id="fc-back-meaning" class="text-3xl font-extrabold text-amber-300">Ini (dekat pembicara)</h4>
+                            <p id="fc-back-example" class="text-sm text-slate-300 mt-3 font-medium">Contoh: Kore (これ) wa enpitsu (えんぴつ) desu.</p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Flashcard Navigation Controls -->
+                <div class="flex items-center justify-center gap-4">
+                    <button onclick="prevFlashcard()" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl flex items-center justify-center font-bold transition shadow-sm">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <button onclick="flipCard()" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-2xl text-xs sm:text-sm shadow-md transition flex items-center gap-2">
+                        <i class="fa-solid fa-rotate"></i> Balik Kartu
+                    </button>
+                    <button onclick="nextFlashcard()" class="w-12 h-12 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl flex items-center justify-center font-bold transition shadow-sm">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 5: UJI PEMAHAMAN (30 SOAL) ================= -->
+        <section id="quiz" class="tab-content hidden space-y-6">
+            
+            <!-- Quiz Start Screen / Active Quiz Container -->
+            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-md">
+                
+                <!-- Quiz Header -->
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+                    <div>
+                        <h2 class="text-xl font-extrabold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-pen-to-square text-amber-500"></i> Sesi Uji Pemahaman (30 Soal)
+                        </h2>
+                        <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Soal mencakup Kore/Sore/Are, kosakata benda sekolah/kelas/rumah, dan petunjuk arah.</p>
+                    </div>
+                    <div id="quiz-badge-container" class="flex items-center gap-2">
+                        <span id="quiz-progress-badge" class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-xl">Soal 1 dari 30</span>
+                    </div>
+                </div>
+
+                <!-- Quiz Progress Bar -->
+                <div class="w-full bg-slate-100 h-2.5 rounded-full mt-4 overflow-hidden">
+                    <div id="quiz-progress-bar" class="bg-gradient-to-r from-red-500 to-amber-500 h-full w-[3.33%] transition-all duration-300"></div>
+                </div>
+
+                <!-- Question Card -->
+                <div id="question-card" class="mt-6 space-y-6">
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200">
+                        <span class="text-xs font-bold text-red-600 bg-red-100 px-2.5 py-1 rounded-md mb-2 inline-block" id="q-category">Kore / Sore / Are</span>
+                        <h3 id="q-text" class="text-base sm:text-lg font-bold text-slate-800 leading-relaxed">
+                            Loading pertanyaan...
+                        </h3>
+                    </div>
+
+                    <!-- Multiple Choice Options -->
+                    <div id="options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- Options injected by JS -->
+                    </div>
+
+                    <!-- Feedback Box -->
+                    <div id="feedback-box" class="hidden p-4 rounded-2xl text-xs sm:text-sm font-semibold transition"></div>
+
+                    <!-- Quiz Navigation Buttons -->
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+                        <button id="btn-prev-q" onclick="prevQuestion()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5 disabled:opacity-40">
+                            <i class="fa-solid fa-chevron-left"></i> Sebelumnya
+                        </button>
+
+                        <button id="btn-next-q" onclick="nextQuestion()" class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-md">
+                            <span>Selanjutnya</span> <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quiz Results Container (Hidden initially) -->
+                <div id="quiz-results" class="hidden text-center py-8 space-y-6">
+                    <div class="w-24 h-24 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-4xl mx-auto shadow-inner">
+                        🏆
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-black text-slate-800">Uji Pemahaman Selesai!</h3>
+                        <p class="text-sm text-slate-500 mt-1">Berikut adalah rekapitulasi nilai untuk Joyo Sensei:</p>
+                    </div>
+
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 max-w-md mx-auto grid grid-cols-2 gap-4">
+                        <div class="p-3 bg-white rounded-xl shadow-sm">
+                            <span class="text-xs text-slate-400 font-bold block">SKOR AKHIR</span>
+                            <span id="final-score" class="text-3xl font-black text-red-600">0 / 100</span>
+                        </div>
+                        <div class="p-3 bg-white rounded-xl shadow-sm">
+                            <span class="text-xs text-slate-400 font-bold block">BENAR</span>
+                            <span id="correct-count" class="text-3xl font-black text-emerald-600">0 / 30</span>
+                        </div>
+                    </div>
+
+                    <div id="score-evaluation" class="text-sm font-bold text-slate-700"></div>
+
+                    <div class="flex flex-wrap items-center justify-center gap-3 pt-4">
+                        <button onclick="restartQuiz()" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-2xl text-xs font-bold shadow-md transition flex items-center gap-2">
+                            <i class="fa-solid fa-rotate-right"></i> Ulangi Kuis
+                        </button>
+                        <button onclick="window.print()" class="px-6 py-3 bg-slate-800 hover:bg-slate-900 text-white rounded-2xl text-xs font-bold shadow-md transition flex items-center gap-2">
+                            <i class="fa-solid fa-print"></i> Cetak Hasil Laporan
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p class="font-semibold text-slate-300">Modul Pembelajaran Bahasa Jepang Interaktif - Joyo Sensei (SMA / SMK)</p>
+            <p>Kore (これ) · Sore (それ) · Are (あれ) · Meishi (名詞) · Posisi & Arah Jalan</p>
+            <p class="text-slate-600">© 2026 Nihongo Interactive App. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        /* ================= TAB SWITCHING LOGIC ================= */
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-red-600', 'text-white');
+                btn.classList.add('bg-white/80', 'text-slate-700');
+            });
+
+            // Activate target button visually
+            event.currentTarget.classList.add('active');
+            event.currentTarget.classList.remove('bg-white/80', 'text-slate-700');
+        }
+
+        /* ================= KOSAKATA BENDA DATA & RENDER ================= */
+        const bendaData = [
+            // Sekolah (Gakkou)
+            { category: 'sekolah', roma: 'Gakkou', jp: 'がっこう (学校)', meaning: 'Sekolah', icon: '🏫' },
+            { category: 'sekolah', roma: 'Kyoushitsu', jp: 'きょうしつ (教室)', meaning: 'Ruang Kelas', icon: '🚪' },
+            { category: 'sekolah', roma: 'Toshashitsu', jp: 'としょしつ (図書室)', meaning: 'Perpustakaan', icon: '📖' },
+            { category: 'sekolah', roma: 'Jimushitsu', jp: 'じむしつ (事務室)', meaning: 'Ruang Tata Usaha (TU)', icon: '💼' },
+            { category: 'sekolah', roma: 'Kousha', jp: 'こうしゃ (校舎)', meaning: 'Gedung Sekolah', icon: '🏢' },
+            { category: 'sekolah', roma: 'Guraundo', jp: 'グラウンド', meaning: 'Lapangan Olahraga', icon: '⚽' },
+            { category: 'sekolah', roma: 'Shokudou', jp: 'しょくどう (食堂)', meaning: 'Kantin Sekolah', icon: '🍜' },
+            { category: 'sekolah', roma: 'Toire', jp: 'トイレ', meaning: 'Toilet / WC', icon: '🚻' },
+
+            // Kelas (Kyoushitsu)
+            { category: 'kelas', roma: 'Tsukue', jp: 'つくえ (机)', meaning: 'Meja Belajar', icon: '🪑' },
+            { category: 'kelas', roma: 'Isu', jp: 'いす (椅子)', meaning: 'Kursi', icon: '🪑' },
+            { category: 'kelas', roma: 'Kokuban', jp: 'こくばん (黒板)', meaning: 'Papan Tulis Hitam', icon: '⬛' },
+            { category: 'kelas', roma: 'Enpitsu', jp: 'えんぴつ (鉛筆)', meaning: 'Pensil', icon: '✏️' },
+            { category: 'kelas', roma: 'Pen', jp: 'ペン', meaning: 'Pena / Pulpen', icon: '🖊️' },
+            { category: 'kelas', roma: 'Hon', jp: 'ほん (本)', meaning: 'Buku', icon: '📚' },
+            { category: 'kelas', roma: 'Nooto', jp: 'ノート', meaning: 'Buku Catatan', icon: '📓' },
+            { category: 'kelas', roma: 'Keshigomu', jp: 'けしごむ (消しゴム)', meaning: 'Penghapus', icon: '🧽' },
+            { category: 'kelas', roma: 'Kaban', jp: 'かばん (鞄)', meaning: 'Tas Sekolah', icon: '🎒' },
+            { category: 'kelas', roma: 'Tokei', jp: 'とけい (時計)', meaning: 'Jam Dinding', icon: '⏰' },
+            { category: 'kelas', roma: 'Mado', jp: 'まど (窓)', meaning: 'Jendela', icon: '🪟' },
+            { category: 'kelas', roma: 'Doa', jp: 'ドア', meaning: 'Pintu', icon: '🚪' },
+
+            // Rumah (Uchi)
+            { category: 'rumah', roma: 'Uchi / Ie', jp: 'うち / いえ (家)', meaning: 'Rumah', icon: '🏠' },
+            { category: 'rumah', roma: 'Terebi', jp: 'テレビ', meaning: 'Televisi', icon: '📺' },
+            { category: 'rumah', roma: 'Reizouko', jp: 'れいぞうこ (冷蔵庫)', meaning: 'Kulkas', icon: '🧊' },
+            { category: 'rumah', roma: 'Beddo', jp: 'ベッド', meaning: 'Ranjang / Tempat Tidur', icon: '🛏️' },
+            { category: 'rumah', roma: 'Sofa', jp: 'ソファ', meaning: 'Sofa', icon: '🛋️' },
+            { category: 'rumah', roma: 'Tebuuru', jp: 'テーブル', meaning: 'Meja Makan/Tamu', icon: '🍽️' },
+            { category: 'rumah', roma: 'Kagi', jp: 'かぎ (鍵)', meaning: 'Kunci', icon: '🔑' },
+            { category: 'rumah', roma: 'Denki', jp: 'でんき (電気)', meaning: 'Lampu / Listrik', icon: '💡' },
+            { category: 'rumah', roma: 'Kagami', jp: 'かがみ (鏡)', meaning: 'Cermin', icon: '🪞' },
+            { category: 'rumah', roma: 'Furo', jp: 'ふろ (風呂)', meaning: 'Kamar Mandi', icon: '🛁' }
+        ];
+
+        function filterBenda(cat) {
+            document.querySelectorAll('.benda-subtab').forEach(b => {
+                b.classList.remove('bg-white', 'text-red-600', 'shadow-sm');
+                b.classList.add('text-slate-600');
+            });
+            document.getElementById(`btn-${cat}`).classList.add('bg-white', 'text-red-600', 'shadow-sm');
+
+            const container = document.getElementById('vocab-container');
+            container.innerHTML = '';
+
+            const filtered = bendaData.filter(item => item.category === cat);
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-50 border border-slate-200 rounded-2xl p-4 hover:border-red-300 hover:shadow-md transition group relative flex flex-col justify-between";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-2xl">${item.icon}</span>
+                        </div>
+                        <h4 class="font-extrabold text-slate-800 text-base">${item.roma}</h4>
+                        <p class="text-xs font-bold text-red-600 jp-font">${item.jp}</p>
+                    </div>
+                    <div class="mt-3 pt-2 border-t border-slate-200 text-xs text-slate-500 font-semibold">
+                        Arti: <span class="text-slate-700">${item.meaning}</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        /* ================= POSISI DATA & RENDER ================= */
+        const posisiData = [
+            { roma: 'Ue', jp: 'うえ (上)', meaning: 'Atas', icon: '⬆️' },
+            { roma: 'Shita', jp: 'した (下)', meaning: 'Bawah', icon: '⬇️' },
+            { roma: 'Migi', jp: 'みぎ (右)', meaning: 'Kanan', icon: '➡️' },
+            { roma: 'Hidari', jp: 'ひだり (左)', meaning: 'Kiri', icon: '⬅️' },
+            { roma: 'Mae', jp: 'まえ (前)', meaning: 'Depan', icon: '⏺️' },
+            { roma: 'Ushiro', jp: 'うしろ (後)', meaning: 'Belakang', icon: '⏹️' },
+            { roma: 'Naka', jp: 'なか (中)', meaning: 'Dalam', icon: '📥' },
+            { roma: 'Soto', jp: 'そと (外)', meaning: 'Luar', icon: '📤' },
+            { roma: 'Tonari', jp: 'となり (隣)', meaning: 'Samping / Sebelah', icon: '↔️' },
+            { roma: 'Aida', jp: 'あいだ (間)', meaning: 'Antara', icon: '↕️' }
+        ];
+
+        function renderPosisi() {
+            const grid = document.getElementById('posisi-grid');
+            grid.innerHTML = '';
+            posisiData.forEach(p => {
+                const box = document.createElement('div');
+                box.className = "p-3 bg-slate-50 border border-slate-200 rounded-2xl transition flex items-center gap-3 group";
+                box.innerHTML = `
+                    <div class="text-xl">${p.icon}</div>
+                    <div>
+                        <div class="text-sm font-extrabold text-slate-800 transition">${p.roma}</div>
+                        <div class="text-xs font-bold text-red-600 jp-font">${p.jp}</div>
+                        <div class="text-[10px] text-slate-500 font-medium">Arti: ${p.meaning}</div>
+                    </div>
+                `;
+                grid.appendChild(box);
+            });
+        }
+
+        /* ================= FLASHCARD INTERAKTIF LOGIC ================= */
+        const flashcardList = [
+            { frontJp: 'これ', frontRoma: 'Kore (これ)', meaning: 'Ini (dekat pembicara)', example: 'Kore (これ) wa hon (ほん) desu.' },
+            { frontJp: 'それ', frontRoma: 'Sore (それ)', meaning: 'Itu (dekat lawan bicara)', example: 'Sore (それ) wa kaban (かばん) desu.' },
+            { frontJp: 'あれ', frontRoma: 'Are (あれ)', meaning: 'Itu di sana (jauh dari keduanya)', example: 'Are (あれ) wa gakkou (がっこう) desu.' },
+            { frontJp: 'どれ', frontRoma: 'Dore (どれ)', meaning: 'Yang mana? (Kata Tanya)', example: 'Anata no kaban (かばん) wa dore (どれ) desu ka?' },
+            { frontJp: 'つくえ', frontRoma: 'Tsukue (つくえ)', meaning: 'Meja Belajar', example: 'Tsukue (つくえ) no ue (うえ) ni pen (ペン) ga arimasu.' },
+            { frontJp: 'いす', frontRoma: 'Isu (いす)', meaning: 'Kursi', example: 'Isu (いす) ni suwarimasu.' },
+            { frontJp: 'としょしつ', frontRoma: 'Toshashitsu (としょしつ)', meaning: 'Perpustakaan', example: 'Toshashitsu (としょしつ) de hon (ほん) wo yomimasu.' },
+            { frontJp: 'みぎ', frontRoma: 'Migi (みぎ)', meaning: 'Kanan', example: 'Migi (みぎ) ni magarimasu.' },
+            { frontJp: 'ひだり', frontRoma: 'Hidari (ひだり)', meaning: 'Kiri', example: 'Hidari (ひだり) ni tsukue (つくえ) ga arimasu.' },
+            { frontJp: 'うえ', frontRoma: 'Ue (うえ)', meaning: 'Atas', example: 'Tsukue (つくえ) no ue (うえ) desu.' },
+            { frontJp: 'した', frontRoma: 'Shita (した)', meaning: 'Bawah', example: 'Isu (いす) no shita (した) ni keshigomu (けしごむ) ga arimasu.' },
+            { frontJp: 'なか', frontRoma: 'Naka (なか)', meaning: 'Dalam', example: 'Kaban (かばん) no naka (なか) ni nooto (ノート) ga arimasu.' },
+            { frontJp: 'ここ', frontRoma: 'Koko (ここ)', meaning: 'Di sini', example: 'Koko (ここ) wa kyoushitsu (きょうしつ) desu.' },
+            { frontJp: 'そこ', frontRoma: 'Soko (そこ)', meaning: 'Di situ', example: 'Soko (そこ) wa shokudou (しょくどう) desu.' },
+            { frontJp: 'あそこ', frontRoma: 'Asoko (あそこ)', meaning: 'Di sana', example: 'Asoko (あそこ) wa toire (トイレ) desu.' }
+        ];
+
+        let fcIndex = 0;
+        let isFlipped = false;
+
+        function updateFlashcardUI() {
+            const card = flashcardList[fcIndex];
+            document.getElementById('fc-counter').innerText = `${fcIndex + 1} / ${flashcardList.length}`;
+            document.getElementById('fc-front-jp').innerText = card.frontJp;
+            document.getElementById('fc-front-roma').innerText = card.frontRoma;
+            document.getElementById('fc-back-meaning').innerText = card.meaning;
+            document.getElementById('fc-back-example').innerText = `Contoh: ${card.example}`;
+
+            // Reset flip back
+            const inner = document.getElementById('flashcard-inner');
+            inner.classList.remove('rotate-y-180');
+            isFlipped = false;
+        }
+
+        function flipCard() {
+            const inner = document.getElementById('flashcard-inner');
+            isFlipped = !isFlipped;
+            if (isFlipped) {
+                inner.classList.add('rotate-y-180');
+            } else {
+                inner.classList.remove('rotate-y-180');
+            }
+        }
+
+        function nextFlashcard() {
+            fcIndex = (fcIndex + 1) % flashcardList.length;
+            updateFlashcardUI();
+        }
+
+        function prevFlashcard() {
+            fcIndex = (fcIndex - 1 + flashcardList.length) % flashcardList.length;
+            updateFlashcardUI();
+        }
+
+        function randomizeFlashcard() {
+            fcIndex = Math.floor(Math.random() * flashcardList.length);
+            updateFlashcardUI();
+        }
+
+        /* ================= 30 SOAL UJI PEMAHAMAN DATABASE ================= */
+        const quizQuestions = [
+            // 1-10: Kore / Sore / Are / Dore
+            {
+                cat: "Kore / Sore / Are",
+                q: "Kata tunjuk yang digunakan untuk menunjuk benda yang berada sangat DEKAT DENGAN PEMBICARA adalah...",
+                options: ["Sore (それ)", "Kore (これ)", "Are (あれ)", "Dore (どれ)"],
+                ans: 1,
+                exp: "Kore (これ) digunakan untuk menunjuk benda dekat pembicara."
+            },
+            {
+                cat: "Kore / Sore / Are",
+                q: "Jika teman bicara memegang sebuah pensil dan kamu menanyakan benda tersebut, kata tunjuk yang tepat kamu gunakan adalah...",
+                options: ["Kore (これ)", "Sore (それ)", "Are (あれ)", "Dore (どれ)"],
+                ans: 1,
+                exp: "Benda berada dekat lawan bicara (teman), sehingga menggunakan Sore (それ)."
+            },
+            {
+                cat: "Kore / Sore / Are",
+                q: "Pernyataan 'Are (あれ) wa gakkou (がっこう) desu' berarti...",
+                options: ["Ini adalah sekolah", "Itu (dekat kamu) adalah sekolah", "Itu (di sana jauh) adalah sekolah", "Di mana sekolah?"],
+                ans: 2,
+                exp: "Are (あれ) digunakan untuk menunjuk benda/bangunan yang jauh dari pembicara maupun lawan bicara."
+            },
+            {
+                cat: "Kore / Sore / Are",
+                q: "Seorang siswa bertanya: 'Sore (それ) wa nan (なん) desu ka?'. Jawaban yang tepat dari pembicara yang memegang benda tersebut adalah...",
+                options: ["Sore (それ) wa hon (ほん) desu.", "Kore (これ) wa hon (ほん) desu.", "Are (あれ) wa hon (ほん) desu.", "Dore (どれ) wa hon (ほん) desu."],
+                ans: 1,
+                exp: "Jika ditanya 'Sore' (dekat lawan bicara), maka orang tersebut menjawab dengan 'Kore' (karena benda ada padanya)."
+            },
+            {
+                cat: "Kore / Sore / Are",
+                q: "Kata tanya yang digunakan untuk menanyakan 'Yang mana?' di antara beberapa pilihan benda adalah...",
+                options: ["Kore (これ)", "Sore (それ)", "Are (あれ)", "Dore (どれ)"],
+                ans: 3,
+                exp: "Dore (どれ) adalah kata tanya untuk memilih 'yang mana'."
+            },
+            {
+                cat: "Kore / Sore / Are",
+                q: "Lengkapi kalimat: '_______ wa watashi no kaban (かばん) desu.' (Ini adalah tas saya - posisi tas di pegangan saya).",
+                options: ["Kore (これ)", "Sore (それ)", "Are (あれ)", "Dore (どれ)"],
+                ans: 0,
+                exp: "Tas di pegangan saya (pembicara) = Kore (これ)."
+            },
+            {
+                cat: "Kore / Sore / Are",
+                q: "Joyo Sensei menunjuk jam dinding yang berada jauh di atas tembok kelas. Kalimat yang diucapkan Sensei adalah...",
+                options: ["Kore (これ) wa tokei (とけい) desu.", "Sore (それ) wa tokei (とけい) desu.", "Are (あれ) wa tokei (とけい) desu.", "Dore (どれ) wa tokei (とけい) desu."],
+                ans: 2,
+                exp: "Jam dinding jauh dari semua orang = Are (あれ)."
+            },
+            {
+                cat: "Kore / Sore / Are",
+                q: "Bagaimanakah mengubah kalimat 'Kore (これ) wa enpitsu (えんぴつ) desu' menjadi kalimat tanya?",
+                options: ["Kore (これ) wa enpitsu (えんぴつ) desu.", "Kore (これ) wa enpitsu (えんぴつ) desu ka?", "Sore (それ) wa enpitsu (えんぴつ) desu.", "Are (あれ) wa enpitsu (えんぴつ) desu ka?"],
+                ans: 1,
+                exp: "Kalimat tanya dalam bahasa Jepang diakhiri partikel 'ka (か)'."
+            },
+            {
+                cat: "Kore / Sore / Are",
+                q: "Jika ditanya 'Are (あれ) wa nan (なん) desu ka?', maka jawaban awalan yang tepat adalah...",
+                options: ["Kore (これ) wa...", "Sore (それ) wa...", "Are (あれ) wa...", "Dore (どれ) wa..."],
+                ans: 2,
+                exp: "Pertanyaan 'Are' dijawab tetap dengan 'Are' karena posisinya sama-sama jauh dari kedua penutur."
+            },
+            {
+                cat: "Kore / Sore / Are",
+                q: "Arti dari pertanyaan 'Kore (これ) wa nan (なん) desu ka?' adalah...",
+                options: ["Siapa ini?", "Di mana ini?", "Apakah ini?", "Milik siapa ini?"],
+                ans: 2,
+                exp: "Nan (なん) berarti 'apa'."
+            },
+
+            // 11-20: Kosakata Benda (Sekolah, Kelas, Rumah)
+            {
+                cat: "Kosakata Benda",
+                q: "Bahasa Jepang untuk 'Meja Belajar' beserta huruf Hiragananya yang benar adalah...",
+                options: ["Isu (いす)", "Tsukue (つくえ)", "Mado (まど)", "Doa (ドア)"],
+                ans: 1,
+                exp: "Tsukue (つくえ) adalah meja."
+            },
+            {
+                cat: "Kosakata Benda",
+                q: "'Perpustakaan' sekolah dalam bahasa Jepang disebut...",
+                options: ["Kyoushitsu (きょうしつ)", "Toshashitsu (としょしつ)", "Shokudou (しょくどう)", "Jimushitsu (じむしつ)"],
+                ans: 1,
+                exp: "Toshashitsu (としょしつ) = Perpustakaan."
+            },
+            {
+                cat: "Kosakata Benda",
+                q: "Benda kelas 'Keshigomu (けしごむ)' berarti...",
+                options: ["Pensil", "Buku Catatan", "Penghapus", "Penggaris"],
+                ans: 2,
+                exp: "Keshigomu (けしごむ) = Penghapus."
+            },
+            {
+                cat: "Kosakata Benda",
+                q: "Bahasa Jepang dari 'Kantin Sekolah' adalah...",
+                options: ["Gakkou (がっこう)", "Shokudou (しょくどう)", "Toire (トイレ)", "Kousha (こうしゃ)"],
+                ans: 1,
+                exp: "Shokudou (しょくどう) = Kantin / tempat makan."
+            },
+            {
+                cat: "Kosakata Benda",
+                q: "Benda di rumah 'Reizouko (れいぞうこ)' adalah...",
+                options: ["Televisi", "Kulkas", "Tempat Tidur", "Lampu"],
+                ans: 1,
+                exp: "Reizouko (れいぞうこ) = Kulkas."
+            },
+            {
+                cat: "Kosakata Benda",
+                q: "Pasangan kata Romaji & Hiragana berikut yang BENAR untuk 'Buku' adalah...",
+                options: ["Hon (ほん)", "Pen (ペン)", "Nooto (ノート)", "Kaban (かばん)"],
+                ans: 0,
+                exp: "Hon (ほん) = Buku."
+            },
+            {
+                cat: "Kosakata Benda",
+                q: "Arti kata 'Tokei (とけい)' dalam kosakata kelas/rumah adalah...",
+                options: ["Pintu", "Jendela", "Jam", "Cermin"],
+                ans: 2,
+                exp: "Tokei (とけい) = Jam."
+            },
+            {
+                cat: "Kosakata Benda",
+                q: "Benda di rumah 'Kagi (かぎ)' berarti...",
+                options: ["Kunci", "Lampu", "Kipas Angin", "Sofa"],
+                ans: 0,
+                exp: "Kagi (かぎ) = Kunci."
+            },
+            {
+                cat: "Kosakata Benda",
+                q: "Kata 'Kyoushitsu (きょうしつ)' mengacu pada tempat...",
+                options: ["Ruang TU", "Ruang Kelas", "Lapangan", "Kamar Mandi"],
+                ans: 1,
+                exp: "Kyoushitsu (きょうしつ) = Ruang Kelas."
+            },
+            {
+                cat: "Kosakata Benda",
+                q: "Kata 'Beddo (ベッド)' merupakan serapan kosakata rumah untuk...",
+                options: ["Meja Makan", "Tempat Tidur / Ranjang", "Lemari", "Cermin"],
+                ans: 1,
+                exp: "Beddo (ベッド) = Bed / Tempat Tidur."
+            },
+
+            // 21-30: Posisi & Petunjuk Arah Jalan
+            {
+                cat: "Posisi & Arah",
+                q: "Bahasa Jepang dari posisi 'ATAS' dan 'BAWAH' berturut-turut adalah...",
+                options: ["Migi (みぎ) & Hidari (ひだり)", "Ue (うえ) & Shita (した)", "Mae (まえ) & Ushiro (うしろ)", "Naka (なか) & Soto (そと)"],
+                ans: 1,
+                exp: "Ue (うえ) = Atas, Shita (した) = Bawah."
+            },
+            {
+                cat: "Posisi & Arah",
+                q: "Jika kamu ingin mengatakan 'Sebelah KANAN', kata yang digunakan adalah...",
+                options: ["Hidari (ひだり)", "Migi (みぎ)", "Mae (まえ)", "Tonari (となり)"],
+                ans: 1,
+                exp: "Migi (みぎ) = Kanan."
+            },
+            {
+                cat: "Posisi & Arah",
+                q: "Terjemahan dari 'Tsukue (つくえ) no ue (うえ)' adalah...",
+                options: ["Di bawah meja", "Di atas meja", "Di dalam meja", "Di samping meja"],
+                ans: 1,
+                exp: "Tsukue (meja) + no + ue (atas) = Di atas meja."
+            },
+            {
+                cat: "Posisi & Arah",
+                q: "Kata tunjuk tempat 'Di sini' (dekat pembicara) dalam bahasa Jepang adalah...",
+                options: ["Koko (ここ)", "Soko (そこ)", "Asoko (あそこ)", "Doko (どこ)"],
+                ans: 0,
+                exp: "Koko (ここ) = Di sini."
+            },
+            {
+                cat: "Posisi & Arah",
+                q: "Siswa menanyakan lokasi toilet: 'Toire (トイレ) wa _______ desu ka?'. Kata tanya lokasi yang tepat adalah...",
+                options: ["Koko (ここ)", "Soko (そこ)", "Asoko (あそこ)", "Doko (どこ)"],
+                ans: 3,
+                exp: "Doko (どこ) = Di mana."
+            },
+            {
+                cat: "Posisi & Arah",
+                q: "Petunjuk arah jalan 'Makkugu (まっすぐ)' memiliki arti...",
+                options: ["Belok Kanan", "Belok Kiri", "Lurus Terus", "Putar Balik"],
+                ans: 2,
+                exp: "Makkugu (まっすぐ) = Lurus terus."
+            },
+            {
+                cat: "Posisi & Arah",
+                q: "Ungkapan petunjuk jalan 'Migi (みぎ) ni magaru (まがる)' berarti...",
+                options: ["Belok ke kiri", "Belok ke kanan", "Jalan lurus", "Berhenti"],
+                ans: 1,
+                exp: "Migi (kanan) + magaru (belok) = Belok kanan."
+            },
+            {
+                cat: "Posisi & Arah",
+                q: "Arti dari kata posisi 'Naka (なか)' dan 'Soto (そと)' adalah...",
+                options: ["Depan & Belakang", "Dalam & Luar", "Atas & Bawah", "Samping & Antara"],
+                ans: 1,
+                exp: "Naka (なか) = Dalam, Soto (そと) = Luar."
+            },
+            {
+                cat: "Posisi & Arah",
+                q: "Lengkapi kalimat: 'Kaban (かばん) no _______ ni enpitsu (えんぴつ) ga arimasu.' (Di DALAM tas ada pensil).",
+                options: ["Ue (うえ)", "Shita (した)", "Naka (なか)", "Ushiro (うしろ)"],
+                ans: 2,
+                exp: "Naka (なか) = Dalam."
+            },
+            {
+                cat: "Posisi & Arah",
+                q: "Jika ditanya 'Kyoushitsu (きょうしつ) wa doko (どこ) desu ka?', dan kamu ingin menjawab 'Di sana (jauh)', maka jawabanmu adalah...",
+                options: ["Koko (ここ) desu.", "Soko (そこ) desu.", "Asoko (あそこ) desu.", "Doko (どこ) desu."],
+                ans: 2,
+                exp: "Asoko (あそこ) = Di sana (jauh)."
+            }
+        ];
+
+        /* ================= QUIZ ENGINE LOGIC ================= */
+        let currentQuestionIdx = 0;
+        let userAnswers = new Array(quizQuestions.length).fill(null);
+
+        function renderQuestion() {
+            const q = quizQuestions[currentQuestionIdx];
+            document.getElementById('q-category').innerText = q.cat;
+            document.getElementById('q-text').innerText = `${currentQuestionIdx + 1}. ${q.q}`;
+            document.getElementById('quiz-progress-badge').innerText = `Soal ${currentQuestionIdx + 1} dari ${quizQuestions.length}`;
+            
+            // Progress bar update
+            const pct = ((currentQuestionIdx + 1) / quizQuestions.length) * 100;
+            document.getElementById('quiz-progress-bar').style.width = `${pct}%`;
+
+            // Options rendering
+            const optContainer = document.getElementById('options-container');
+            optContainer.innerHTML = '';
+
+            const selected = userAnswers[currentQuestionIdx];
+
+            q.options.forEach((optText, i) => {
+                const btn = document.createElement('button');
+                btn.onclick = () => selectOption(i);
+                
+                let btnStyle = "bg-slate-50 hover:bg-red-50 border-slate-200 text-slate-800";
+                if (selected === i) {
+                    btnStyle = "bg-red-600 border-red-600 text-white font-bold shadow-md";
+                }
+
+                btn.className = `p-4 rounded-2xl border text-left text-xs sm:text-sm font-semibold transition flex items-center justify-between ${btnStyle}`;
+                btn.innerHTML = `
+                    <span><strong class="mr-2">${String.fromCharCode(65 + i)}.</strong> ${optText}</span>
+                    ${selected === i ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-regular fa-circle text-slate-300"></i>'}
+                `;
+                optContainer.appendChild(btn);
+            });
+
+            // Feedback rendering if answered
+            const feedbackBox = document.getElementById('feedback-box');
+            if (selected !== null) {
+                feedbackBox.classList.remove('hidden');
+                if (selected === q.ans) {
+                    feedbackBox.className = "p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm";
+                    feedbackBox.innerHTML = `
+                        <div class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-emerald-600"></i> Benar Sekali!</div>
+                        <div class="mt-1 font-normal">${q.exp}</div>
+                    `;
+                } else {
+                    feedbackBox.className = "p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm";
+                    feedbackBox.innerHTML = `
+                        <div class="font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-xmark text-rose-600"></i> Kurang Tepat</div>
+                        <div class="mt-1 font-normal">Jawaban Benar: <strong>${String.fromCharCode(65 + q.ans)}. ${q.options[q.ans]}</strong>. ${q.exp}</div>
+                    `;
+                }
+            } else {
+                feedbackBox.classList.add('hidden');
+            }
+
+            // Button state
+            document.getElementById('btn-prev-q').disabled = currentQuestionIdx === 0;
+            const nextBtn = document.getElementById('btn-next-q');
+            if (currentQuestionIdx === quizQuestions.length - 1) {
+                nextBtn.innerHTML = `<span>Selesai & Lihat Skor</span> <i class="fa-solid fa-flag-checkered"></i>`;
+                nextBtn.className = "px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-900 rounded-xl text-xs font-black transition flex items-center gap-1.5 shadow-md";
+            } else {
+                nextBtn.innerHTML = `<span>Selanjutnya</span> <i class="fa-solid fa-chevron-right"></i>`;
+                nextBtn.className = "px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-md";
+            }
+        }
+
+        function selectOption(optIdx) {
+            userAnswers[currentQuestionIdx] = optIdx;
+            renderQuestion();
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIdx < quizQuestions.length - 1) {
+                currentQuestionIdx++;
+                renderQuestion();
+            } else {
+                showQuizResults();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIdx > 0) {
+                currentQuestionIdx--;
+                renderQuestion();
+            }
+        }
+
+        function showQuizResults() {
+            document.getElementById('question-card').classList.add('hidden');
+            document.getElementById('quiz-results').classList.remove('hidden');
+
+            let correct = 0;
+            userAnswers.forEach((ans, i) => {
+                if (ans === quizQuestions[i].ans) correct++;
+            });
+
+            const score = Math.round((correct / quizQuestions.length) * 100);
+
+            document.getElementById('final-score').innerText = `${score} / 100`;
+            document.getElementById('correct-count').innerText = `${correct} / ${quizQuestions.length}`;
+
+            const evalBox = document.getElementById('score-evaluation');
+            if (score >= 85) {
+                evalBox.innerHTML = `<span class="text-emerald-600">🎉 Subarashii (素晴らしい)! Sangat Luar Biasa, Joyo Sensei pasti bangga padamu!</span>`;
+            } else if (score >= 70) {
+                evalBox.innerHTML = `<span class="text-blue-600">👍 Yoku dekimashita (よくできました)! Hasil yang bagus, tingkatkan terus!</span>`;
+            } else {
+                evalBox.innerHTML = `<span class="text-amber-600">💪 Ganbatte (がんばって)! Ayo pelajari kembali materi dan coba lagi!</span>`;
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestionIdx = 0;
+            userAnswers = new Array(quizQuestions.length).fill(null);
+            document.getElementById('quiz-results').classList.add('hidden');
+            document.getElementById('question-card').classList.remove('hidden');
+            renderQuestion();
+        }
+
+        /* ================= INITIALIZATION ================= */
+        window.onload = function() {
+            filterBenda('sekolah');
+            renderPosisi();
+            updateFlashcardUI();
+            renderQuestion();
+        };
+    </script>
+</body>
+</html>
