@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Pembelajaran Bahasa Jepang - Joyo Sensei</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        jpRed: '#E60012',
+                        jpDarkRed: '#99000C',
+                        jpSakura: '#FFB7C5',
+                        jpDark: '#1E293B',
+                        jpCream: '#FFFBF5',
+                        jpGold: '#D97706',
+                        jpTeal: '#0D9488',
+                        jpIndigo: '#4F46E5',
+                        jpPurple: '#9333EA'
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        jp: ['Noto Sans JP', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .jp-font { font-family: 'Noto Sans JP', sans-serif; }
+        .hero-pattern {
+            background-color: #0f172a;
+            background-image: radial-gradient(#e60012 0.75px, transparent 0.75px), radial-gradient(#e60012 0.75px, #0f172a 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            opacity: 0.98;
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        /* 3D Flashcard Flip Effect */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+        .flashcard-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between selection:bg-red-500 selection:text-white">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-slate-900/95 backdrop-blur-md text-white sticky top-0 z-50 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-red-600 to-rose-700 text-white rounded-xl flex items-center justify-center text-xl font-black shadow-md border border-red-400/30">
+                    ⛩️
+                </div>
+                <div>
+                    <span class="text-xs font-bold tracking-widest text-red-400 uppercase block leading-none">Nihongo Portal</span>
+                    <h1 class="text-lg font-extrabold text-white tracking-tight leading-tight">Joyo Sensei Class</h1>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="hidden md:flex items-center space-x-2 text-xs font-bold">
+                <a href="#materi-list" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-layer-group text-red-400 mr-1"></i> Modul
+                </a>
+                <a href="#kana-section" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-font text-purple-400 mr-1"></i> Kana & Flashcard
+                </a>
+                <a href="#kazoku-section" class="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-people-roof text-amber-400 mr-1"></i> Kazoku (Keluarga)
+                </a>
+                <span class="bg-red-950/80 text-rose-300 text-xs px-3 py-1.5 rounded-full font-bold border border-red-800/50 flex items-center gap-1.5 ml-2">
+                    <i class="fa-solid fa-graduation-cap text-amber-400"></i> SMA & SMK
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner Section -->
+    <section class="hero-pattern text-white py-10 lg:py-14 px-4 relative overflow-hidden border-b border-slate-800">
+        <div class="max-w-7xl mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            <!-- Left Info -->
+            <div class="lg:col-span-8 space-y-4 text-center lg:text-left">
+                <div class="inline-flex items-center gap-2 bg-red-600/20 border border-red-500/40 text-rose-300 px-3.5 py-1 rounded-full text-xs font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                    <span>Media Pembelajaran Bahasa Jepang Interaktif</span>
+                </div>
+
+                <h1 class="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
+                    Portal Pembelajaran <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-rose-300 to-amber-300">Nihongo</span>
+                </h1>
+
+                <p class="text-slate-300 text-sm sm:text-base max-w-2xl leading-relaxed mx-auto lg:mx-0">
+                    Media belajar mandiri untuk siswa SMA & SMK bersama <strong>Joyo Sensei</strong>. Lengkap dengan latihan Hiragana, Katakana, Kosakata Kazoku (Keluarga), Jikoshoukai, Angka, Tanggal/Waktu, hingga Kore-Sore-Are & Direction.
+                </p>
+
+                <!-- Sensei Profile Pill -->
+                <div class="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-4">
+                    <div class="bg-slate-800/90 border border-slate-700 p-3 rounded-2xl flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-slate-900 flex items-center justify-center text-2xl font-bold shadow-md">
+                            👨‍🏫
+                        </div>
+                        <div class="text-left">
+                            <span class="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Pengampu Materi</span>
+                            <h3 class="text-sm font-black text-white">Joyo Sensei</h3>
+                            <p class="text-[11px] text-amber-400 font-medium">Guru Bahasa Jepang SMA/SMK</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/90 border border-slate-700 p-3 rounded-2xl flex items-center gap-4 text-left">
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Total Modul Utama</span>
+                            <span class="text-base font-black text-red-400">6 Modul Lengkap</span>
+                        </div>
+                        <div class="h-8 w-px bg-slate-700"></div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Fitur Interaktif</span>
+                            <span class="text-xs font-bold text-purple-300 bg-purple-950/60 px-2 py-0.5 rounded-md border border-purple-800">Flashcard & Chart</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Visual Graphic Box -->
+            <div class="lg:col-span-4 flex justify-center">
+                <div class="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 p-6 rounded-3xl shadow-2xl relative w-full max-w-sm space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                        <span class="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+                            <i class="fa-solid fa-quote-left"></i> Kotowaza (Ungkapan)
+                        </span>
+                        <span class="text-[10px] bg-red-900/60 text-red-300 px-2 py-0.5 rounded-md border border-red-700">Motivation</span>
+                    </div>
+                    
+                    <div class="space-y-2 py-1">
+                        <h4 class="text-2xl font-black text-white jp-font">継続は力なり</h4>
+                        <p class="text-xs font-bold text-rose-300">けいぞくはちからなり (Keizoku wa chikara nari)</p>
+                        <p class="text-xs text-slate-400 italic">"Konsistensi adalah kekuatan." (Ketekunan belajar akan membuahkan hasil luar biasa).</p>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
+                        <span>Pilih modul di bawah untuk mulai!</span>
+                        <i class="fa-solid fa-arrow-down text-red-400 animate-bounce"></i>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Main Content: Course Modules Section -->
+    <main id="materi-list" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full space-y-12">
+        
+        <!-- Section Header & Filter -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 pb-5">
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="text-red-600 font-extrabold text-xs tracking-widest uppercase bg-red-100 px-2.5 py-1 rounded-md">Daftar Modul</span>
+                    <span class="text-slate-400 text-xs font-semibold">| Joyo Sensei Class</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 mt-1">Modul Pembelajaran Interaktif</h2>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1">Klik pada box modul di bawah untuk membuka halaman materi atau latihan flashcard.</p>
+            </div>
+
+            <!-- Search Filter Bar -->
+            <div class="relative w-full md:w-72">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" id="searchInput" onkeyup="filterCards()" placeholder="Cari nama materi / topik..." class="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 shadow-sm">
+            </div>
+        </div>
+
+        <!-- Material Cards Grid (6 Boxes) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="materiGrid">
+
+            <!-- BOX 05: HIRAGANA & KATAKANA (NEW) -->
+            <div class="materi-card bg-white rounded-3xl border border-purple-200 shadow-sm card-hover overflow-hidden flex flex-col justify-between relative group ring-2 ring-purple-500/20">
+                <div class="h-2 bg-gradient-to-r from-purple-500 via-indigo-500 to-pink-500"></div>
+                <div class="p-6 space-y-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-purple-50 border border-purple-200 text-purple-600 flex items-center justify-center text-2xl font-black shadow-sm group-hover:scale-110 transition">
+                            あ/ア
+                        </div>
+                        <span class="bg-purple-100 text-purple-800 text-[11px] font-bold px-3 py-1 rounded-full border border-purple-200">
+                            Modul 01 (Dasar)
+                        </span>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-lg font-black text-purple-600 jp-font">ひらがな・カタカナ</span>
+                            <span class="text-xs bg-purple-50 text-purple-700 font-semibold px-2 py-0.5 rounded border border-purple-100">Flashcard Interaktif</span>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-slate-900 group-hover:text-purple-600 transition">Hiragana & Katakana</h3>
+                        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                            Mengenal huruf dasar Jepang Hiragana (ひらがな) & Katakana (カタカナ). Dilengkapi dengan tabel Gojuuon dan media latihan Flashcard interaktif 3D.
+                        </p>
+                    </div>
+
+                    <!-- Topics checklist -->
+                    <div class="bg-purple-50/50 p-3.5 rounded-2xl border border-purple-100 space-y-1.5 text-xs text-slate-600">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check text-purple-600 text-[10px]"></i>
+                            <span>Tabel Huruf 46 Karakter Dasar + Suara A-I-U-E-O</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check text-purple-600 text-[10px]"></i>
+                            <span>Sistem Flashcard Interaktif 3D Acak</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check text-purple-600 text-[10px]"></i>
+                            <span>Latihan Hafalan Huruf Kana Mandiri</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 pt-0 mt-auto">
+                    <a href="#kana-section" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-extrabold py-3 px-4 rounded-2xl text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-md shadow-purple-200">
+                        <span>Buka Modul Kana & Flashcard</span>
+                        <i class="fa-solid fa-arrow-down text-xs"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- BOX 06: KAZOKU / KELUARGA (NEW) -->
+            <div class="materi-card bg-white rounded-3xl border border-amber-200 shadow-sm card-hover overflow-hidden flex flex-col justify-between relative group ring-2 ring-amber-500/20">
+                <div class="h-2 bg-gradient-to-r from-amber-500 via-orange-500 to-red-500"></div>
+                <div class="p-6 space-y-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center text-2xl font-black shadow-sm group-hover:scale-110 transition">
+                            👨‍👩‍👧‍👦
+                        </div>
+                        <span class="bg-amber-100 text-amber-800 text-[11px] font-bold px-3 py-1 rounded-full border border-amber-200">
+                            Modul 02 (Keluarga)
+                        </span>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-lg font-black text-amber-600 jp-font">かぞく</span>
+                            <span class="text-xs bg-amber-50 text-amber-700 font-semibold px-2 py-0.5 rounded border border-amber-100">Kosakata & Pola</span>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-slate-900 group-hover:text-amber-600 transition">Kazoku (家族 - Keluarga)</h3>
+                        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                            Mempelajari sebutan anggota keluarga sendiri (Uchi) vs keluarga orang lain (Soto), menyebutkan jumlah anggota keluarga, serta menyatakan pekerjaan.
+                        </p>
+                    </div>
+
+                    <!-- Topics checklist -->
+                    <div class="bg-amber-50/50 p-3.5 rounded-2xl border border-amber-100 space-y-1.5 text-xs text-slate-600">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check text-amber-600 text-[10px]"></i>
+                            <span>Perbedaan Chichi/Otousan, Haha/Okaasan</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check text-amber-600 text-[10px]"></i>
+                            <span>Pola Kalimat "Kazoku wa ~nin desu"</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check text-amber-600 text-[10px]"></i>
+                            <span>Flashcard Anggota Keluarga Interaktif</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 pt-0 mt-auto">
+                    <a href="#kazoku-section" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-extrabold py-3 px-4 rounded-2xl text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-md shadow-amber-200">
+                        <span>Buka Modul Kazoku</span>
+                        <i class="fa-solid fa-arrow-down text-xs"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- BOX 1: JIKOSHOUKAI -->
+            <div class="materi-card bg-white rounded-3xl border border-slate-200 shadow-sm card-hover overflow-hidden flex flex-col justify-between relative group">
+                <div class="h-2 bg-gradient-to-r from-rose-500 to-pink-500"></div>
+                <div class="p-6 space-y-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center text-2xl font-black shadow-sm group-hover:scale-110 transition">
+                            🙋‍♂️
+                        </div>
+                        <span class="bg-rose-100 text-rose-800 text-[11px] font-bold px-3 py-1 rounded-full border border-rose-200">
+                            Modul 03
+                        </span>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-lg font-black text-rose-600 jp-font">じこしょうかい</span>
+                            <span class="text-xs bg-slate-100 text-slate-600 font-semibold px-2 py-0.5 rounded">Perkenalan Diri</span>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-slate-900 group-hover:text-rose-600 transition">Jikoshoukai (自己紹介)</h3>
+                        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                            Mempelajari ungkapan dasar saat berkenalan dalam Bahasa Jepang. Meliputi salam pembuka <em>Hajimemashite</em>, nama, umur, asal, hobi, dan ungkapan penutup.
+                        </p>
+                    </div>
+
+                    <!-- Topics checklist -->
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 space-y-1.5 text-xs text-slate-600">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check text-rose-500 text-[10px]"></i>
+                            <span>Hajimemashite & Yoroshiku onegaishimasu</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check text-rose-500 text-[10px]"></i>
+                            <span>Menyebutkan Nama, Sekolah, Kelas & Hobi</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check text-rose-500 text-[10px]"></i>
+                            <span>Contoh Percakapan & Latihan Mandiri</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 pt-0 mt-auto">
+                    <a href="https://slametjoyo158-cmyk.github.io/Nihongo/Jikoshoukai.html" target="_blank" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-extrabold py-3 px-4 rounded-2xl text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-md shadow-rose-200">
+                        <span>Buka Materi Jikoshoukai</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- BOX 2: SUUJI (ANGKA) -->
+            <div class="materi-card bg-white rounded-3xl border border-slate-200 shadow-sm card-hover overflow-hidden flex flex-col justify-between relative group">
+                <div class="h-2 bg-gradient-to-r from-indigo-500 to-blue-600"></div>
+                <div class="p-6 space-y-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-600 flex items-center justify-center text-2xl font-black shadow-sm group-hover:scale-110 transition">
+                            🔢
+                        </div>
+                        <span class="bg-indigo-100 text-indigo-800 text-[11px] font-bold px-3 py-1 rounded-full border border-indigo-200">
+                            Modul 04
+                        </span>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-lg font-black text-indigo-600 jp-font">すうじ</span>
+                            <span class="text-xs bg-slate-100 text-slate-600 font-semibold px-2 py-0.5 rounded">Sistem Angka</span>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-slate-900 group-hover:text-indigo-600 transition">Nihongo Suuji (数字)</h3>
+                        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                            Panduan lengkap angka dan penomoran Bahasa Jepang dari satuan (0-9), belasan, puluhan, ratusan (Hyaku), ribuan (Sen), hingga puluhan ribu (Man).
+                        </p>
+                    </div>
+
+                    <!-- Topics checklist -->
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 space-y-1.5 text-xs text-slate-600">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check text-indigo-500 text-[10px]"></i>
+                            <span>Angka Satuan, Belasan, Puluhan & Ratusan</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check text-indigo-500 text-[10px]"></i>
+                            <span>Pembacaan Khusus (4, 7, 9) & Pengecualian</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check text-indigo-500 text-[10px]"></i>
+                            <span>Penggunaan Nomor HP & Hitungan Benda</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 pt-0 mt-auto">
+                    <a href="https://slametjoyo158-cmyk.github.io/Nihongo/Nihongo_Suuji.html" target="_blank" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-3 px-4 rounded-2xl text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-md shadow-indigo-200">
+                        <span>Buka Materi Angka (Suuji)</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- BOX 3: BULAN, TANGGAL & JAM -->
+            <div class="materi-card bg-white rounded-3xl border border-slate-200 shadow-sm card-hover overflow-hidden flex flex-col justify-between relative group">
+                <div class="h-2 bg-gradient-to-r from-emerald-500 to-teal-600"></div>
+                <div class="p-6 space-y-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center text-2xl font-black shadow-sm group-hover:scale-110 transition">
+                            📅
+                        </div>
+                        <span class="bg-emerald-100 text-emerald-800 text-[11px] font-bold px-3 py-1 rounded-full border border-emerald-200">
+                            Modul 05
+                        </span>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-lg font-black text-emerald-600 jp-font">じかん と ひづけ</span>
+                            <span class="text-xs bg-slate-100 text-slate-600 font-semibold px-2 py-0.5 rounded">Waktu & Tanggal</span>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-slate-900 group-hover:text-emerald-600 transition">Bulan, Tanggal, Hari & Jam</h3>
+                        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                            Mempelajari penyebutan waktu secara akurat: Nama bulan (Gatsu), Tanggal khusus (Nichi/Tsuitachi dll), Nama Hari (Youbi), serta Jam (Ji) & Menit (Fun).
+                        </p>
+                    </div>
+
+                    <!-- Topics checklist -->
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 space-y-1.5 text-xs text-slate-600">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check text-emerald-500 text-[10px]"></i>
+                            <span>Nama 12 Bulan (Ichigatsu ~ Juunigatsu)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check text-emerald-500 text-[10px]"></i>
+                            <span>Tanggal 1-31 & Tanggal Unik (Tsuitachi, Futsuka)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check text-emerald-500 text-[10px]"></i>
+                            <span>Menyatakan Jam (Ji), Menit (Fun) & Nama Hari</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 pt-0 mt-auto">
+                    <a href="https://slametjoyo158-cmyk.github.io/Nihongo/Belajar BahasaJepang_Bulan_Tanggal_Jam.html" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 px-4 rounded-2xl text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-md shadow-emerald-200">
+                        <span>Buka Materi Waktu & Tanggal</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- BOX 4: KORE, SORE, ARE & POSISI -->
+            <div class="materi-card bg-white rounded-3xl border border-slate-200 shadow-sm card-hover overflow-hidden flex flex-col justify-between relative group">
+                <div class="h-2 bg-gradient-to-r from-red-500 to-amber-500"></div>
+                <div class="p-6 space-y-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-red-50 border border-red-200 text-red-600 flex items-center justify-center text-2xl font-black shadow-sm group-hover:scale-110 transition">
+                            📍
+                        </div>
+                        <span class="bg-red-100 text-red-800 text-[11px] font-bold px-3 py-1 rounded-full border border-red-200">
+                            Modul 06 + Kuis 30 Soal
+                        </span>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-lg font-black text-red-600 jp-font">これ・それ・あれ</span>
+                            <span class="text-xs bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded">Interaktif + Kuis</span>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-slate-900 group-hover:text-red-600 transition">Kore, Sore, Are, Posisi & Petunjuk Arah</h3>
+                        <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+                            Kata tunjuk benda (Kore, Sore, Are), benda sekolah & rumah, posisi (Ue, Shita, Migi, Hidari), percakapan arah jalan (Michi Annai), & 30 Soal Kuis.
+                        </p>
+                    </div>
+
+                    <!-- Topics checklist -->
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 space-y-1.5 text-xs text-slate-600">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check text-red-500 text-[10px]"></i>
+                            <span>Konsep Kore, Sore, Are & Dore</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check text-red-500 text-[10px]"></i>
+                            <span>Posisi Spasial & Percakapan Arah Jalan</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check text-red-500 text-[10px]"></i>
+                            <span>Evaluasi Uji Pemahaman 30 Soal Interaktif</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 pt-0 mt-auto">
+                    <a href="https://slametjoyo158-cmyk.github.io/Nihongo/Kore_Sore_Are_posisi.html" target="_blank" class="w-full bg-red-600 hover:bg-red-700 text-white font-extrabold py-3 px-4 rounded-2xl text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-md shadow-red-200">
+                        <span>Buka Modul Kore, Sore, Are</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SECTION 1: INTERACTIVE HIRAGANA & KATAKANA FLASHCARD MODULE -->
+        <section id="kana-section" class="bg-white rounded-3xl border border-purple-200 shadow-xl p-6 sm:p-8 space-y-8 scroll-mt-24">
+            
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-purple-100 pb-5">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-purple-600 text-white font-extrabold text-[11px] px-3 py-1 rounded-lg">Modul Interaktif Langsung</span>
+                        <span class="text-xs font-bold text-purple-700">Joyo Sensei Media</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900 mt-1">
+                        Modul Hiragana (ひらがな) & Katakana (カタカナ)
+                    </h2>
+                    <p class="text-xs sm:text-sm text-slate-500 mt-1">
+                        Pelajari karakter dasar Jepang Gojuuon dan latih daya ingat dengan **Flashcard Interaktif 3D** di bawah ini.
+                    </p>
+                </div>
+
+                <!-- Tab Switching for Kana View -->
+                <div class="flex bg-slate-100 p-1 rounded-2xl border border-slate-200 text-xs font-bold self-start md:self-auto">
+                    <button onclick="switchKanaTab('flashcard')" id="tabBtnFlashcard" class="px-4 py-2 rounded-xl bg-purple-600 text-white shadow-sm transition">
+                        <i class="fa-solid fa-cards-blank mr-1.5"></i> Flashcard Trainer
+                    </button>
+                    <button onclick="switchKanaTab('chart')" id="tabBtnChart" class="px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition">
+                        <i class="fa-solid fa-table-cells mr-1.5"></i> Tabel Gojuuon
+                    </button>
+                </div>
+            </div>
+
+            <!-- VIEW 1: FLASHCARD TRAINER -->
+            <div id="kanaFlashcardContainer" class="space-y-6">
+                
+                <!-- Controls & Filter -->
+                <div class="flex flex-wrap items-center justify-between gap-4 bg-purple-50/60 p-4 rounded-2xl border border-purple-100">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-purple-900">Pilih Jenis Huruf:</span>
+                        <button onclick="setKanaMode('all')" id="btnKanaAll" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-600 text-white shadow-sm">Semua (Hiragana & Katakana)</button>
+                        <button onclick="setKanaMode('hiragana')" id="btnKanaHira" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-purple-700 border border-purple-200">Hiragana Saja</button>
+                        <button onclick="setKanaMode('katakana')" id="btnKanaKata" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-purple-700 border border-purple-200">Katakana Saja</button>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-bold text-slate-600" id="cardProgressText">Kartu 1 dari 46</span>
+                        <button onclick="shuffleKanaCards()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-shuffle"></i> Acak Kartu
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Interactive 3D Flashcard -->
+                <div class="flex justify-center py-4">
+                    <div id="kanaCardElement" onclick="flipKanaCard()" class="flashcard perspective-1000 w-full max-w-md h-72 cursor-pointer group">
+                        <div class="flashcard-inner transform-style-3d relative w-full h-full rounded-3xl shadow-xl border-2 border-purple-300 bg-gradient-to-br from-purple-600 to-indigo-700 text-white p-6 flex flex-col justify-between select-none">
+                            
+                            <!-- Front Side (Kana Character) -->
+                            <div class="backface-hidden absolute inset-0 p-6 flex flex-col justify-between items-center text-center bg-gradient-to-br from-purple-700 to-indigo-800 rounded-3xl">
+                                <div class="w-full flex justify-between items-center text-xs text-purple-200 font-bold border-b border-purple-500/50 pb-2">
+                                    <span id="cardTypeLabel" class="bg-purple-900/60 px-2.5 py-0.5 rounded-md border border-purple-400/40">Hiragana (ひらがな)</span>
+                                    <span>Klik untuk balik <i class="fa-solid fa-rotate text-amber-300 ml-1"></i></span>
+                                </div>
+
+                                <div class="my-auto">
+                                    <span id="cardKanaChar" class="text-7xl sm:text-8xl font-black jp-font drop-shadow-md">あ</span>
+                                </div>
+
+                                <p class="text-xs text-purple-200 font-medium italic">Sentuh / Klik kartu untuk melihat Romaji & Contoh</p>
+                            </div>
+
+                            <!-- Back Side (Romaji & Example) -->
+                            <div class="backface-hidden rotate-y-180 absolute inset-0 p-6 flex flex-col justify-between items-center text-center bg-white text-slate-800 rounded-3xl border-2 border-purple-400">
+                                <div class="w-full flex justify-between items-center text-xs text-purple-700 font-bold border-b border-slate-100 pb-2">
+                                    <span id="cardBackTypeLabel" class="bg-purple-100 px-2.5 py-0.5 rounded-md">Jawaban Romaji</span>
+                                    <span>Klik untuk balik <i class="fa-solid fa-rotate text-purple-600 ml-1"></i></span>
+                                </div>
+
+                                <div class="my-auto space-y-2">
+                                    <div class="text-4xl font-black text-purple-700 tracking-wider" id="cardRomaji">A</div>
+                                    <div class="text-xs bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200 inline-block text-slate-700 font-bold" id="cardExample">
+                                        Contoh: <span class="jp-font font-black text-rose-600">あめ</span> (Ame = Hujan)
+                                    </div>
+                                </div>
+
+                                <p class="text-xs text-slate-400 font-medium">Lanjut ke kartu berikutnya di bawah</p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Controls (Prev / Next / Mastered) -->
+                <div class="flex items-center justify-center gap-3">
+                    <button onclick="prevKanaCard()" class="px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl text-xs font-extrabold transition flex items-center gap-2">
+                        <i class="fa-solid fa-chevron-left"></i> Sebelumnya
+                    </button>
+
+                    <button onclick="markKanaMastered()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-extrabold transition flex items-center gap-2 shadow-md shadow-emerald-200">
+                        <i class="fa-solid fa-circle-check"></i> Sudah Hafal
+                    </button>
+
+                    <button onclick="nextKanaCard()" class="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-extrabold transition flex items-center gap-2 shadow-md shadow-purple-200">
+                        Berikutnya <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- VIEW 2: GOJUUON CHART -->
+            <div id="kanaChartContainer" class="hidden space-y-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-table-cells text-purple-600"></i> Tabel 46 Karakter Dasar Gojuuon (五十音)
+                    </h3>
+                    <span class="text-xs text-slate-500 font-medium">Klik pada kotak huruf untuk highlight</span>
+                </div>
+
+                <!-- Switcher Sub-tab -->
+                <div class="flex gap-2">
+                    <button onclick="showChartTab('hiragana')" id="btnChartHira" class="px-4 py-2 rounded-xl text-xs font-bold bg-purple-600 text-white shadow-sm">Tabel Hiragana (ひらがな)</button>
+                    <button onclick="showChartTab('katakana')" id="btnChartKata" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-200 text-slate-700">Tabel Katakana (カタカナ)</button>
+                </div>
+
+                <!-- Hiragana Grid -->
+                <div id="hiraganaGrid" class="grid grid-cols-5 sm:grid-cols-10 gap-2">
+                    <!-- Populated dynamically via JavaScript -->
+                </div>
+
+                <!-- Katakana Grid -->
+                <div id="katakanaGrid" class="hidden grid grid-cols-5 sm:grid-cols-10 gap-2">
+                    <!-- Populated dynamically via JavaScript -->
+                </div>
+            </div>
+
+        </section>
+
+        <!-- SECTION 2: INTERACTIVE KAZOKU (KELUARGA) MODULE -->
+        <section id="kazoku-section" class="bg-white rounded-3xl border border-amber-200 shadow-xl p-6 sm:p-8 space-y-8 scroll-mt-24">
+            
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-amber-100 pb-5">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-amber-500 text-slate-900 font-extrabold text-[11px] px-3 py-1 rounded-lg">Modul Interaktif Lengsung</span>
+                        <span class="text-xs font-bold text-amber-800">Joyo Sensei Media</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900 mt-1">
+                        Modul Kazoku (家族 - Anggota Keluarga)
+                    </h2>
+                    <p class="text-xs sm:text-sm text-slate-500 mt-1">
+                        Mempelajari sebutan keluarga sendiri (*Uchi*) vs keluarga orang lain (*Soto*), pola kalimat jumlah keluarga & pekerjaan.
+                    </p>
+                </div>
+
+                <!-- Kazoku Sub Tabs -->
+                <div class="flex bg-slate-100 p-1 rounded-2xl border border-slate-200 text-xs font-bold">
+                    <button onclick="switchKazokuTab('vocabs')" id="tabKazokuVocab" class="px-4 py-2 rounded-xl bg-amber-600 text-white shadow-sm transition">
+                        <i class="fa-solid fa-users mr-1"></i> Sebutan Keluarga
+                    </button>
+                    <button onclick="switchKazokuTab('grammar')" id="tabKazokuGrammar" class="px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition">
+                        <i class="fa-solid fa-book-bookmark mr-1"></i> Pola Kalimat
+                    </button>
+                    <button onclick="switchKazokuTab('flashcard')" id="tabKazokuCards" class="px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition">
+                        <i class="fa-solid fa-cards-blank mr-1"></i> Flashcard Kazoku
+                    </button>
+                </div>
+            </div>
+
+            <!-- KAZOKU SUB 1: VOCABULARY TABLE -->
+            <div id="kazokuVocabContainer" class="space-y-6">
+                <div class="bg-amber-50/70 border border-amber-200 p-4 rounded-2xl text-xs text-amber-900 flex items-start gap-3">
+                    <i class="fa-solid fa-circle-info text-amber-600 text-lg mt-0.5"></i>
+                    <div>
+                        <strong class="font-extrabold block mb-0.5">Catatan Penting Joyo Sensei:</strong>
+                        Dalam budaya Jepang, sebutan untuk **keluarga sendiri (内 - Uchi)** digunakan saat kita menceritakan keluarga kita kepada orang lain. Sedangkan sebutan **keluarga orang lain (外 - Soto)** digunakan saat bertanya atau membicarakan keluarga orang lain secara sopan.
+                    </div>
+                </div>
+
+                <!-- Comparative Vocabulary Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="kazokuGrid">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- KAZOKU SUB 2: GRAMMAR & SENTENCE PATTERNS -->
+            <div id="kazokuGrammarContainer" class="hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Pattern 1: Jumlah Anggota Keluarga -->
+                    <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 p-6 rounded-3xl space-y-4">
+                        <div class="inline-flex items-center gap-2 bg-amber-200/80 text-amber-900 px-3 py-1 rounded-full text-xs font-extrabold">
+                            <span>Pola Kalimat 1</span>
+                        </div>
+                        <h3 class="text-lg font-black text-slate-900">Menyebutkan Jumlah Anggota Keluarga</h3>
+                        
+                        <!-- Structure Box -->
+                        <div class="bg-white p-4 rounded-2xl border border-amber-200 space-y-1 font-extrabold text-sm text-amber-900">
+                            <div>かぞく は [Jumlah Orang] にん です。</div>
+                            <div class="text-xs text-slate-600 font-semibold">Kazoku wa [Jumlah Orang]-nin desu.</div>
+                            <div class="text-xs text-rose-600 font-bold italic">Artinya: Keluarga saya berjumlah [Jumlah] orang.</div>
+                        </div>
+
+                        <!-- Examples -->
+                        <div class="space-y-2 text-xs">
+                            <div class="bg-white/80 p-3 rounded-xl border border-amber-100">
+                                <span class="font-bold text-slate-800 block">Contoh 4 Orang:</span>
+                                <span class="jp-font font-extrabold text-amber-800 text-sm">かぞく は よにん です。</span>
+                                <span class="block text-slate-600 font-semibold">Kazoku wa yonin desu.</span>
+                                <span class="text-slate-500">(Keluarga saya ada 4 orang).</span>
+                            </div>
+                            <div class="bg-white/80 p-3 rounded-xl border border-amber-100">
+                                <span class="font-bold text-slate-800 block">Contoh 5 Orang:</span>
+                                <span class="jp-font font-extrabold text-amber-800 text-sm">かぞく は ごにん です。</span>
+                                <span class="block text-slate-600 font-semibold">Kazoku wa gonin desu.</span>
+                                <span class="text-slate-500">(Keluarga saya ada 5 orang).</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pattern 2: Pekerjaan Anggota Keluarga -->
+                    <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-3xl space-y-4">
+                        <div class="inline-flex items-center gap-2 bg-red-600/80 text-white px-3 py-1 rounded-full text-xs font-extrabold">
+                            <span>Pola Kalimat 2</span>
+                        </div>
+                        <h3 class="text-lg font-black text-white">Menyebutkan Pekerjaan Anggota Keluarga</h3>
+                        
+                        <!-- Structure Box -->
+                        <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-1 font-extrabold text-sm text-amber-300">
+                            <div>[Anggota Keluarga] は [Pekerjaan] です。</div>
+                            <div class="text-xs text-slate-300 font-semibold">[Anggota Keluarga] wa [Pekerjaan] desu.</div>
+                            <div class="text-xs text-rose-300 font-bold italic">Artinya: [Anggota Keluarga] saya adalah seorang [Pekerjaan].</div>
+                        </div>
+
+                        <!-- Examples -->
+                        <div class="space-y-2 text-xs">
+                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+                                <span class="font-bold text-amber-400 block">Contoh Ayah Guru:</span>
+                                <span class="jp-font font-extrabold text-white text-sm">ちち は きょうし です。</span>
+                                <span class="block text-slate-300 font-semibold">Chichi wa kyoushi desu.</span>
+                                <span class="text-slate-400">(Ayah saya adalah seorang guru).</span>
+                            </div>
+                            <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700">
+                                <span class="font-bold text-amber-400 block">Contoh Ibu Ibu Rumah Tangga:</span>
+                                <span class="jp-font font-extrabold text-white text-sm">はは は しゅふ です。</span>
+                                <span class="block text-slate-300 font-semibold">Haha wa shufu desu.</span>
+                                <span class="text-slate-400">(Ibu saya adalah seorang ibu rumah tangga).</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- KAZOKU SUB 3: KAZOKU FLASHCARD TRAINER -->
+            <div id="kazokuCardsContainer" class="hidden space-y-6">
+                <div class="flex justify-center py-4">
+                    <div id="kazokuCardElement" onclick="flipKazokuCard()" class="flashcard perspective-1000 w-full max-w-md h-72 cursor-pointer group">
+                        <div class="flashcard-inner transform-style-3d relative w-full h-full rounded-3xl shadow-xl border-2 border-amber-300 bg-gradient-to-br from-amber-500 to-orange-600 text-white p-6 flex flex-col justify-between select-none">
+                            
+                            <!-- Front Side -->
+                            <div class="backface-hidden absolute inset-0 p-6 flex flex-col justify-between items-center text-center bg-gradient-to-br from-amber-600 to-orange-700 rounded-3xl">
+                                <div class="w-full flex justify-between items-center text-xs text-amber-100 font-bold border-b border-amber-400/40 pb-2">
+                                    <span class="bg-amber-900/60 px-2.5 py-0.5 rounded-md border border-amber-400/40">Sebutan Indonesia</span>
+                                    <span>Klik balik <i class="fa-solid fa-rotate text-amber-300 ml-1"></i></span>
+                                </div>
+
+                                <div class="my-auto space-y-2">
+                                    <span id="kazokuCardIcon" class="text-5xl block">👨</span>
+                                    <h4 id="kazokuCardIndo" class="text-2xl font-black text-white">Ayah (Keluarga Sendiri)</h4>
+                                </div>
+
+                                <p class="text-xs text-amber-100 font-medium">Sebutkan Hiragana & Romaji dalam Bahasa Jepang!</p>
+                            </div>
+
+                            <!-- Back Side -->
+                            <div class="backface-hidden rotate-y-180 absolute inset-0 p-6 flex flex-col justify-between items-center text-center bg-white text-slate-800 rounded-3xl border-2 border-amber-400">
+                                <div class="w-full flex justify-between items-center text-xs text-amber-800 font-bold border-b border-slate-100 pb-2">
+                                    <span class="bg-amber-100 px-2.5 py-0.5 rounded-md">Jawaban Bahasa Jepang</span>
+                                    <span>Klik balik <i class="fa-solid fa-rotate text-amber-600 ml-1"></i></span>
+                                </div>
+
+                                <div class="my-auto space-y-3">
+                                    <div class="jp-font text-4xl font-black text-amber-600" id="kazokuCardKana">ちち</div>
+                                    <div class="text-xl font-extrabold text-slate-800" id="kazokuCardRomaji">Chichi</div>
+                                    <div class="text-xs bg-amber-50 text-amber-900 px-3 py-1.5 rounded-xl border border-amber-200 font-bold" id="kazokuCardSoto">
+                                        Keluarga Orang Lain: <span class="jp-font font-black text-rose-600">おとうさん</span> (Otousan)
+                                    </div>
+                                </div>
+
+                                <p class="text-xs text-slate-400 font-medium">Klik Lanjut di bawah</p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-center gap-3">
+                    <button onclick="prevKazokuCard()" class="px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl text-xs font-extrabold transition flex items-center gap-2">
+                        <i class="fa-solid fa-chevron-left"></i> Sebelumnya
+                    </button>
+                    <button onclick="nextKazokuCard()" class="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-extrabold transition flex items-center gap-2 shadow-md shadow-amber-200">
+                        Berikutnya <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Learning Workflow & Tips for Students -->
+        <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-xl space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                <div>
+                    <span class="text-xs font-bold text-amber-400 tracking-wider uppercase">Panduan Belajar Mandiri</span>
+                    <h3 class="text-xl font-extrabold text-white mt-0.5">Petunjuk Penggunaan Portal Joyo Sensei</h3>
+                </div>
+                <div class="bg-slate-800 px-3.5 py-1.5 rounded-full border border-slate-700 text-xs text-slate-300 font-semibold flex items-center gap-2">
+                    <i class="fa-solid fa-lightbulb text-amber-400"></i> Tips Belajar Efektif
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Step 1 -->
+                <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700 space-y-2">
+                    <div class="w-8 h-8 rounded-xl bg-purple-600 text-white flex items-center justify-center font-black text-xs">1</div>
+                    <h4 class="font-bold text-white text-sm">Hafalkan Huruf Kana</h4>
+                    <p class="text-xs text-slate-400">Mulailah dari Modul Hiragana & Katakana di atas menggunakan fitur Flashcard 3D.</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700 space-y-2">
+                    <div class="w-8 h-8 rounded-xl bg-amber-600 text-white flex items-center justify-center font-black text-xs">2</div>
+                    <h4 class="font-bold text-white text-sm">Pahami Perbedaan Uchi/Soto</h4>
+                    <p class="text-xs text-slate-400">Pelajari sebutan keluarga sendiri vs keluarga orang lain pada Modul Kazoku.</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700 space-y-2">
+                    <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black text-xs">3</div>
+                    <h4 class="font-bold text-white text-sm">Pelajari Modul 03-06</h4>
+                    <p class="text-xs text-slate-400">Buka materi Jikoshoukai, Suuji, Tanggal/Jam, dan Kore-Sore-Are secara bertahap.</p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700 space-y-2">
+                    <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-black text-xs">4</div>
+                    <h4 class="font-bold text-white text-sm">Evaluasi Kuis 30 Soal</h4>
+                    <p class="text-xs text-slate-400">Uji pemahamanmu dengan mengerjakan 30 soal kuis interaktif di Modul 06.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 mt-10">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-3">
+            <div class="flex items-center justify-center space-x-2 text-white font-bold text-sm">
+                <span>⛩️ Nihongo Learning Portal</span>
+                <span>•</span>
+                <span class="text-red-400">Joyo Sensei Class</span>
+            </div>
+            <p class="text-slate-400 max-w-md mx-auto">
+                Media Pembelajaran Bahasa Jepang SMA & SMK (Kurikulum Merdeka). Dirancang untuk memudahkan siswa belajar tata bahasa, kosakata, huruf Kana, dan percakapan.
+            </p>
+            <p class="text-slate-600 pt-2 border-t border-slate-800">
+                © 2026 Nihongo Joyo Sensei Class. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Hiragana & Katakana Datasets (46 Basic Characters)
+        const kanaData = [
+            // A Row
+            { type: 'hiragana', char: 'あ', romaji: 'a', example: 'あめ (Ame = Hujan)' },
+            { type: 'katakana', char: 'ア', romaji: 'a', example: 'アイス (Aisu = Es)' },
+            { type: 'hiragana', char: 'い', romaji: 'i', example: 'いぬ (Inu = Anjing)' },
+            { type: 'katakana', char: 'イ', romaji: 'i', example: 'インク (Inku = Tinta)' },
+            { type: 'hiragana', char: 'う', romaji: 'u', example: 'うみ (Umi = Laut)' },
+            { type: 'katakana', char: 'ウ', romaji: 'u', example: 'ウェブ (Webu = Web)' },
+            { type: 'hiragana', char: 'え', romaji: 'e', example: 'えき (Eki = Stasiun)' },
+            { type: 'katakana', char: 'エ', romaji: 'e', example: 'エアコン (Eakon = AC)' },
+            { type: 'hiragana', char: 'お', romaji: 'o', example: 'おんがく (Ongaku = Musik)' },
+            { type: 'katakana', char: 'オ', romaji: 'o', example: 'オレンジ (Orenji = Jeruk)' },
+
+            // Ka Row
+            { type: 'hiragana', char: 'か', romaji: 'ka', example: 'かさ (Kasa = Payung)' },
+            { type: 'katakana', char: 'カ', romaji: 'ka', example: 'カメラ (Kamera = Kamera)' },
+            { type: 'hiragana', char: 'き', romaji: 'ki', example: 'きのう (Kinou = Kemarin)' },
+            { type: 'katakana', char: 'キ', romaji: 'ki', example: 'キャンプ (Kyanpu = Kempo/Camping)' },
+            { type: 'hiragana', char: 'く', romaji: 'ku', example: 'くるま (Kuruma = Mobil)' },
+            { type: 'katakana', char: 'ク', romaji: 'ku', example: 'クラス (Kurasu = Kelas)' },
+            { type: 'hiragana', char: 'け', romaji: 'ke', example: 'けしごむ (Keshigomu = Penghapus)' },
+            { type: 'katakana', char: 'ケ', romaji: 'ke', example: 'ケーキ (Keeki = Kue)' },
+            { type: 'hiragana', char: 'こ', romaji: 'ko', example: 'こども (Kodomo = Anak)' },
+            { type: 'katakana', char: 'コ', romaji: 'ko', example: 'コーヒー (Koohii = Kopi)' },
+
+            // Sa Row
+            { type: 'hiragana', char: 'さ', romaji: 'sa', example: 'さくら (Sakura = Bunga Sakura)' },
+            { type: 'katakana', char: 'サ', romaji: 'sa', example: 'サッカー (Sakkaa = Sepak Bola)' },
+            { type: 'hiragana', char: 'し', romaji: 'shi', example: 'しんぶん (Shinbun = Koran)' },
+            { type: 'katakana', char: 'シ', romaji: 'shi', example: 'シャツ (Shatsu = Kemeja)' },
+            { type: 'hiragana', char: 'す', romaji: 'su', example: 'すし (Sushi = Sushi)' },
+            { type: 'katakana', char: 'ス', romaji: 'su', example: 'スポーツ (Supootsu = Olahraga)' },
+            { type: 'hiragana', char: 'せ', romaji: 'se', example: 'せんせい (Sensei = Guru)' },
+            { type: 'katakana', char: 'セ', romaji: 'se', example: 'セーター (Seetaa = Sweter)' },
+            { type: 'hiragana', char: 'そ', romaji: 'so', example: 'そら (Sora = Langit)' },
+            { type: 'katakana', char: 'ソ', romaji: 'so', example: 'ソファ (Sofa = Sofa)' },
+
+            // Ta Row
+            { type: 'hiragana', char: 'た', romaji: 'ta', example: 'たべもの (Tabemono = Makanan)' },
+            { type: 'katakana', char: 'タ', romaji: 'ta', example: 'タクシー (Takushii = Taksi)' },
+            { type: 'hiragana', char: 'ち', romaji: 'chi', example: 'ちち (Chichi = Ayah Saya)' },
+            { type: 'katakana', char: 'チ', romaji: 'chi', example: 'チーム (Chiimu = Tim)' },
+            { type: 'hiragana', char: 'つ', romaji: 'tsu', example: 'つくえ (Tsukue = Meja)' },
+            { type: 'katakana', char: 'ツ', romaji: 'tsu', example: 'ツアー (Tsuaa = Tur)' },
+            { type: 'hiragana', char: 'て', romaji: 'te', example: 'てがみ (Tegami = Surat)' },
+            { type: 'katakana', char: 'テ', romaji: 'te', example: 'テスト (Tesuto = Tes/Ujian)' },
+            { type: 'hiragana', char: 'と', romaji: 'to', example: 'ともだち (Tomodachi = Teman)' },
+            { type: 'katakana', char: 'ト', romaji: 'to', example: 'トマト (Tomato = Tomat)' },
+
+            // Na Row
+            { type: 'hiragana', char: 'な', romaji: 'na', example: 'なまえ (Namae = Nama)' },
+            { type: 'katakana', char: 'ナ', romaji: 'na', example: 'ナイフ (Naifu = Pisau)' },
+            { type: 'hiragana', char: 'に', romaji: 'ni', example: 'nihon (Nihon = Jepang)' },
+            { type: 'katakana', char: 'ニ', romaji: 'ni', example: 'ニュース (Nyuusu = Berita)' },
+            { type: 'hiragana', char: 'ぬ', romaji: 'nu', example: 'いぬ (Inu = Anjing)' },
+            { type: 'katakana', char: 'ヌ', romaji: 'nu', example: 'ヌードル (Nuudoru = Mie)' },
+            { type: 'hiragana', char: 'ね', romaji: 'ne', example: 'ねこ (Neko = Kucing)' },
+            { type: 'katakana', char: 'ネ', romaji: 'ne', example: 'ネクタイ (Nekutai = Dasi)' },
+            { type: 'hiragana', char: 'の', romaji: 'no', example: 'のみもの (Nomimono = Minuman)' },
+            { type: 'katakana', char: 'ノ', romaji: 'no', example: 'ノート (Nooto = Buku Catatan)' }
+        ];
+
+        // Kazoku Dataset (Family terms)
+        const kazokuData = [
+            {
+                role: 'Ayah',
+                icon: '👨',
+                uchiKana: 'ちち',
+                uchiRomaji: 'Chichi',
+                sotoKana: 'おとうさん',
+                sotoRomaji: 'Otousan',
+                note: 'Gunakan Chichi saat bercerita ke orang lain, Otousan saat memanggil ayah sendiri/orang lain.'
+            },
+            {
+                role: 'Ibu',
+                icon: '👩',
+                uchiKana: 'はは',
+                uchiRomaji: 'Haha',
+                sotoKana: 'おかあさん',
+                sotoRomaji: 'Okaasan',
+                note: 'Gunakan Haha saat bercerita ke orang lain, Okaasan saat memanggil ibu sendiri/orang lain.'
+            },
+            {
+                role: 'Kakak Laki-Laki',
+                icon: '👦',
+                uchiKana: 'あに',
+                uchiRomaji: 'Ani',
+                sotoKana: 'おにいさん',
+                sotoRomaji: 'Oniisan',
+                note: 'Gunakan Ani untuk kakak laki-laki sendiri kepada orang lain.'
+            },
+            {
+                role: 'Kakak Perempuan',
+                icon: '👧',
+                uchiKana: 'あね',
+                uchiRomaji: 'Ane',
+                sotoKana: 'おねえさん',
+                sotoRomaji: 'Oneesan',
+                note: 'Gunakan Ane untuk kakak perempuan sendiri kepada orang lain.'
+            },
+            {
+                role: 'Adik Laki-Laki',
+                icon: '🧒',
+                uchiKana: 'おとうと',
+                uchiRomaji: 'Otouto',
+                sotoKana: 'おとうとさん',
+                sotoRomaji: 'Otoutosan',
+                note: 'Gunakan Otouto untuk adik laki-laki sendiri.'
+            },
+            {
+                role: 'Adik Perempuan',
+                icon: '👧',
+                uchiKana: 'いもうと',
+                uchiRomaji: 'Imouto',
+                sotoKana: 'いもうとさん',
+                sotoRomaji: 'Imoutosan',
+                note: 'Gunakan Imouto untuk adik perempuan sendiri.'
+            },
+            {
+                role: 'Kakek',
+                icon: '👴',
+                uchiKana: 'そふ',
+                uchiRomaji: 'Sofu',
+                sotoKana: 'おじいさん',
+                sotoRomaji: 'Ojiisan',
+                note: 'Gunakan Sofu untuk kakek sendiri kepada orang lain.'
+            },
+            {
+                role: 'Nenek',
+                icon: '👵',
+                uchiKana: 'そぼ',
+                uchiRomaji: 'Sobo',
+                sotoKana: 'おばあさん',
+                sotoRomaji: 'Obaasan',
+                note: 'Gunakan Sobo untuk nenek sendiri kepada orang lain.'
+            }
+        ];
+
+        // State variables
+        let currentKanaList = [...kanaData];
+        let kanaIndex = 0;
+        let isKanaFlipped = false;
+        let kanaMode = 'all';
+
+        let kazokuIndex = 0;
+        let isKazokuFlipped = false;
+
+        window.onload = function() {
+            renderKanaCard();
+            renderHiraganaGrid();
+            renderKatakanaGrid();
+            renderKazokuCards();
+            renderKazokuFlashcard();
+        };
+
+        // Real-time Card Search Filter Function
+        function filterCards() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.materi-card');
+
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                if (text.includes(input)) {
+                    card.style.display = "flex";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+
+        function switchKanaTab(tab) {
+            const flashcardCont = document.getElementById('kanaFlashcardContainer');
+            const chartCont = document.getElementById('kanaChartContainer');
+            const btnFlash = document.getElementById('tabBtnFlashcard');
+            const btnChart = document.getElementById('tabBtnChart');
+
+            if (tab === 'flashcard') {
+                flashcardCont.classList.remove('hidden');
+                chartCont.classList.add('hidden');
+                btnFlash.className = "px-4 py-2 rounded-xl bg-purple-600 text-white shadow-sm transition";
+                btnChart.className = "px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition";
+            } else {
+                flashcardCont.classList.add('hidden');
+                chartCont.classList.remove('hidden');
+                btnChart.className = "px-4 py-2 rounded-xl bg-purple-600 text-white shadow-sm transition";
+                btnFlash.className = "px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition";
+            }
+        }
+
+        function setKanaMode(mode) {
+            kanaMode = mode;
+            if (mode === 'hiragana') {
+                currentKanaList = kanaData.filter(k => k.type === 'hiragana');
+            } else if (mode === 'katakana') {
+                currentKanaList = kanaData.filter(k => k.type === 'katakana');
+            } else {
+                currentKanaList = [...kanaData];
+            }
+            kanaIndex = 0;
+
+            document.getElementById('btnKanaAll').className = mode === 'all' ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-600 text-white shadow-sm" : "px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-purple-700 border border-purple-200";
+            document.getElementById('btnKanaHira').className = mode === 'hiragana' ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-600 text-white shadow-sm" : "px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-purple-700 border border-purple-200";
+            document.getElementById('btnKanaKata').className = mode === 'katakana' ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-600 text-white shadow-sm" : "px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-purple-700 border border-purple-200";
+
+            renderKanaCard();
+        }
+
+        function renderKanaCard() {
+            if (currentKanaList.length === 0) return;
+            const item = currentKanaList[kanaIndex];
+            const cardElem = document.getElementById('kanaCardElement');
+            
+            // Reset Flip
+            isKanaFlipped = false;
+            cardElem.classList.remove('flipped');
+
+            document.getElementById('cardTypeLabel').innerText = item.type === 'hiragana' ? 'Hiragana (ひらがな)' : 'Katakana (カタカナ)';
+            document.getElementById('cardKanaChar').innerText = item.char;
+            document.getElementById('cardRomaji').innerText = item.romaji.toUpperCase();
+            document.getElementById('cardExample').innerHTML = `Contoh: <span class="jp-font font-black text-purple-600">${item.example}</span>`;
+            document.getElementById('cardProgressText').innerText = `Kartu ${kanaIndex + 1} dari ${currentKanaList.length}`;
+        }
+
+        function flipKanaCard() {
+            const cardElem = document.getElementById('kanaCardElement');
+            isKanaFlipped = !isKanaFlipped;
+            if (isKanaFlipped) {
+                cardElem.classList.add('flipped');
+            } else {
+                cardElem.classList.remove('flipped');
+            }
+        }
+
+        function nextKanaCard() {
+            kanaIndex = (kanaIndex + 1) % currentKanaList.length;
+            renderKanaCard();
+        }
+
+        function prevKanaCard() {
+            kanaIndex = (kanaIndex - 1 + currentKanaList.length) % currentKanaList.length;
+            renderKanaCard();
+        }
+
+        function shuffleKanaCards() {
+            for (let i = currentKanaList.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentKanaList[i], currentKanaList[j]] = [currentKanaList[j], currentKanaList[i]];
+            }
+            kanaIndex = 0;
+            renderKanaCard();
+        }
+
+        function markKanaMastered() {
+            nextKanaCard();
+        }
+
+        function renderHiraganaGrid() {
+            const grid = document.getElementById('hiraganaGrid');
+            const hiraList = kanaData.filter(k => k.type === 'hiragana');
+            grid.innerHTML = '';
+
+            hiraList.forEach(item => {
+                const box = document.createElement('div');
+                box.className = "bg-purple-50 hover:bg-purple-600 hover:text-white border border-purple-200 p-2.5 rounded-xl text-center cursor-pointer transition flex flex-col justify-center items-center group";
+                box.innerHTML = `
+                    <span class="text-xl font-black jp-font group-hover:scale-110 transition">${item.char}</span>
+                    <span class="text-[10px] font-bold text-slate-500 group-hover:text-purple-200 uppercase">${item.romaji}</span>
+                `;
+                grid.appendChild(box);
+            });
+        }
+
+        function renderKatakanaGrid() {
+            const grid = document.getElementById('katakanaGrid');
+            const kataList = kanaData.filter(k => k.type === 'katakana');
+            grid.innerHTML = '';
+
+            kataList.forEach(item => {
+                const box = document.createElement('div');
+                box.className = "bg-indigo-50 hover:bg-indigo-600 hover:text-white border border-indigo-200 p-2.5 rounded-xl text-center cursor-pointer transition flex flex-col justify-center items-center group";
+                box.innerHTML = `
+                    <span class="text-xl font-black jp-font group-hover:scale-110 transition">${item.char}</span>
+                    <span class="text-[10px] font-bold text-slate-500 group-hover:text-indigo-200 uppercase">${item.romaji}</span>
+                `;
+                grid.appendChild(box);
+            });
+        }
+
+        function showChartTab(type) {
+            const hiraGrid = document.getElementById('hiraganaGrid');
+            const kataGrid = document.getElementById('katakanaGrid');
+            const btnHira = document.getElementById('btnChartHira');
+            const btnKata = document.getElementById('btnChartKata');
+
+            if (type === 'hiragana') {
+                hiraGrid.classList.remove('hidden');
+                kataGrid.classList.add('hidden');
+                btnHira.className = "px-4 py-2 rounded-xl text-xs font-bold bg-purple-600 text-white shadow-sm";
+                btnKata.className = "px-4 py-2 rounded-xl text-xs font-bold bg-slate-200 text-slate-700";
+            } else {
+                hiraGrid.classList.add('hidden');
+                kataGrid.classList.remove('hidden');
+                btnKata.className = "px-4 py-2 rounded-xl text-xs font-bold bg-purple-600 text-white shadow-sm";
+                btnHira.className = "px-4 py-2 rounded-xl text-xs font-bold bg-slate-200 text-slate-700";
+            }
+        }
+
+        function switchKazokuTab(tab) {
+            const vocabCont = document.getElementById('kazokuVocabContainer');
+            const grammarCont = document.getElementById('kazokuGrammarContainer');
+            const cardsCont = document.getElementById('kazokuCardsContainer');
+
+            const btnVocab = document.getElementById('tabKazokuVocab');
+            const btnGrammar = document.getElementById('tabKazokuGrammar');
+            const btnCards = document.getElementById('tabKazokuCards');
+
+            vocabCont.classList.add('hidden');
+            grammarCont.classList.add('hidden');
+            cardsCont.classList.add('hidden');
+
+            btnVocab.className = "px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition";
+            btnGrammar.className = "px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition";
+            btnCards.className = "px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition";
+
+            if (tab === 'vocabs') {
+                vocabCont.classList.remove('hidden');
+                btnVocab.className = "px-4 py-2 rounded-xl bg-amber-600 text-white shadow-sm transition";
+            } else if (tab === 'grammar') {
+                grammarCont.classList.remove('hidden');
+                btnGrammar.className = "px-4 py-2 rounded-xl bg-amber-600 text-white shadow-sm transition";
+            } else {
+                cardsCont.classList.remove('hidden');
+                btnCards.className = "px-4 py-2 rounded-xl bg-amber-600 text-white shadow-sm transition";
+            }
+        }
+
+        function renderKazokuCards() {
+            const grid = document.getElementById('kazokuGrid');
+            grid.innerHTML = '';
+
+            kazokuData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-3xl border border-amber-200 shadow-sm space-y-3 hover:border-amber-400 transition";
+                card.innerHTML = `
+                    <div class="flex items-center justify-between border-b border-amber-100 pb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">${item.icon}</span>
+                            <h4 class="font-black text-slate-900 text-base">${item.role}</h4>
+                        </div>
+                        <span class="text-[10px] bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded">Uchi vs Soto</span>
+                    </div>
+
+                    <div class="space-y-2 text-xs">
+                        <div class="bg-amber-50/80 p-2.5 rounded-xl border border-amber-100 flex justify-between items-center">
+                            <div>
+                                <span class="text-[10px] text-amber-700 font-bold block">Keluarga Sendiri (内):</span>
+                                <span class="jp-font text-base font-black text-amber-900">${item.uchiKana}</span>
+                                <span class="text-slate-600 font-semibold text-xs ml-1">(${item.uchiRomaji})</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-rose-50/80 p-2.5 rounded-xl border border-rose-100 flex justify-between items-center">
+                            <div>
+                                <span class="text-[10px] text-rose-700 font-bold block">Keluarga Orang Lain (外):</span>
+                                <span class="jp-font text-base font-black text-rose-900">${item.sotoKana}</span>
+                                <span class="text-slate-600 font-semibold text-xs ml-1">(${item.sotoRomaji})</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-[11px] text-slate-500 italic pt-1">${item.note}</p>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderKazokuFlashcard() {
+            const item = kazokuData[kazokuIndex];
+            const cardElem = document.getElementById('kazokuCardElement');
+            
+            isKazokuFlipped = false;
+            cardElem.classList.remove('flipped');
+
+            document.getElementById('kazokuCardIcon').innerText = item.icon;
+            document.getElementById('kazokuCardIndo').innerText = `${item.role} (Keluarga Sendiri)`;
+            document.getElementById('kazokuCardKana').innerText = item.uchiKana;
+            document.getElementById('kazokuCardRomaji').innerText = item.uchiRomaji;
+            document.getElementById('kazokuCardSoto').innerHTML = `Keluarga Orang Lain: <span class="jp-font font-black text-rose-600">${item.sotoKana}</span> (${item.sotoRomaji})`;
+        }
+
+        function flipKazokuCard() {
+            const cardElem = document.getElementById('kazokuCardElement');
+            isKazokuFlipped = !isKazokuFlipped;
+            if (isKazokuFlipped) {
+                cardElem.classList.add('flipped');
+            } else {
+                cardElem.classList.remove('flipped');
+            }
+        }
+
+        function nextKazokuCard() {
+            kazokuIndex = (kazokuIndex + 1) % kazokuData.length;
+            renderKazokuFlashcard();
+        }
+
+        function prevKazokuCard() {
+            kazokuIndex = (kazokuIndex - 1 + kazokuData.length) % kazokuData.length;
+            renderKazokuFlashcard();
+        }
+    </script>
+</body>
+</html>
