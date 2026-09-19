@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jikoshoukai Master - Belajar Perkenalan Diri Bahasa Jepang</title>
+    <title>Jikoshoukai Master - Belajar Perkenalan Diri Bahasa Jepang (Fitur Audio)</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -68,6 +68,21 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+        
+        /* Audio waveform pulse animation */
+        @keyframes soundPulse {
+            0%, 100% { height: 6px; }
+            50% { height: 18px; }
+        }
+        .audio-bar {
+            display: inline-block;
+            width: 3px;
+            background-color: #e63956;
+            border-radius: 3px;
+            animation: soundPulse 0.8s ease-in-out infinite;
+        }
+        .audio-bar:nth-child(2) { animation-delay: 0.2s; }
+        .audio-bar:nth-child(3) { animation-delay: 0.4s; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen antialiased selection:bg-sakura-500 selection:text-white">
@@ -88,8 +103,13 @@
                         私
                     </div>
                     <div>
-                        <h1 class="font-extrabold text-lg text-slate-900 leading-tight">Jikoshoukai Master</h1>
-                        <p class="text-xs text-slate-500 font-medium">Panduan & Builder Perkenalan Diri Bahasa Jepang by Joyo Sensei</p>
+                        <div class="flex items-center gap-2">
+                            <h1 class="font-extrabold text-lg text-slate-900 leading-tight">Jikoshoukai Master</h1>
+                            <span class="px-2 py-0.5 bg-sakura-100 text-sakura-700 text-[10px] font-bold rounded-full border border-sakura-200 flex items-center gap-1">
+                                🔊 Audio Enabled
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-500 font-medium">Panduan & Builder Perkenalan Diri Bahasa Jepang + Audio Pelafalan</p>
                     </div>
                 </div>
 
@@ -102,7 +122,7 @@
                         <span>📖</span> Tata Bahasa
                     </button>
                     <button @click="activeTab = 'vocabulary'" :class="activeTab === 'vocabulary' ? 'bg-white text-fuji-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'" class="px-3.5 py-2 rounded-xl transition-all whitespace-nowrap flex items-center gap-1.5">
-                        <span>🗂️</span> Kamus Kata
+                        <span>🗂️</span> Kamus Kosakata
                     </button>
                     <button @click="activeTab = 'quiz'" :class="activeTab === 'quiz' ? 'bg-white text-fuji-700 shadow-sm' : 'text-slate-600 hover:text-slate-900'" class="px-3.5 py-2 rounded-xl transition-all whitespace-nowrap flex items-center gap-1.5">
                         <span>🎯</span> Latihan Soal (20)
@@ -119,10 +139,10 @@
                 <!-- Introduction Banner -->
                 <div class="bg-gradient-to-r from-fuji-800 via-fuji-700 to-indigo-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl shadow-fuji-900/10 relative overflow-hidden">
                     <div class="relative z-10 max-w-2xl space-y-2">
-                        <span class="inline-block px-3 py-1 bg-white/10 backdrop-blur-md text-sakura-200 text-xs font-bold rounded-full">Interactive Script Builder</span>
-                        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Buat Naskah Jikoshoukai Otomatis</h2>
+                        <span class="inline-block px-3 py-1 bg-white/10 backdrop-blur-md text-sakura-200 text-xs font-bold rounded-full">Interactive Script Builder with Audio</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Buat Naskah & Dengarkan Pengucapannya</h2>
                         <p class="text-slate-200 text-xs sm:text-sm leading-relaxed">
-                            Isi formulir data diri di bawah ini. Aplikasi akan mengonversi nama dan asal daerah Anda ke huruf <b>Katakana</b> serta menerjemahkan hobi Anda ke dalam bahasa Jepang secara otomatis.
+                            Isi data diri Anda di bawah ini. Aplikasi akan menyusun naskah bahasa Jepang secara otomatis dan Anda bisa **mendengarkan pelafalan audio** per kalimat atau seluruh naskah sekaligus!
                         </p>
                     </div>
                 </div>
@@ -144,14 +164,18 @@
                             <div>
                                 <label class="block font-bold text-slate-700 mb-1.5">Nama Lengkap (Romaji)</label>
                                 <input type="text" v-model="form.fullName" placeholder="misal: Ahmad Rizky" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-fuji-600 text-slate-800 font-medium">
-                                
                             </div>
 
                             <!-- Nama Panggilan -->
                             <div>
-                                <label class="block font-bold text-slate-700 mb-1.5">Nama Panggilan </label>
+                                <label class="block font-bold text-slate-700 mb-1.5">Nama Panggilan</label>
                                 <input type="text" v-model="form.nickname" placeholder="misal: Rizky" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-fuji-600 text-slate-800 font-medium">
-                                
+                            </div>
+
+                            <!-- Nomor HP / Telepon -->
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1.5">Nomor HP / Telepon</label>
+                                <input type="text" v-model="form.phone" placeholder="misal: 081234567890" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-fuji-600 text-slate-800 font-medium">
                             </div>
 
                             <!-- Umur -->
@@ -162,7 +186,7 @@
                                 </select>
                             </div>
 
-                            <!-- Sekolah & Tingkatan Kelas (SMA/SMK Indonesia) -->
+                            <!-- Sekolah & Tingkatan Kelas -->
                             <div>
                                 <label class="block font-bold text-slate-700 mb-1.5">Tingkat Sekolah & Kelas</label>
                                 <select v-model="form.gradeKey" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-fuji-600 text-slate-800 font-medium">
@@ -193,21 +217,21 @@
                                 <p class="text-[11px] text-slate-400 mt-1">Katakana: <span class="font-jp text-fuji-700 font-bold">{{ provinceKatakana }}州</span></p>
                             </div>
 
-                            <!-- Kabupaten (Gun) -->
+                            <!-- Kabupaten -->
                             <div>
                                 <label class="block font-bold text-slate-700 mb-1.5">Kabupaten (Gun / 郡)</label>
                                 <input type="text" v-model="form.regency" placeholder="misal: Kendal" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-fuji-600 text-slate-800 font-medium">
                                 <p class="text-[11px] text-slate-400 mt-1">Jepang: <span class="font-jp text-fuji-700 font-bold">{{ regencyKatakana }}郡</span></p>
                             </div>
 
-                            <!-- Kecamatan (Chō) -->
+                            <!-- Kecamatan -->
                             <div>
                                 <label class="block font-bold text-slate-700 mb-1.5">Kecamatan (Chō / 町)</label>
                                 <input type="text" v-model="form.district" placeholder="misal: Pegandon" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-fuji-600 text-slate-800 font-medium">
                                 <p class="text-[11px] text-slate-400 mt-1">Jepang: <span class="font-jp text-fuji-700 font-bold">{{ districtKatakana }}町</span></p>
                             </div>
 
-                            <!-- Desa (Mura) -->
+                            <!-- Desa -->
                             <div class="sm:col-span-2">
                                 <label class="block font-bold text-slate-700 mb-1.5">Desa / Kelurahan (Mura / 村)</label>
                                 <input type="text" v-model="form.village" placeholder="misal: Puguh" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-fuji-600 text-slate-800 font-medium">
@@ -262,7 +286,7 @@
                                 </select>
                             </div>
 
-                            <!-- Warna Favorit (Dengan Romaji) -->
+                            <!-- Warna Favorit -->
                             <div>
                                 <label class="block font-bold text-slate-700 mb-1.5">Warna Favorit (Bentuk Kata Benda)</label>
                                 <select v-model="form.selectedColorKey" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-fuji-600 text-slate-800 font-medium">
@@ -277,16 +301,50 @@
 
                     <!-- Output Generated Script (5 Cols) -->
                     <div class="lg:col-span-5 space-y-6 sticky top-20">
-                        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-lg shadow-fuji-900/5 space-y-6">
+                        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-lg shadow-fuji-900/5 space-y-5">
                             
                             <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                                 <div>
-                                    <span class="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded-md uppercase">Hasil Live</span>
+                                    <span class="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded-md uppercase">Hasil Live + Audio</span>
                                     <h3 class="text-lg font-extrabold text-slate-900">Naskah Jikoshoukai</h3>
                                 </div>
                                 <button @click="copyFullScript" class="px-3 py-1.5 bg-fuji-50 hover:bg-fuji-100 text-fuji-700 border border-fuji-200 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all">
                                     📋 Salin Teks
                                 </button>
+                            </div>
+
+                            <!-- Audio Control Panel Header -->
+                            <div class="bg-gradient-to-r from-sakura-50 to-fuji-50 p-4 rounded-2xl border border-sakura-200/80 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-base">🎧</span>
+                                        <span class="font-bold text-xs text-slate-800">Kontrol Pelafalan Audio:</span>
+                                    </div>
+                                    <!-- Speed Rate Selector -->
+                                    <div class="flex items-center gap-1 text-[11px] font-bold text-slate-600">
+                                        <span>Kecepatan:</span>
+                                        <select v-model="audioRate" class="bg-white border border-slate-300 rounded-lg px-2 py-0.5 text-xs font-bold text-fuji-800 focus:outline-none">
+                                            <option value="0.75">0.75x (Lambat)</option>
+                                            <option value="0.9">0.9x (Normal)</option>
+                                            <option value="1.1">1.1x (Cepat)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="flex gap-2">
+                                    <button @click="playFullScript" :disabled="isSpeaking" :class="isSpeaking ? 'opacity-50 cursor-not-allowed bg-slate-400' : 'bg-sakura-600 hover:bg-sakura-700 shadow-md shadow-sakura-200'" class="flex-1 py-2 px-3 text-white font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-2">
+                                        <span v-if="!isSpeaking">▶ Putar Seluruh Naskah</span>
+                                        <span v-else class="flex items-center gap-1">
+                                            <span class="audio-bar"></span>
+                                            <span class="audio-bar"></span>
+                                            <span class="audio-bar"></span>
+                                            Sedang Memutar...
+                                        </span>
+                                    </button>
+                                    <button v-if="isSpeaking" @click="stopAudio" class="py-2 px-4 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl transition-all">
+                                        ⏹ Stop
+                                    </button>
+                                </div>
                             </div>
 
                             <!-- Mode Display Selector -->
@@ -296,18 +354,30 @@
                                 <button @click="scriptFormat = 'romaji'" :class="scriptFormat === 'romaji' ? 'bg-white text-slate-900 shadow-sm' : ''" class="flex-1 py-1.5 rounded-lg transition-all text-center">Romaji</button>
                             </div>
 
-                            <!-- Dynamic Script Output Area -->
-                            <div class="space-y-4 max-h-[520px] overflow-y-auto pr-1 custom-scrollbar">
-                                <div v-for="(line, idx) in generatedScript" :key="idx" class="p-3.5 bg-slate-50/80 rounded-2xl border border-slate-100 space-y-1">
-                                    <p v-if="scriptFormat === 'all' || scriptFormat === 'jp'" class="font-jp font-bold text-slate-900 text-sm sm:text-base leading-relaxed">
-                                        {{ line.jp }}
-                                    </p>
-                                    <p v-if="scriptFormat === 'all' || scriptFormat === 'romaji'" class="text-xs sm:text-sm text-fuji-700 font-semibold italic">
-                                        {{ line.romaji }}
-                                    </p>
-                                    <p v-if="scriptFormat === 'all'" class="text-xs text-slate-500 font-medium">
-                                        ➔ {{ line.id }}
-                                    </p>
+                            <!-- Dynamic Script Output Area with Individual Audio Play Buttons -->
+                            <div class="space-y-3 max-h-[480px] overflow-y-auto pr-1 custom-scrollbar">
+                                <div v-for="(line, idx) in generatedScript" :key="idx" 
+                                     :class="activePlayingIndex === idx ? 'bg-sakura-50/90 border-sakura-400 ring-2 ring-sakura-200 scale-[1.01]' : 'bg-slate-50/80 border-slate-100 hover:border-slate-200'"
+                                     class="p-3.5 rounded-2xl border transition-all duration-200 relative group flex items-start justify-between gap-3">
+                                    
+                                    <div class="space-y-1 flex-1">
+                                        <p v-if="scriptFormat === 'all' || scriptFormat === 'jp'" class="font-jp font-bold text-slate-900 text-sm sm:text-base leading-relaxed">
+                                            {{ line.jp }}
+                                        </p>
+                                        <p v-if="scriptFormat === 'all' || scriptFormat === 'romaji'" class="text-xs sm:text-sm text-fuji-700 font-semibold italic">
+                                            {{ line.romaji }}
+                                        </p>
+                                        <p v-if="scriptFormat === 'all'" class="text-xs text-slate-500 font-medium">
+                                            ➔ {{ line.id }}
+                                        </p>
+                                    </div>
+
+                                    <!-- Single Line Audio Trigger Button -->
+                                    <button @click="speak(line.jp, idx)" title="Dengarkan pengucapan kalimat ini" 
+                                            class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-sakura-600 hover:border-sakura-300 flex items-center justify-center text-sm shadow-sm transition-all flex-shrink-0 active:scale-95">
+                                        <span v-if="activePlayingIndex === idx" class="text-sakura-600 font-bold animate-pulse">🔊</span>
+                                        <span v-else>🔈</span>
+                                    </button>
                                 </div>
                             </div>
 
@@ -326,11 +396,11 @@
                         <span>📖</span> Struktur Kalimat Jikoshoukai Standard
                     </h2>
                     <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                        Jikoshoukai (自己紹介) adalah ungkapan salam perkenalan awal dalam budaya Jepang. Berikut urutan kalimat yang umum dan sopan digunakan.
+                        Jikoshoukai (自己紹介) adalah ungkapan salam perkenalan awal dalam budaya Jepang. Klik ikon 🔊 untuk mendengarkan cara pengucapan setiap pola kalimat.
                     </p>
                 </div>
 
-                <!-- Step-by-Step Grammar Cards -->
+                <!-- Step-by-Step Grammar Cards with Audio -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     
                     <!-- Salam Pembuka -->
@@ -338,10 +408,13 @@
                         <span class="px-2.5 py-1 bg-sakura-100 text-sakura-700 font-bold text-xs rounded-lg">Langkah 1</span>
                         <h3 class="text-lg font-bold text-slate-800">Salam Pembuka (初めまして)</h3>
                         <p class="text-xs text-slate-600 leading-relaxed">Ucapkan kata ini sambil sedikit membungkukkan badan (rei) sebagai tanda hormat saat pertama kali bertemu.</p>
-                        <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-1 font-jp text-xs sm:text-sm">
-                            <p class="font-bold text-fuji-800">初めまして。</p>
-                            <p class="text-slate-500 italic font-sans">Hajimemashite.</p>
-                            <p class="text-slate-700 font-sans">➔ Senang berkenalan dengan Anda.</p>
+                        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-between gap-3">
+                            <div class="space-y-1 font-jp text-xs sm:text-sm">
+                                <p class="font-bold text-fuji-800">初めまして。</p>
+                                <p class="text-slate-500 italic font-sans">Hajimemashite.</p>
+                                <p class="text-slate-700 font-sans">➔ Senang berkenalan dengan Anda.</p>
+                            </div>
+                            <button @click="speak('初めまして。')" class="p-2.5 rounded-xl bg-white border border-slate-200 hover:border-sakura-400 text-slate-700 hover:text-sakura-600 shadow-sm transition-all">🔊</button>
                         </div>
                     </div>
 
@@ -349,11 +422,14 @@
                     <div class="bg-white rounded-3xl p-6 border border-slate-200 space-y-3">
                         <span class="px-2.5 py-1 bg-fuji-100 text-fuji-700 font-bold text-xs rounded-lg">Langkah 2</span>
                         <h3 class="text-lg font-bold text-slate-800">Menyebutkan Nama (名前)</h3>
-                        <p class="text-xs text-slate-600 leading-relaxed">Gunakan pola <i>[Nama] to申します</i> (Sangat Sopan) atau <i>[Nama] desu</i> (Sopan Baku).</p>
-                        <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-1 font-jp text-xs sm:text-sm">
-                            <p class="font-bold text-fuji-800">わたしは [Nama] と申します。[Nama Panggilan] と呼んでください。</p>
-                            <p class="text-slate-500 italic font-sans">Watashi wa [Nama] to mōshimasu. [Nama Panggilan] to yonde kudasai.</p>
-                            <p class="text-slate-700 font-sans">➔ Nama saya [Nama]. Silakan panggil saya [Nama Panggilan].</p>
+                        <p class="text-xs text-slate-600 leading-relaxed">Gunakan pola <i>[Nama] to mōshimasu</i> (Sangat Sopan) atau <i>[Nama] desu</i> (Sopan Baku).</p>
+                        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-between gap-3">
+                            <div class="space-y-1 font-jp text-xs sm:text-sm">
+                                <p class="font-bold text-fuji-800">わたしはアハマドと申します。リズキーと呼んでください。</p>
+                                <p class="text-slate-500 italic font-sans">Watashi wa Ahamado to mōshimasu. Rizukii to yonde kudasai.</p>
+                                <p class="text-slate-700 font-sans">➔ Nama saya Ahmad. Silakan panggil saya Rizky.</p>
+                            </div>
+                            <button @click="speak('わたしはアハマドと申します。リズキーと呼んでください。')" class="p-2.5 rounded-xl bg-white border border-slate-200 hover:border-sakura-400 text-slate-700 hover:text-sakura-600 shadow-sm transition-all">🔊</button>
                         </div>
                     </div>
 
@@ -362,22 +438,28 @@
                         <span class="px-2.5 py-1 bg-emerald-100 text-emerald-700 font-bold text-xs rounded-lg">Langkah 3</span>
                         <h3 class="text-lg font-bold text-slate-800">Asal Daerah & Tempat Tinggal (出身・住所)</h3>
                         <p class="text-xs text-slate-600 leading-relaxed">Gunakan <i>~kara kimashita</i> untuk asal, dan <i>~ni sunde imasu</i> untuk domisili saat ini.</p>
-                        <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-1 font-jp text-xs sm:text-sm">
-                            <p class="font-bold text-fuji-800">インドネシアの [Kabupaten]郡 から来ました。</p>
-                            <p class="text-slate-500 italic font-sans">Indoneshia no [Kabupaten]-gun kara kimashita.</p>
-                            <p class="text-slate-700 font-sans">➔ Saya berasal dari Kab. [Kabupaten], Indonesia.</p>
+                        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-between gap-3">
+                            <div class="space-y-1 font-jp text-xs sm:text-sm">
+                                <p class="font-bold text-fuji-800">インドネシアのケンダル郡から来ました。</p>
+                                <p class="text-slate-500 italic font-sans">Indoneshia no Kendaru-gun kara kimashita.</p>
+                                <p class="text-slate-700 font-sans">➔ Saya berasal dari Kab. Kendal, Indonesia.</p>
+                            </div>
+                            <button @click="speak('インドネシアのケンダル郡から来ました。')" class="p-2.5 rounded-xl bg-white border border-slate-200 hover:border-sakura-400 text-slate-700 hover:text-sakura-600 shadow-sm transition-all">🔊</button>
                         </div>
                     </div>
 
-                    <!-- Sekolah & Kelas (SMA / SMK) -->
+                    <!-- Sekolah & Kelas -->
                     <div class="bg-white rounded-3xl p-6 border border-slate-200 space-y-3">
                         <span class="px-2.5 py-1 bg-amber-100 text-amber-800 font-bold text-xs rounded-lg">Langkah 4</span>
                         <h3 class="text-lg font-bold text-slate-800">Tingkat Sekolah & Kelas (SMA / SMK)</h3>
                         <p class="text-xs text-slate-600 leading-relaxed">Di Jepang, SMA/SMK dihitung dari kelas 1 sampai 3 (setara kelas 10, 11, dan 12 di Indonesia).</p>
-                        <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-1 font-jp text-xs sm:text-sm">
-                            <p class="font-bold text-fuji-800">高校1年生です / 専門高校2年生です。</p>
-                            <p class="text-slate-500 italic font-sans">Kōkō ichi-nensei desu / Senmon kōkō ni-nensei desu.</p>
-                            <p class="text-slate-700 font-sans">➔ Saya siswa kelas 10 SMA / kelas 11 SMK.</p>
+                        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-between gap-3">
+                            <div class="space-y-1 font-jp text-xs sm:text-sm">
+                                <p class="font-bold text-fuji-800">専門高校1年生です。</p>
+                                <p class="text-slate-500 italic font-sans">Senmon kōkō ichi-nensei desu.</p>
+                                <p class="text-slate-700 font-sans">➔ Saya siswa kelas 10 SMK.</p>
+                            </div>
+                            <button @click="speak('専門高校一年生です。')" class="p-2.5 rounded-xl bg-white border border-slate-200 hover:border-sakura-400 text-slate-700 hover:text-sakura-600 shadow-sm transition-all">🔊</button>
                         </div>
                     </div>
 
@@ -407,10 +489,13 @@
                             <p class="text-slate-600 leading-relaxed text-xs">
                                 Digunakan jika hobinya sudah berwujud kata benda tunggal (seperti: <i>Dokusho</i> = Membaca, <i>Sakkā</i> = Sepak Bola).
                             </p>
-                            <div class="p-3 bg-white rounded-xl border border-fuji-200 space-y-1 font-jp text-xs">
-                                <p class="font-bold text-fuji-800 text-sm">私の趣味は読書です。</p>
-                                <p class="text-slate-500 italic font-sans">Watashi no shumi wa dokusho desu.</p>
-                                <p class="text-slate-700 font-sans font-medium">➔ Hobi saya adalah membaca buku.</p>
+                            <div class="p-3 bg-white rounded-xl border border-fuji-200 flex items-center justify-between gap-2 font-jp text-xs">
+                                <div>
+                                    <p class="font-bold text-fuji-800 text-sm">私の趣味は読書です。</p>
+                                    <p class="text-slate-500 italic font-sans">Watashi no shumi wa dokusho desu.</p>
+                                    <p class="text-slate-700 font-sans font-medium">➔ Hobi saya adalah membaca buku.</p>
+                                </div>
+                                <button @click="speak('私の趣味は読書です。')" class="p-2 rounded-lg border border-slate-200 hover:bg-slate-50">🔊</button>
                             </div>
                         </div>
 
@@ -419,141 +504,32 @@
                             <span class="px-2.5 py-1 bg-sakura-600 text-white font-bold text-[11px] rounded-lg">Metode B: Kata Kerja Bentuk Kamus + こと (Koto)</span>
                             <p class="font-bold text-slate-800">Pola: Watashi no shumi wa [Kata Kerja Kamus] koto desu</p>
                             <p class="text-slate-600 leading-relaxed text-xs">
-                                Jika hobi berupa <b>Aktivitas/Kata Kerja</b> (seperti: <i>membaca buku, menonton film</i>), kata kerja harus diubah ke <b>Bentuk Kamus (Jisho-kei)</b> lalu ditambah <b>こと (koto)</b> agar berubah fungsi menjadi kata benda (Nominalisasi).
+                                Jika hobi berupa <b>Aktivitas/Kata Kerja</b> (seperti: <i>membaca buku, menonton film</i>), kata kerja harus diubah ke <b>Bentuk Kamus (Jisho-kei)</b> lalu ditambah <b>こと (koto)</b>.
                             </p>
-                            <div class="p-3 bg-white rounded-xl border border-sakura-200 space-y-1 font-jp text-xs">
-                                <p class="font-bold text-sakura-700 text-sm">私の趣味は本を読むことです。</p>
-                                <p class="text-slate-500 italic font-sans">Watashi no shumi wa hon wo yomu koto desu.</p>
-                                <p class="text-slate-700 font-sans font-medium">➔ Hobi saya adalah membaca buku. (Yomu = Membaca ➔ Yomu koto = Hal membaca)</p>
+                            <div class="p-3 bg-white rounded-xl border border-sakura-200 flex items-center justify-between gap-2 font-jp text-xs">
+                                <div>
+                                    <p class="font-bold text-sakura-700 text-sm">私の趣味は本を読むことです。</p>
+                                    <p class="text-slate-500 italic font-sans">Watashi no shumi wa hon wo yomu koto desu.</p>
+                                    <p class="text-slate-700 font-sans font-medium">➔ Hobi saya adalah membaca buku.</p>
+                                </div>
+                                <button @click="speak('私の趣味は本を読むことです。')" class="p-2 rounded-lg border border-slate-200 hover:bg-slate-50">🔊</button>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Tabel Contoh Tambahan Hobi -->
-                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
-                        <p class="text-xs font-bold text-slate-700 mb-2">Perbandingan Bentuk Kata Benda vs Kata Kerja + こと:</p>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs border-collapse">
-                                <thead>
-                                    <tr class="border-b border-slate-200 text-slate-500 font-bold">
-                                        <th class="pb-2">Jenis Hobi</th>
-                                        <th class="pb-2">Bentuk Kata Benda</th>
-                                        <th class="pb-2">Bentuk Kata Kerja + こと (Koto)</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-200/60 text-slate-700 font-jp">
-                                    <tr>
-                                        <td class="py-2 font-sans font-semibold">Musik</td>
-                                        <td class="py-2">音楽 (Ongaku)</td>
-                                        <td class="py-2">音楽を聴くこと (Ongaku wo kiku koto)</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="py-2 font-sans font-semibold">Gambar</td>
-                                        <td class="py-2">絵 (E)</td>
-                                        <td class="py-2">絵を描くこと (E wo kaku koto)</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="py-2 font-sans font-semibold">Film</td>
-                                        <td class="py-2">映画 (Eiga)</td>
-                                        <td class="py-2">映画を見ること (Eiga wo miru koto)</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="py-2 font-sans font-semibold">Gitar</td>
-                                        <td class="py-2">ギター (Gitā)</td>
-                                        <td class="py-2">ギターを弾くこと (Gitā wo hiku koto)</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Detailed Grammar Section 2: Penggunaan Warna -->
-                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-lg">
-                            🎨
-                        </div>
-                        <div>
-                            <span class="px-2.5 py-0.5 bg-amber-100 text-amber-800 text-xs font-bold rounded-md uppercase tracking-wider">Pendalaman Tata Bahasa</span>
-                            <h3 class="text-xl font-extrabold text-slate-800">Penggunaan Warna: Kata Benda vs Kata Sifat (色の文法)</h3>
-                        </div>
-                    </div>
-
-                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                        Warna dalam bahasa Jepang memiliki <b>2 peran tata bahasa yang berbeda</b> tergantung konteks penggunaannya: sebagai <b>Kata Benda (Meishi)</b> untuk menyebutkan nama warna favorit, atau sebagai <b>Kata Sifat (Keiyoushi)</b> untuk menjelaskan sifat benda lain.
-                    </p>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs sm:text-sm">
-                        <!-- 1. Warna sebagai Kata Benda -->
-                        <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
-                            <span class="px-2 py-0.5 bg-slate-700 text-white font-bold text-[11px] rounded">1. Kata Benda (Meishi)</span>
-                            <p class="font-bold text-slate-800 text-xs">Untuk Menyebut Nama Warna Favorit dalam Jikoshoukai</p>
-                            <p class="text-slate-600 text-xs leading-relaxed">
-                                Gunakan bentuk kata benda warna tanpa akhiran <i>~i</i> atau boleh ditambah <b>~色 (iro)</b>.
-                            </p>
-                            <div class="p-2.5 bg-white rounded-xl border border-slate-200 font-jp text-xs space-y-1">
-                                <p class="font-bold text-fuji-700">青 (Ao) / 青色 (Aoiro) = Biru</p>
-                                <p class="text-slate-700 font-sans font-medium">好きな色は<b>青色</b>です。</p>
-                                <p class="text-slate-500 font-sans italic text-[11px]">(Suki na iro wa aoiro desu / Warna favorit saya biru)</p>
-                            </div>
-                        </div>
-
-                        <!-- 2. Warna sebagai Kata Sifat -i -->
-                        <div class="p-4 bg-emerald-50/60 border border-emerald-200 rounded-2xl space-y-2">
-                            <span class="px-2 py-0.5 bg-emerald-600 text-white font-bold text-[11px] rounded">2. Kata Sifat -i (i-Keiyoushi)</span>
-                            <p class="font-bold text-slate-800 text-xs">Untuk Menerangkan Kata Benda Lain Secara Langsung</p>
-                            <p class="text-slate-600 text-xs leading-relaxed">
-                                6 Warna dasar memiliki akhiran <b>い (i)</b> jika langsung ditempelkan sebelum kata benda lain.
-                            </p>
-                            <div class="p-2.5 bg-white rounded-xl border border-emerald-200 font-jp text-xs space-y-1">
-                                <p class="font-bold text-emerald-700">赤い (Akai) = Merah (KS-i)</p>
-                                <p class="text-slate-700 font-sans font-medium"><b>赤い</b>車 (Akai kuruma)</p>
-                                <p class="text-slate-500 font-sans italic text-[11px]">➔ Mobil (yang berwarna) merah</p>
-                            </div>
-                        </div>
-
-                        <!-- 3. Warna sebagai Kata Sifat -no -->
-                        <div class="p-4 bg-purple-50/60 border border-purple-200 rounded-2xl space-y-2">
-                            <span class="px-2 py-0.5 bg-purple-600 text-white font-bold text-[11px] rounded">3. Warna + の (No)</span>
-                            <p class="font-bold text-slate-800 text-xs">Untuk Warna Katakana & Warna Lain yang Tidak Berakhiran -i</p>
-                            <p class="text-slate-600 text-xs leading-relaxed">
-                                Warna seperti Hijau (<i>Midori</i>), Pink (<i>Pinku</i>), Ungu (<i>Murasaki</i>) harus ditambah partikel <b>の (no)</b> saat menerangkan benda.
-                            </p>
-                            <div class="p-2.5 bg-white rounded-xl border border-purple-200 font-jp text-xs space-y-1">
-                                <p class="font-bold text-purple-700">緑の (Midori no) / ピンクの (Pinku no)</p>
-                                <p class="text-slate-700 font-sans font-medium"><b>緑の</b>服 (Midori no fuku)</p>
-                                <p class="text-slate-500 font-sans italic text-[11px]">➔ Baju (yang berwarna) hijau</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="p-4 bg-amber-50/80 border border-amber-200 rounded-2xl text-xs space-y-2 text-slate-800">
-                        <p class="font-bold text-amber-900 flex items-center gap-1.5">
-                            📌 Ringkasan Pendaftaran Warna Menurut Kelompoknya:
-                        </p>
-                        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-700 leading-relaxed">
-                            <li class="p-2 bg-white rounded-lg border border-amber-200 font-jp">
-                                <b>Warna Kata Sifat -i (Langsung + Kata Benda):</b><br>
-                                赤い (Akai), 青い (Aoi), 黒い (Kuroi), 白い (Shiroi), 黄色い (Kiiroi), 茶色い (Chairoi).
-                            </li>
-                            <li class="p-2 bg-white rounded-lg border border-amber-200 font-jp">
-                                <b>Warna Kata Benda (+ の + Kata Benda):</b><br>
-                                緑の (Midori no), 紫の (Murasaki no), ピンクの (Pinku no), オレンジの (Orenji no), 灰色の (Haiiro no).
-                            </li>
-                        </ul>
                     </div>
                 </div>
 
                 <!-- Salam Penutup -->
-                <div class="bg-gradient-to-r from-fuji-800 to-indigo-900 rounded-3xl p-6 sm:p-8 text-white space-y-3">
+                <div class="bg-gradient-to-r from-fuji-800 to-indigo-900 rounded-3xl p-6 sm:p-8 text-white space-y-4">
                     <span class="px-2.5 py-1 bg-white/10 text-sakura-200 font-bold text-xs rounded-lg">Langkah Akhir</span>
                     <h3 class="text-xl font-extrabold">Salam Penutup (どうぞよろしくお願いします)</h3>
                     <p class="text-xs sm:text-sm text-slate-200">Ucapkan penutup ini untuk memohon kerja sama dan hubungan baik kedepannya.</p>
-                    <div class="p-4 bg-white/10 rounded-2xl backdrop-blur-md font-jp text-xs sm:text-sm space-y-1">
-                        <p class="font-bold text-sakura-200 text-base">どうぞよろしくお願いします。</p>
-                        <p class="text-slate-300 italic font-sans">Dōzo yoroshiku onegaishimasu.</p>
-                        <p class="text-white font-sans">➔ Mohon bimbingan dan kerja samanya.</p>
+                    <div class="p-4 bg-white/10 rounded-2xl backdrop-blur-md flex items-center justify-between gap-3 font-jp text-xs sm:text-sm">
+                        <div class="space-y-1">
+                            <p class="font-bold text-sakura-200 text-base">どうぞよろしくお願いします。</p>
+                            <p class="text-slate-300 italic font-sans">Dōzo yoroshiku onegaishimasu.</p>
+                            <p class="text-white font-sans">➔ Mohon bimbingan dan kerja samanya.</p>
+                        </div>
+                        <button @click="speak('どうぞよろしくお願いします。')" class="p-3 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-lg backdrop-blur-md transition-all">🔊</button>
                     </div>
                 </div>
 
@@ -564,10 +540,10 @@
                 
                 <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-2">
                     <h2 class="text-2xl font-extrabold text-slate-900 flex items-center gap-3">
-                        <span>🗂️</span> Kamus Kosakata Jikoshoukai
+                        <span>🗂️</span> Kamus Kosakata & Audio Pelafalan
                     </h2>
                     <p class="text-xs sm:text-sm text-slate-600">
-                        Kumpulan kosakata penting untuk membentuk naskah perkenalan diri bahasa Jepang.
+                        Klik tombol 🔊 di setiap baris kosakata untuk mendengarkan cara pengucapan asli Jepang.
                     </p>
                 </div>
 
@@ -585,6 +561,7 @@
                                         <th class="pb-2">Umur</th>
                                         <th class="pb-2">Kanji/Kana</th>
                                         <th class="pb-2">Romaji</th>
+                                        <th class="pb-2 text-right">Audio</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
@@ -592,6 +569,9 @@
                                         <td class="py-2.5 font-bold">{{ a.val }} Tahun</td>
                                         <td class="py-2.5 font-jp font-bold text-fuji-700">{{ a.jp }}</td>
                                         <td class="py-2.5 italic">{{ a.romaji }}</td>
+                                        <td class="py-2.5 text-right">
+                                            <button @click="speak(a.jp)" class="p-1.5 rounded-lg border border-slate-200 hover:bg-fuji-50 text-slate-600">🔊</button>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -601,7 +581,7 @@
                     <!-- Tabel Kelas SMA/SMK Indonesia -->
                     <div class="bg-white rounded-3xl p-6 border border-slate-200 space-y-4">
                         <h3 class="font-extrabold text-lg text-slate-800 flex items-center gap-2">
-                            <span>🏫</span> Tingkat Kelas (SMA / SMK Indonesia)
+                            <span>🏫</span> Tingkat Kelas (SMA / SMK)
                         </h3>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-xs sm:text-sm">
@@ -610,6 +590,7 @@
                                         <th class="pb-2">Kelas (ID)</th>
                                         <th class="pb-2">Jepang</th>
                                         <th class="pb-2">Romaji</th>
+                                        <th class="pb-2 text-right">Audio</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
@@ -617,6 +598,9 @@
                                         <td class="py-2.5 font-bold">{{ g.label }}</td>
                                         <td class="py-2.5 font-jp font-bold text-fuji-700">{{ g.jp }}</td>
                                         <td class="py-2.5 italic">{{ g.romaji }}</td>
+                                        <td class="py-2.5 text-right">
+                                            <button @click="speak(g.jp)" class="p-1.5 rounded-lg border border-slate-200 hover:bg-fuji-50 text-slate-600">🔊</button>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -635,14 +619,40 @@
                                         <th class="pb-2">Tingkat ID</th>
                                         <th class="pb-2">Sebutan JP</th>
                                         <th class="pb-2">Romaji</th>
+                                        <th class="pb-2 text-right">Audio</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
-                                    <tr><td class="py-2 font-bold">Negara</td><td class="font-jp text-fuji-700 font-bold">国</td><td>Kuni</td></tr>
-                                    <tr><td class="py-2 font-bold">Provinsi</td><td class="font-jp text-fuji-700 font-bold">州 / 県</td><td>Shū / Ken</td></tr>
-                                    <tr><td class="py-2 font-bold">Kabupaten</td><td class="font-jp text-fuji-700 font-bold">郡</td><td>Gun</td></tr>
-                                    <tr><td class="py-2 font-bold">Kecamatan</td><td class="font-jp text-fuji-700 font-bold">町 / 区</td><td>Chō / Ku</td></tr>
-                                    <tr><td class="py-2 font-bold">Desa / Kelurahan</td><td class="font-jp text-fuji-700 font-bold">村</td><td>Mura / Son</td></tr>
+                                    <tr>
+                                        <td class="py-2 font-bold">Negara</td>
+                                        <td class="font-jp text-fuji-700 font-bold">国 (Kuni)</td>
+                                        <td>Kuni</td>
+                                        <td class="text-right"><button @click="speak('国')" class="p-1.5 rounded-lg border border-slate-200 hover:bg-fuji-50">🔊</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 font-bold">Provinsi</td>
+                                        <td class="font-jp text-fuji-700 font-bold">州 (Shū)</td>
+                                        <td>Shū</td>
+                                        <td class="text-right"><button @click="speak('州')" class="p-1.5 rounded-lg border border-slate-200 hover:bg-fuji-50">🔊</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 font-bold">Kabupaten</td>
+                                        <td class="font-jp text-fuji-700 font-bold">郡 (Gun)</td>
+                                        <td>Gun</td>
+                                        <td class="text-right"><button @click="speak('郡')" class="p-1.5 rounded-lg border border-slate-200 hover:bg-fuji-50">🔊</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 font-bold">Kecamatan</td>
+                                        <td class="font-jp text-fuji-700 font-bold">町 (Chō)</td>
+                                        <td>Chō</td>
+                                        <td class="text-right"><button @click="speak('町')" class="p-1.5 rounded-lg border border-slate-200 hover:bg-fuji-50">🔊</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 font-bold">Desa / Kelurahan</td>
+                                        <td class="font-jp text-fuji-700 font-bold">村 (Mura)</td>
+                                        <td>Mura</td>
+                                        <td class="text-right"><button @click="speak('村')" class="p-1.5 rounded-lg border border-slate-200 hover:bg-fuji-50">🔊</button></td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -660,6 +670,7 @@
                                         <th class="pb-2">Warna</th>
                                         <th class="pb-2">Kanji/Kana</th>
                                         <th class="pb-2">Romaji</th>
+                                        <th class="pb-2 text-right">Audio</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
@@ -667,6 +678,9 @@
                                         <td class="py-2 font-bold">{{ c.id }}</td>
                                         <td class="font-jp text-fuji-700 font-bold">{{ c.jp }}</td>
                                         <td class="italic">{{ c.romaji }}</td>
+                                        <td class="text-right">
+                                            <button @click="speak(c.jp)" class="p-1.5 rounded-lg border border-slate-200 hover:bg-fuji-50 text-slate-600">🔊</button>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -706,8 +720,11 @@
                             </span>
                         </div>
 
-                        <p class="text-sm sm:text-base font-bold text-slate-800 leading-relaxed font-jp">
-                            {{ q.question }}
+                        <p class="text-sm sm:text-base font-bold text-slate-800 leading-relaxed font-jp flex items-center justify-between gap-2">
+                            <span>{{ q.question }}</span>
+                            <button v-if="q.audioText" @click="speak(q.audioText)" title="Dengarkan soal" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-sakura-100 text-xs font-bold text-slate-700 hover:text-sakura-700 transition-all">
+                                🔊 Audio
+                            </button>
                         </p>
 
                         <!-- Answer Options -->
@@ -744,13 +761,13 @@
 
         <!-- Footer -->
         <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 mt-12">
-            <p class="font-medium">Jikoshoukai Master © 2026 - Aplikasi Belajar Bahasa Jepang Vokasi & Umum</p>
+            <p class="font-medium">Jikoshoukai Master © 2026 - Aplikasi Belajar Bahasa Jepang Vokasi & Umum dengan Audio Speech Synthesis</p>
         </footer>
 
     </div>
 
     <script>
-        const { createApp, ref, computed } = Vue;
+        const { createApp, ref, computed, onUnmounted } = Vue;
 
         createApp({
             setup() {
@@ -758,16 +775,121 @@
                 const toastMessage = ref('');
                 const scriptFormat = ref('all');
 
+                // Audio Speech Synthesis States
+                const isSpeaking = ref(false);
+                const activePlayingIndex = ref(null);
+                const audioRate = ref("0.9");
+
                 // Helper Toast Notification
                 const showToast = (msg) => {
                     toastMessage.value = msg;
                     setTimeout(() => { toastMessage.value = ''; }, 3000);
                 };
 
+                const getJapaneseVoice = () => {
+                    if (!('speechSynthesis' in window)) return null;
+                    const voices = window.speechSynthesis.getVoices();
+                    return voices.find(v => v.lang.toLowerCase().includes('ja') || v.lang.toLowerCase().includes('jp')) || null;
+                };
+
+                // Single text utterance launcher
+                const speak = (text, index = null) => {
+                    if (!('speechSynthesis' in window)) {
+                        showToast('Browser Anda tidak mendukung fitur Text-to-Speech audio.');
+                        return;
+                    }
+                    window.speechSynthesis.cancel();
+                    if (!text) return;
+
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.lang = 'ja-JP';
+                    utterance.rate = parseFloat(audioRate.value);
+
+                    const jaVoice = getJapaneseVoice();
+                    if (jaVoice) {
+                        utterance.voice = jaVoice;
+                    }
+
+                    if (index !== null) {
+                        activePlayingIndex.value = index;
+                    }
+                    isSpeaking.value = true;
+
+                    utterance.onend = () => {
+                        isSpeaking.value = false;
+                        if (index !== null) activePlayingIndex.value = null;
+                    };
+
+                    utterance.onerror = () => {
+                        isSpeaking.value = false;
+                        if (index !== null) activePlayingIndex.value = null;
+                    };
+
+                    window.speechSynthesis.speak(utterance);
+                };
+
+                // Stop audio playing
+                const stopAudio = () => {
+                    if ('speechSynthesis' in window) {
+                        window.speechSynthesis.cancel();
+                    }
+                    isSpeaking.value = false;
+                    activePlayingIndex.value = null;
+                };
+
+                const playFullScript = () => {
+                    stopAudio();
+                    const lines = generatedScript.value;
+                    if (!lines || lines.length === 0) return;
+
+                    let currentIdx = 0;
+
+                    const playNextLine = () => {
+                        if (currentIdx >= lines.length) {
+                            isSpeaking.value = false;
+                            activePlayingIndex.value = null;
+                            showToast('Selesai memutar seluruh naskah Jikoshoukai!');
+                            return;
+                        }
+
+                        const line = lines[currentIdx];
+                        activePlayingIndex.value = currentIdx;
+                        isSpeaking.value = true;
+
+                        const utterance = new SpeechSynthesisUtterance(line.jp);
+                        utterance.lang = 'ja-JP';
+                        utterance.rate = parseFloat(audioRate.value);
+
+                        const jaVoice = getJapaneseVoice();
+                        if (jaVoice) utterance.voice = jaVoice;
+
+                        utterance.onend = () => {
+                            currentIdx++;
+                            // Short natural delay between lines
+                            setTimeout(playNextLine, 350);
+                        };
+
+                        utterance.onerror = () => {
+                            isSpeaking.value = false;
+                            activePlayingIndex.value = null;
+                        };
+
+                        window.speechSynthesis.speak(utterance);
+                    };
+
+                    playNextLine();
+                };
+
+                // Clean up speech synthesis on component unmount
+                onUnmounted(() => {
+                    stopAudio();
+                });
+
                 // DATA BUILDER FORM STATE
                 const form = ref({
                     fullName: 'Ahmad Rizky',
                     nickname: 'Rizky',
+                    phone: '081234567890',
                     age: 16,
                     gradeKey: 'smk_10',
                     country: 'Indonesia',
@@ -783,7 +905,6 @@
                     selectedColorKey: 'aoiro'
                 });
 
-                // Katakana Computeds via WanaKana.js
                 const nameKatakana = computed(() => wanakana.toKatakana(form.value.fullName || 'Ahmad'));
                 const nicknameKatakana = computed(() => wanakana.toKatakana(form.value.nickname || 'Rizky'));
                 const countryKatakana = computed(() => wanakana.toKatakana(form.value.country || 'Indonesia'));
@@ -977,7 +1098,6 @@
                     }
                 };
 
-                // COMPUTED SCRIPT GENERATOR
                 const generatedScript = computed(() => {
                     const ageObj = ageOptions.find(a => a.val === form.value.age) || ageOptions[1];
                     const gradeObj = gradeOptions.find(g => g.key === form.value.gradeKey) || gradeOptions[3];
@@ -1014,6 +1134,11 @@
                             jp: `${nicknameKatakana.value} と呼んでください。`,
                             romaji: `${form.value.nickname || 'Rizky'} to yonde kudasai.`,
                             id: `Silakan panggil saya ${form.value.nickname || 'Rizky'}.`
+                        },
+                        {
+                            jp: `私の電話番号は ${form.value.phone || '081234567890'} です。`,
+                            romaji: `Watashi no denwa bangō wa ${form.value.phone || '081234567890'} desu.`,
+                            id: `Nomor telepon saya adalah ${form.value.phone || '081234567890'}.`
                         },
                         {
                             jp: `${countryKatakana.value}の ${provinceKatakana.value}州、${regencyKatakana.value}郡、${districtKatakana.value}町、${villageKatakana.value}村 から来ました。`,
@@ -1065,7 +1190,6 @@
                     showToast('Naskah Jikoshoukai berhasil disalin!');
                 };
 
-                // QUIZ SYSTEM (20 Questions)
                 const userAnswers = ref({});
                 const quizQuestions = [
                     {
@@ -1073,6 +1197,7 @@
                         question: 'Salam pembuka yang wajib diucapkan pertama kali saat Jikoshoukai adalah...',
                         options: ['Konnichiwa', 'Hajimemashite', 'Arigatou gozaimasu', 'Sayounara'],
                         correct: 1,
+                        audioText: '初めまして',
                         explanation: 'Hajimemashite (初めまして) adalah ungkapan salam perkenalan pertama kali.'
                     },
                     {
@@ -1080,6 +1205,7 @@
                         question: 'Untuk menyebut "Kelas 10 SMA" di Indonesia, sebutan yang tepat dalam bahasa Jepang adalah...',
                         options: ['Koukou juu-nensei', 'Koukou ichi-nensei', 'Juu-nensei desu', 'Koukou yon-nensei'],
                         correct: 1,
+                        audioText: '高校一年生',
                         explanation: 'Di Jepang, SMA dihitung dari kelas 1 sampai 3. Maka kelas 10 SMA setara Koukou Ichi-nensei (高校1年生).'
                     },
                     {
@@ -1087,6 +1213,7 @@
                         question: 'Sebutan yang paling standar dan tepat untuk "SMK" (Sekolah Menengah Kejuruan) adalah...',
                         options: ['Senmon kōkō', 'Daigaku', 'Chūgakkō', 'Shōgakkō'],
                         correct: 0,
+                        audioText: '専門高校',
                         explanation: 'Senmon kōkō (専門高校) adalah sebutan resmi dan paling standar untuk SMK.'
                     },
                     {
@@ -1094,6 +1221,7 @@
                         question: 'Untuk menyebut tingkatan wilayah "Kabupaten" yang membawahi kecamatan di Jepang digunakan kata...',
                         options: ['Ken (県)', 'Shi (市)', 'Gun (郡)', 'Shū (州)'],
                         correct: 2,
+                        audioText: '郡',
                         explanation: 'Gun (郡) adalah padanan hirarki yang paling tepat untuk Kabupaten.'
                     },
                     {
@@ -1101,6 +1229,7 @@
                         question: 'Cara menyebut "Umur 20 Tahun" yang merupakan bentuk khusus/pengecualian adalah...',
                         options: ['Ni-juu sai', 'Hatachi', 'Issai', 'Hassai'],
                         correct: 1,
+                        audioText: '二十歳',
                         explanation: 'Umur 20 tahun dalam bahasa Jepang tidak dibaca Ni-juu sai, melainkan Hatachi (二十歳).'
                     },
                     {
@@ -1108,6 +1237,7 @@
                         question: 'Jika hobi berupa Kata Kerja (seperti membaca buku = Hon wo yomu), tata bahasa yang benar untuk Jikoshoukai adalah...',
                         options: ['Watashi no shumi wa hon wo yomu desu', 'Watashi no shumi wa hon wo yomu koto desu', 'Watashi no shumi wa hon wo yomi desu', 'Watashi no shumi wa hon wo yomimashou'],
                         correct: 1,
+                        audioText: '私の趣味は本を読むことです',
                         explanation: 'Kata kerja harus diubah ke bentuk kamus lalu ditambah こと (koto) untuk proses nominalisasi.'
                     },
                     {
@@ -1115,6 +1245,7 @@
                         question: 'Dalam kalimat "Suki na iro wa [Warna] desu", bentuk warna yang dipakai adalah...',
                         options: ['Kata Sifat-i (Aoi)', 'Kata Benda Warna (Ao / Aoiro)', 'Kata Kerja Warna', 'Bentuk Lampau'],
                         correct: 1,
+                        audioText: '好きな色は青色です',
                         explanation: 'Posisi objek warna favorit membutuhkan Kata Benda (seperti Ao / Aoiro), bukan Kata Sifat Aoi.'
                     },
                     {
@@ -1122,6 +1253,7 @@
                         question: 'Arti dari ungkapan "Dōzo yoroshiku onegaishimasu" di akhir Jikoshoukai adalah...',
                         options: ['Selamat tinggal', 'Mohon bimbingan dan kerja samanya', 'Sampai jumpa besok', 'Terima kasih banyak atas makanannya'],
                         correct: 1,
+                        audioText: 'どうぞよろしくお願いします',
                         explanation: 'Merupakan salam penutup standar untuk memohon hubungan baik dan kerja sama.'
                     },
                     {
@@ -1129,6 +1261,7 @@
                         question: 'Kata "Chō (町)" dalam tingkatan alamat daerah berfungsi untuk menyatakan...',
                         options: ['Negara', 'Provinsi', 'Kecamatan', 'Desa'],
                         correct: 2,
+                        audioText: '町',
                         explanation: 'Chō (町) bermakna Kecamatan / Kota Kecil.'
                     },
                     {
@@ -1136,6 +1269,7 @@
                         question: 'Bagaimana cara menyebut "Umur 18 Tahun" dengan benar dalam bahasa Jepang?',
                         options: ['Juu-hachi sai', 'Juu-hassai', 'Juu-shichi sai', 'Hassai'],
                         correct: 1,
+                        audioText: '十八歳',
                         explanation: 'Angka 18 untuk umur mengalami penggabungan bunyi menjadi Juuhassai (十八歳).'
                     },
                     {
@@ -1143,6 +1277,7 @@
                         question: 'Apa arti dari pola kalimat "Rizky to yonde kudasai"?',
                         options: ['Nama lengkap saya Rizky', 'Silakan panggil saya Rizky', 'Saya berteman dengan Rizky', 'Rizky tidak ada di rumah'],
                         correct: 1,
+                        audioText: 'リズキーと呼んでください',
                         explanation: '~to yonde kudasai berarti "silakan panggil saya [nama]".'
                     },
                     {
@@ -1150,6 +1285,7 @@
                         question: 'Bagaimana penerjemahan "Saya berasal dari Indonesia" dalam Jikoshoukai?',
                         options: ['Indoneshia ni sunde imasu', 'Indoneshia kara kimashita', 'Indoneshia e ikimasu', 'Indoneshia no hito desu'],
                         correct: 1,
+                        audioText: 'インドネシアから来ました',
                         explanation: '~kara kimashita digunakan untuk menyatakan asal daerah/negara.'
                     },
                     {
@@ -1157,6 +1293,7 @@
                         question: 'Manakah penulisan warna "Merah" sebagai kata benda yang benar dalam perkenalan warna favorit?',
                         options: ['Akai', 'Akairo', 'Aka ni', 'Akasa'],
                         correct: 1,
+                        audioText: '赤色',
                         explanation: 'Akairo / Aka adalah kata benda untuk warna merah.'
                     },
                     {
@@ -1164,6 +1301,7 @@
                         question: 'Untuk menceritakan tempat tinggal saat ini (domisili), pola yang digunakan adalah...',
                         options: ['[Tempat] ni sunde imasu', '[Tempat] kara kimashita', '[Tempat] e ikimasu', '[Tempat] wo mimasu'],
                         correct: 0,
+                        audioText: 'ケンダル郡に住んでいます',
                         explanation: '~ni sunde imasu artinya "sekarang tinggal di [Tempat]".'
                     },
                     {
@@ -1171,6 +1309,7 @@
                         question: 'Penyebutan "Kelas 12 SMK" yang tepat adalah...',
                         options: ['Senmon kōkō san-nensei', 'Koukou juu ni-nensei', 'Senmon kōkō ni-nensei', 'Chūgaku san-nensei'],
                         correct: 0,
+                        audioText: '専門高校三年生',
                         explanation: 'Kelas 12 SMK setara dengan Senmon kōkō 3-nensei (専門高校3年生).'
                     },
                     {
@@ -1178,6 +1317,7 @@
                         question: 'Jika ingin menyebut hobi "Bermain Game", kalimat yang benar adalah...',
                         options: ['Watashi no shumi wa geemu desu', 'Watashi no shumi wa geemu wo suru koto desu', 'Watashi no shumi wa geemu wo shimasu', 'Jawaban A dan B keduanya benar'],
                         correct: 3,
+                        audioText: '私の趣味はゲームです',
                         explanation: 'Baik kata benda tunggal (Geemu) maupun kata kerja + koto (Geemu wo suru koto) keduanya benar.'
                     },
                     {
@@ -1185,6 +1325,7 @@
                         question: 'Kata "Mura (村)" dalam tingkatan wilayah alamat berarti...',
                         options: ['Desa / Kelurahan', 'Kota Madya', 'Provinsi', 'Negara'],
                         correct: 0,
+                        audioText: '村',
                         explanation: 'Mura / Son (村) menyatakan tingkatan Desa.'
                     },
                     {
@@ -1192,6 +1333,7 @@
                         question: 'Warna "Hijau" (Midori) jika digunakan untuk menerangkan benda (contoh: Baju hijau) harus menggunakan partikel...',
                         options: ['Midori i baju', 'Midori no fuku', 'Midori na fuku', 'Midori ga fuku'],
                         correct: 1,
+                        audioText: '緑の服',
                         explanation: 'Midori adalah kata benda warna, sehingga membutuhkan partikel の (no) saat menerangkan benda lain.'
                     },
                     {
@@ -1199,6 +1341,7 @@
                         question: 'Sebutkan cara baca angka "11 Tahun" dalam bahasa Jepang...',
                         options: ['Juu-ichi sai', 'Juu-issai', 'Juuji sai', 'Ichi-juu sai'],
                         correct: 1,
+                        audioText: '十一歳',
                         explanation: 'Angka 11 untuk umur dibaca Juu-issai (十一歳).'
                     },
                     {
@@ -1206,6 +1349,7 @@
                         question: 'Bagaimana mengartikan "Suki na tabemono wa rāmen desu"?',
                         options: ['Saya sedang makan ramen', 'Makanan favorit saya adalah ramen', 'Saya ingin membeli ramen', 'Ramen ini sangat enak'],
                         correct: 1,
+                        audioText: '好きな食べ物はラーメンです',
                         explanation: 'Suki na tabemono wa... desu artinya "makanan favorit saya adalah...".'
                     }
                 ];
@@ -1231,6 +1375,12 @@
                     toastMessage,
                     showToast,
                     scriptFormat,
+                    isSpeaking,
+                    activePlayingIndex,
+                    audioRate,
+                    speak,
+                    stopAudio,
+                    playFullScript,
                     form,
                     nameKatakana,
                     nicknameKatakana,
