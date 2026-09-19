@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Belajar Angka & Tingkat SMA Bahasa Jepang</title>
+    <title>Aplikasi Belajar Angka, Nomor HP, Harga & Tingkat SMA Bahasa Jepang</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -54,7 +54,7 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-lg text-slate-900 leading-tight">Nihongo Suuji Master</h1>
-                    <p class="text-xs text-slate-500">Panduan Angka, Umur & Tingkat SMA/SMK</p>
+                    <p class="text-xs text-slate-500">Angka, Umur, Nomor HP, Harga & Tingkat SMA/SMK</p>
                 </div>
             </div>
 
@@ -66,7 +66,7 @@
                 </button>
                 <button id="nav-kuis" onclick="switchTab('kuis')" class="px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900 transition-all duration-200 flex items-center space-x-2">
                     <i class="fa-solid fa-pen-to-square"></i>
-                    <span>Latihan (30 Soal)</span>
+                    <span>Latihan Kuis</span>
                 </button>
             </nav>
         </div>
@@ -81,13 +81,13 @@
             <div class="bg-gradient-to-r from-sakura-600 to-rose-500 rounded-2xl p-6 text-white shadow-lg">
                 <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                     <div>
-                        <span class="bg-white/20 text-xs px-3 py-1 rounded-full uppercase tracking-wider font-semibold">Panduan Lengkap</span>
-                        <h2 class="text-2xl font-bold mt-2">Sistem Perhitungan & Angka Bahasa Jepang</h2>
+                        <span class="bg-white/20 text-xs px-3 py-1 rounded-full uppercase tracking-wider font-semibold">Panduan Lengkap & Praktis</span>
+                        <h2 class="text-2xl font-bold mt-2">Sistem Perhitungan & Percakapan Angka</h2>
                         <p class="text-rose-100 text-sm mt-1 max-w-2xl">
-                            Pelajari angka dasar, pengecualian ratusan/ribuan, cara menyatakan umur, hingga penyebutan tingkatan SMA/SMK di Indonesia.
+                            Pelajari angka dasar, pengecualian, cara menyebutkan nomor HP, bertanya harga barang (Ikura), umur, serta tingkatan SMA/SMK.
                         </p>
                     </div>
-                    <button onclick="speakText('数字の勉強を始めましょう', 'ja-JP')" class="bg-white/10 hover:bg-white/20 text-white border border-white/30 px-4 py-2 rounded-xl text-sm flex items-center space-x-2 backdrop-blur-sm transition">
+                    <button onclick="speakText('数字と値段の勉強を始めましょう', 'ja-JP')" class="bg-white/10 hover:bg-white/20 text-white border border-white/30 px-4 py-2 rounded-xl text-sm flex items-center space-x-2 backdrop-blur-sm transition">
                         <i class="fa-solid fa-volume-high"></i>
                         <span>Dengar Contoh Audio</span>
                     </button>
@@ -100,6 +100,8 @@
                 <button onclick="filterMateri('dasar')" class="materi-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-200 text-slate-700 hover:bg-slate-300">0 - 99</button>
                 <button onclick="filterMateri('ratusan')" class="materi-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-200 text-slate-700 hover:bg-slate-300">Ratusan & Ribuan</button>
                 <button onclick="filterMateri('puluh-ribu')" class="materi-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-200 text-slate-700 hover:bg-slate-300">10.000 - 100.000 (万)</button>
+                <button onclick="filterMateri('denwa')" class="materi-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-200 text-slate-700 hover:bg-slate-300">Nomor HP (電話番号)</button>
+                <button onclick="filterMateri('harga')" class="materi-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-200 text-slate-700 hover:bg-slate-300">Harga (いくら)</button>
                 <button onclick="filterMateri('umur')" class="materi-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-200 text-slate-700 hover:bg-slate-300">Umur (歳)</button>
                 <button onclick="filterMateri('sekolah')" class="materi-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-200 text-slate-700 hover:bg-slate-300">Tingkat SMA/SMK (高校)</button>
             </div>
@@ -110,7 +112,7 @@
             </div>
         </section>
 
-        <!-- TAB 2: KUIS 30 SOAL -->
+        <!-- TAB 2: KUIS INTERAKTIF -->
         <section id="section-kuis" class="hidden space-y-6">
             
             <!-- Quiz Active Wrapper -->
@@ -148,7 +150,7 @@
                             <div id="question-hiragana" class="jp-text text-xl font-medium text-sakura-700"></div>
                             <div id="question-romaji" class="text-xs font-mono text-slate-500 italic mt-0.5"></div>
                         </div>
-                        <button id="btn-audio-question" class="w-10 h-10 rounded-full bg-sakura-100 hover:bg-sakura-200 text-sakura-600 flex items-center justify-center transition shadow-sm">
+                        <button id="btn-audio-question" class="w-10 h-10 rounded-full bg-sakura-100 hover:bg-sakura-200 text-sakura-600 flex items-center justify-center transition shadow-sm" title="Dengarkan Pelafalan">
                             <i class="fa-solid fa-volume-high"></i>
                         </button>
                     </div>
@@ -185,7 +187,7 @@
                     <i class="fa-solid fa-trophy"></i>
                 </div>
                 <h2 class="text-2xl font-bold text-slate-900">Latihan Selesai!</h2>
-                <p class="text-slate-500 text-sm mt-1">Berikut adalah hasil pencapaian dari 30 soal angka bahasa Jepang Anda.</p>
+                <p class="text-slate-500 text-sm mt-1">Berikut hasil evaluasi pemahaman angka, nomor HP, harga & sekolah Anda.</p>
 
                 <div class="my-6 p-6 bg-slate-50 rounded-2xl border border-slate-200 grid grid-cols-3 gap-4">
                     <div>
@@ -225,7 +227,7 @@
     <!-- Footer -->
     <footer class="bg-white border-t border-slate-200 py-4 mt-8">
         <div class="max-w-5xl mx-auto px-4 text-center text-xs text-slate-400">
-            Aplikasi Interaktif Belajar Bahasa Jepang &copy; 2026 • Materi Angka, Umur & Tingkat SMA/SMK
+            Aplikasi Interaktif Belajar Bahasa Jepang &copy; 2026 • Angka, HP, Harga, Umur & Tingkat SMA/SMK
         </div>
     </footer>
 
@@ -235,7 +237,7 @@
             {
                 category: "dasar",
                 title: "Angka Dasar (0 - 10)",
-                description: "Fondasi utama perhitungan bahasa Jepang.",
+                description: "Fondasi utama perhitungan angka dalam bahasa Jepang.",
                 items: [
                     { number: "0", kanji: "零 / 〇", hiragana: "ゼロ / れい", romaji: "zero / rei" },
                     { number: "1", kanji: "一", hiragana: "いち", romaji: "ichi" },
@@ -253,7 +255,7 @@
             {
                 category: "ratusan",
                 title: "Ratusan (百 - Hyaku) & Pengecualian",
-                description: "Perhatikan perubahan bunyi pada angka 300, 600, dan 800!",
+                description: "Perhatikan perubahan bunyi pada 300, 600, 800, serta ribuan 3.000 dan 8.000!",
                 items: [
                     { number: "100", kanji: "百", hiragana: "ひゃく", romaji: "hyaku" },
                     { number: "300", kanji: "三百", hiragana: "さんびゃく", romaji: "sanbyaku [Pengecualian]" },
@@ -267,13 +269,41 @@
             {
                 category: "puluh-ribu",
                 title: "Puluh Ribu & Ratus Ribu (万 - Man)",
-                description: "Bahasa Jepang menghitung per kelipatan 4 digit (10.000 / 万 - Man).",
+                description: "Perhitungan kelipatan 4 digit (10.000 / 万 - Man).",
                 items: [
                     { number: "10,000", kanji: "一万", hiragana: "いちまん", romaji: "ichiman (1 x 10.000)" },
                     { number: "20,000", kanji: "二万", hiragana: "にまん", romaji: "niman (2 x 10.000)" },
                     { number: "50,000", kanji: "五万", hiragana: "ごまん", romaji: "goman (5 x 10.000)" },
                     { number: "100,000", kanji: "十万", hiragana: "じゅうまん", romaji: "juuman (10 x 10.000)" },
                     { number: "250,000", kanji: "二十五万", hiragana: "にじゅうごまん", romaji: "nijuu goman" }
+                ]
+            },
+            {
+                category: "denwa",
+                title: "Penyampaian Nomor HP & Telepon (電話番号)",
+                description: "Nomor HP dibaca satu per satu digit. Tanda hubung (-) dibaca の (no).",
+                items: [
+                    { number: "Nomor HP", kanji: "携帯番号", hiragana: "けいたい ばんごう", romaji: "keitai bangou" },
+                    { number: "Nomor Telepon", kanji: "電話番号", hiragana: "でんわ ばんごう", romaji: "denwa bangou" },
+                    { number: "Tanda Hubung (-)", kanji: "の", hiragana: "の", romaji: "no (penghubung strip/dash)" },
+                    { number: "Bertanya No HP", kanji: "電話番号は何番ですか", hiragana: "でんわばんごう は なんばん です か", romaji: "Denwa bangou wa nan-ban desu ka?" },
+                    { number: "Contoh No. HP 1", kanji: "0812-3456-7890", hiragana: "ゼロはちいちに の さんよんごろく の ななはちきゅうゼロ", romaji: "0812 no 3456 no 7890" },
+                    { number: "Contoh No. HP 2", kanji: "0857-1234-5678", hiragana: "ゼロはちごなな の いちにさんよん の ごろくななはち", romaji: "0857 no 1234 no 5678" }
+                ]
+            },
+            {
+                category: "harga",
+                title: "Menanyakan & Menyebutkan Harga (いくら)",
+                description: "Ungkapan transaksi belanja, menanyakan harga, serta satuan mata uang.",
+                items: [
+                    { number: "Berapa harganya?", kanji: "いくらですか", hiragana: "いくら です か", romaji: "Ikura desu ka?" },
+                    { number: "Ini berapa harganya?", kanji: "これはいくらですか", hiragana: "これ は いくら です か", romaji: "Kore wa ikura desu ka?" },
+                    { number: "Mata Uang Yen (¥)", kanji: "円", hiragana: "えん", romaji: "en" },
+                    { number: "Mata Uang Rupiah", kanji: "ルピア", hiragana: "るぴあ", romaji: "rupia" },
+                    { number: "Harga 1,500 Yen", kanji: "1,500円です", hiragana: "せん ごひゃく えん です", romaji: "Sen gohyaku en desu" },
+                    { number: "Harga Rp50.000", kanji: "50,000ルピアです", hiragana: "ごまん るぴあ です", romaji: "Goman rupia desu" },
+                    { number: "Beli yang ini", kanji: "これをください", hiragana: "これ を ください", romaji: "Kore o kudasai" },
+                    { number: "Mahal / Murah", kanji: "高い / 安い", hiragana: "たかい / やすい", romaji: "Takai / Yasui" }
                 ]
             },
             {
@@ -324,6 +354,76 @@
             },
             {
                 id: 2,
+                category: "Nomor HP (電話番号)",
+                prompt: "Bagaimana cara menanyakan nomor HP/Telepon seseorang dalam bahasa Jepang?",
+                hiragana: "でんわ ばんごう は なんばん です か",
+                romaji: "Denwa bangou wa nan-ban desu ka?",
+                options: [
+                    { text: "Denwa bangou wa nan-ban desu ka?", romaji: "Denwa bangou wa nan-ban desu ka?", hiragana: "でんわ ばんごう は なんばん です か", correct: true },
+                    { text: "Kore wa ikura desu ka?", romaji: "Kore wa ikura desu ka?", hiragana: "これ は いくら です か", correct: false },
+                    { text: "Nan-sai desu ka?", romaji: "Nan-sai desu ka?", hiragana: "なんさい です か", correct: false },
+                    { text: "Doko ni arimasu ka?", romaji: "Doko ni arimasu ka?", hiragana: "どこ に あります か", correct: false }
+                ],
+                explanation: "Untuk menanyakan nomor telepon, gunakan 'Denwa bangou wa nan-ban desu ka?' (電話番号は何番ですか)."
+            },
+            {
+                id: 3,
+                category: "Nomor HP (電話番号)",
+                prompt: "Saat menyebutkan nomor HP (misal: 0812-3456), bagaimana membaca tanda hubung (-)?",
+                hiragana: "の",
+                romaji: "no",
+                options: [
+                    { text: "To", romaji: "to", hiragana: "と", correct: false },
+                    { text: "No", romaji: "no", hiragana: "の", correct: true },
+                    { text: "Mo", romaji: "mo", hiragana: "も", correct: false },
+                    { text: "Kara", romaji: "kara", hiragana: "から", correct: false }
+                ],
+                explanation: "Tanda hubung (-) pada nomor telepon dibaca 'no' (の)."
+            },
+            {
+                id: 4,
+                category: "Menanyakan Harga",
+                prompt: "Bagaimana cara menanyakan 'Berapa harga barang ini?' dalam bahasa Jepang?",
+                hiragana: "これ は いくら です か",
+                romaji: "Kore wa ikura desu ka?",
+                options: [
+                    { text: "Kore wa ikura desu ka?", romaji: "Kore wa ikura desu ka?", hiragana: "これ は いくら です か", correct: true },
+                    { text: "Kore wa dare desu ka?", romaji: "Kore wa dare desu ka?", hiragana: "これ は だれ です か", correct: false },
+                    { text: "Kore wa nan-desu ka?", romaji: "Kore wa nan-desu ka?", hiragana: "これ は なん です か", correct: false },
+                    { text: "Kore wa doko desu ka?", romaji: "Kore wa doko desu ka?", hiragana: "これ は どこ です か", correct: false }
+                ],
+                explanation: "Kata 'ikura' (いくら) berarti berapa harga. Kalimat 'Kore wa ikura desu ka?' berarti 'Ini berapa harganya?'"
+            },
+            {
+                id: 5,
+                category: "Menyebut Harga",
+                prompt: "Bagaimana cara menyebut harga 2,500 Yen (二千五百円)?",
+                hiragana: "にせん ごひゃく えん",
+                romaji: "nisen gohyaku en",
+                options: [
+                    { text: "Nisen gohyaku en", romaji: "nisen gohyaku en", hiragana: "にせん ごひゃく えん", correct: true },
+                    { text: "Nijuugo hyaku en", romaji: "nijuugo hyaku en", hiragana: "にじゅうご ひゃく えん", correct: false },
+                    { text: "Niman gohyaku en", romaji: "niman gohyaku en", hiragana: "にまん ごひゃく えん", correct: false },
+                    { text: "Nisen gobyaku en", romaji: "nisen gobyaku en", hiragana: "にせん ごびゃく えん", correct: false }
+                ],
+                explanation: "2,500 Yen = 2,000 (nisen) + 500 (gohyaku) + Yen (en) = Nisen gohyaku en."
+            },
+            {
+                id: 6,
+                category: "Nomor HP (電話番号)",
+                prompt: "Bagaimana cara membaca bagian nomor HP ini: '0812' (ゼロ八一二)?",
+                hiragana: "ゼロ はち いち に",
+                romaji: "zero hachi ichi ni",
+                options: [
+                    { text: "Zero hachi ichi ni", romaji: "zero hachi ichi ni", hiragana: "ゼロ はち いち に", correct: true },
+                    { text: "Rei hachijuu ichini", romaji: "rei hachijuu ichini", hiragana: "れい はちじゅう いちに", correct: false },
+                    { text: "Zero hassen ichi ni", romaji: "zero hassen ichi ni", hiragana: "ゼロ はっせん いち に", correct: false },
+                    { text: "Zero nana ichi ni", romaji: "zero nana ichi ni", hiragana: "ゼロ なな いち に", correct: false }
+                ],
+                explanation: "Nomor telepon dibaca angka per angka (digit demi digit): 0 (zero), 8 (hachi), 1 (ichi), 2 (ni)."
+            },
+            {
+                id: 7,
                 category: "Ratusan (Pengecualian)",
                 prompt: "Berapakah pembacaan dari angka 300 (三百)?",
                 hiragana: "さんびゃく",
@@ -332,12 +432,12 @@
                     { text: "Sanhyaku", romaji: "sanhyaku", hiragana: "さんひゃく", correct: false },
                     { text: "Sanbyaku", romaji: "sanbyaku", hiragana: "さんびゃく", correct: true },
                     { text: "Sanppyaku", romaji: "sanppyaku", hiragana: "さんぴゃく", correct: false },
-                    { text: "Sansen", romaji: "さんせん", hiragana: "さんせん", correct: false }
+                    { text: "Sansen", romaji: "sansen", hiragana: "さんせん", correct: false }
                 ],
-                explanation: "Angka 300 merupakan pengecualian ratusan di mana 'hyaku' berubah bunyi menjadi 'byaku' (Sanbyaku / さんびゃく)."
+                explanation: "Angka 300 merupakan pengecualian ratusan di mana 'hyaku' berubah bunyi menjadi 'byaku' (Sanbyaku)."
             },
             {
-                id: 3,
+                id: 8,
                 category: "Ratusan (Pengecualian)",
                 prompt: "Berapakah pembacaan dari angka 600 (六百)?",
                 hiragana: "ろっぴゃく",
@@ -351,7 +451,7 @@
                 explanation: "Angka 600 mengalami penyerapan bunyi kecil (sokuon) menjadi 'Roppyaku' (ろっぴゃく)."
             },
             {
-                id: 4,
+                id: 9,
                 category: "Ratusan (Pengecualian)",
                 prompt: "Berapakah pembacaan dari angka 800 (八百)?",
                 hiragana: "はっぴゃく",
@@ -365,77 +465,49 @@
                 explanation: "Angka 800 dibaca 'Happyaku' (はっぴゃく) sebagai pengecualian dari Hachi + Hyaku."
             },
             {
-                id: 5,
+                id: 10,
                 category: "Ribuan (Pengecualian)",
                 prompt: "Bagaimana penyebutan angka 3.000 (三千) dalam bahasa Jepang?",
                 hiragana: "さんぜん",
                 romaji: "sanzen",
                 options: [
                     { text: "Mansen", romaji: "mansen", hiragana: "まんせん", correct: false },
-                    { text: "Mansen", romaji: "sansen", hiragana: "さんせん", correct: false },
+                    { text: "Sansen", romaji: "sansen", hiragana: "さんせん", correct: false },
                     { text: "Sanzen", romaji: "sanzen", hiragana: "さんぜん", correct: true },
                     { text: "Sanbyaku", romaji: "sanbyaku", hiragana: "さんびゃく", correct: false }
                 ],
                 explanation: "Untuk 3.000, akhiran 'sen' mengalami dakuten menjadi 'zen' -> Sanzen (さんぜん)."
             },
             {
-                id: 6,
-                category: "Ribuan (Pengecualian)",
-                prompt: "Bagaimana penyebutan angka 8.000 (八千) dalam bahasa Jepang?",
-                hiragana: "はっせん",
-                romaji: "hassen",
-                options: [
-                    { text: "Hachisen", romaji: "hachisen", hiragana: "はちせん", correct: false },
-                    { text: "Hassen", romaji: "hassen", hiragana: "はっせん", correct: true },
-                    { text: "Hazzen", romaji: "hazzen", hiragana: "はっぜん", correct: false },
-                    { text: "Happyaku", romaji: "happyaku", hiragana: "はっぴゃく", correct: false }
-                ],
-                explanation: "Angka 8.000 dibaca 'Hassen' (はっせん) dengan sokuon (tsu kecil)."
-            },
-            {
-                id: 7,
+                id: 11,
                 category: "Puluh Ribu (万)",
-                prompt: "Bahasa Jepang untuk angka 10.000 (一万) adalah...",
-                hiragana: "いちまん",
-                romaji: "ichiman",
+                prompt: "Bahasa Jepang untuk nominal Rp50.000 (五万ルピア) adalah...",
+                hiragana: "ごまん るぴあ",
+                romaji: "goman rupia",
                 options: [
-                    { text: "Juusen", romaji: "juusen", hiragana: "じゅうせん", correct: false },
-                    { text: "Ichiman", romaji: "ichiman", hiragana: "いちまん", correct: true },
-                    { text: "Juuman", romaji: "juuman", hiragana: "じゅうまん", correct: false },
-                    { text: "Hyakuman", romaji: "hyakuman", hiragana: "ひゃくまん", correct: false }
+                    { text: "Gosen rupia", romaji: "gosen rupia", hiragana: "ごせん るぴあ", correct: false },
+                    { text: "Goman rupia", romaji: "goman rupia", hiragana: "ごまん るぴあ", correct: true },
+                    { text: "Gojuuman rupia", romaji: "gojuuman rupia", hiragana: "ごじゅうまん るぴあ", correct: false },
+                    { text: "Gohyaku rupia", romaji: "gohyaku rupia", hiragana: "ごひゃく るぴあ", correct: false }
                 ],
-                explanation: "Unit dasar 10.000 adalah 万 (Man). Maka 10.000 dihitung sebagai 1 unit Man = Ichiman (一万)."
+                explanation: "50.000 rupiah adalah 5 dikali 10.000 (5 unit 万) + Rupiah = Goman rupia."
             },
             {
-                id: 8,
-                category: "Puluh Ribu (万)",
-                prompt: "Bagaimana menyebutkan 50.000 (五万) dalam bahasa Jepang?",
-                hiragana: "ごまん",
-                romaji: "goman",
+                id: 12,
+                category: "Menyebut Harga",
+                prompt: "Apa ungkapan bahasa Jepang ketika hendak membeli barang: 'Tolong berikan yang ini'?",
+                hiragana: "これ を ください",
+                romaji: "Kore o kudasai",
                 options: [
-                    { text: "Gosen", romaji: "gosen", hiragana: "ごせん", correct: false },
-                    { text: "Goman", romaji: "goman", hiragana: "ごまん", correct: true },
-                    { text: "Gojuuman", romaji: "gojuuman", hiragana: "ごじゅうまん", correct: false },
-                    { text: "Gohyaku", romaji: "gohyaku", hiragana: "ごひゃく", correct: false }
+                    { text: "Kore o kudasai", romaji: "Kore o kudasai", hiragana: "これ を ください", correct: true },
+                    { text: "Kore wa ikura desu ka", romaji: "Kore wa ikura desu ka", hiragana: "これ は いくら です か", correct: false },
+                    { text: "Kore wa nan-desu ka", romaji: "Kore wa nan-desu ka", hiragana: "これ は なん です か", correct: false },
+                    { text: "Arigatou gozaimasu", romaji: "Arigatou gozaimasu", hiragana: "ありがとう ございます", correct: false }
                 ],
-                explanation: "50.000 adalah 5 dikali 10.000 (5 buah 万) = Goman (五万)."
+                explanation: "Saat memutuskan membeli barang, katakan 'Kore o kudasai' (これをください) = Tolong berikan yang ini."
             },
             {
-                id: 9,
-                category: "Ratus Ribu (万)",
-                prompt: "Bagaimana cara menyebutkan 100.000 (十万)?",
-                hiragana: "じゅうまん",
-                romaji: "juuman",
-                options: [
-                    { text: "Juuman", romaji: "juuman", hiragana: "じゅうまん", correct: true },
-                    { text: "Hyakuman", romaji: "hyakuman", hiragana: "ひゃくまん", correct: false },
-                    { text: "Hyakusen", romaji: "hyakusen", hiragana: "ひゃくせん", correct: false },
-                    { text: "Ichiman", romaji: "ichiman", hiragana: "いちまん", correct: false }
-                ],
-                explanation: "100.000 adalah 10 dikali 10.000 (10 buah 万) = Juuman (十万)."
-            },
-            {
-                id: 10,
+                id: 13,
                 category: "Umur (歳)",
                 prompt: "Penyebutan umur 1 tahun (1歳) yang benar adalah...",
                 hiragana: "いっさい",
@@ -449,7 +521,7 @@
                 explanation: "Umur 1 tahun adalah pengecualian, dibaca 'Issai' (いっさい), bukan Ichisai."
             },
             {
-                id: 11,
+                id: 14,
                 category: "Umur (歳)",
                 prompt: "Penyebutan khusus untuk umur 20 tahun (二十歳) adalah...",
                 hiragana: "はたち",
@@ -463,7 +535,7 @@
                 explanation: "Umur 20 tahun memiliki sebutan tradisional khusus yaitu 'Hatachi' (はたち), penanda kedewasaan."
             },
             {
-                id: 12,
+                id: 15,
                 category: "Umur (歳)",
                 prompt: "Penyebutan umur 17 tahun (17歳) adalah...",
                 hiragana: "じゅうななさい",
@@ -477,21 +549,7 @@
                 explanation: "17 tahun = 10 (juu) + 7 (nana) + sai (歳) = Juunana sai (じゅうななさい)."
             },
             {
-                id: 13,
-                category: "Umur (歳)",
-                prompt: "Penyebutan umur 8 tahun (8歳) yang benar adalah...",
-                hiragana: "はっさい",
-                romaji: "hassai",
-                options: [
-                    { text: "Hachisai", romaji: "hachisai", hiragana: "はちさい", correct: false },
-                    { text: "Hassai", romaji: "hassai", hiragana: "はっさい", correct: true },
-                    { text: "Hachissai", romaji: "hachissai", hiragana: "はちっさい", correct: false },
-                    { text: "Hasai", romaji: "hasai", hiragana: "はさい", correct: false }
-                ],
-                explanation: "Umur 8 tahun merupakan pengecualian, dibaca 'Hassai' (はっさい)."
-            },
-            {
-                id: 14,
+                id: 16,
                 category: "Tingkat SMA",
                 prompt: "Apa istilah umum untuk 'SMA' (Sekolah Menengah Atas) dalam bahasa Jepang?",
                 hiragana: "こうこう",
@@ -505,7 +563,7 @@
                 explanation: "SMA dalam bahasa Jepang disebut 高校 (Koukou), singkatan dari 高等学校 (Koutougakkou)."
             },
             {
-                id: 15,
+                id: 17,
                 category: "Tingkat SMA",
                 prompt: "Bagaimana cara menyebutkan 'Siswa SMA Kelas 10' (SMA Kelas 1) dalam bahasa Jepang?",
                 hiragana: "こうこう いちねんせい",
@@ -516,35 +574,7 @@
                     { text: "Chougakkou ichi-nensei", romaji: "chougakkou ichi-nensei", hiragana: "ちゅうがっこう いちねんせい", correct: false },
                     { text: "Koukou yon-nensei", romaji: "koukou yon-nensei", hiragana: "こうこう よんねんせい", correct: false }
                 ],
-                explanation: "Di Jepang, tingkat SMA dihitung dari tahun ke-1 sampai ke-3. Maka kelas 10 SMA setara dengan 'Koukou Ichi-nensei' (高校一年生)."
-            },
-            {
-                id: 16,
-                category: "Tingkat SMA",
-                prompt: "Bagaimana cara menyebutkan 'Siswa SMA Kelas 11' (SMA Kelas 2)?",
-                hiragana: "こうこう にねんせい",
-                romaji: "koukou ni-nensei",
-                options: [
-                    { text: "Koukou ni-nensei", romaji: "koukou ni-nensei", hiragana: "こうこう にねんせい", correct: true },
-                    { text: "Koukou juuichi-nensei", romaji: "koukou juuichi-nensei", hiragana: "こうこう じゅういちねんせい", correct: false },
-                    { text: "Daigaku ni-nensei", romaji: "daigaku ni-nensei", hiragana: "だいがく にねんせい", correct: false },
-                    { text: "Koukou san-nensei", romaji: "koukou san-nensei", hiragana: "こうこう さんねんせい", correct: false }
-                ],
-                explanation: "Kelas 11 SMA setara dengan SMA tahun ke-2, yaitu 'Koukou Ni-nensei' (高校二年生)."
-            },
-            {
-                id: 17,
-                category: "Tingkat SMA",
-                prompt: "Bagaimana cara menyebutkan 'Siswa SMA Kelas 12' (SMA Kelas 3)?",
-                hiragana: "こうこう さんねんせい",
-                romaji: "koukou san-nensei",
-                options: [
-                    { text: "Koukou san-nensei", romaji: "koukou san-nensei", hiragana: "こうこう さんねんせい", correct: true },
-                    { text: "Koukou juuni-nensei", romaji: "koukou juuni-nensei", hiragana: "こうこう じゅうにねんせい", correct: false },
-                    { text: "Koukou yon-nensei", romaji: "koukou yon-nensei", hiragana: "こうこう よんねんせい", correct: false },
-                    { text: "Shougakkou san-nensei", romaji: "shougakkou san-nensei", hiragana: "しょうがっこう さんねんせい", correct: false }
-                ],
-                explanation: "Kelas 12 SMA setara dengan SMA tahun ke-3, yaitu 'Koukou San-nensei' (高校三年生)."
+                explanation: "Di Jepang, tingkat SMA dihitung dari tahun ke-1 sampai ke-3. Kelas 10 setara dengan 'Koukou Ichi-nensei' (高校一年生)."
             },
             {
                 id: 18,
@@ -572,11 +602,11 @@
                     { text: "Juku", romaji: "juku", hiragana: "じゅく", correct: false },
                     { text: "Gakkou", romaji: "gakkou", hiragana: "がっこう", correct: false }
                 ],
-                explanation: "Sekolah negeri/publik menggunakan istilah 公立 (Kouritsu). Sedangkan sekolah swasta dinamakan 私立 (Shiritsu)."
+                explanation: "Sekolah negeri/publik menggunakan istilah 公立 (Kouritsu). Sekolah swasta adalah 私立 (Shiritsu)."
             },
             {
                 id: 20,
-                category: "Latihan Harga (円)",
+                category: "Menyebut Harga",
                 prompt: "Bagaimana membaca nominal harga 1,500 Yen (千五百円)?",
                 hiragana: "せん ごひゃく えん",
                 romaji: "sen gohyaku en",
@@ -586,11 +616,11 @@
                     { text: "Sen gobyaku en", romaji: "sen gobyaku en", hiragana: "せん ごびゃく えん", correct: false },
                     { text: "Gosen hyaku en", romaji: "gosen hyaku en", hiragana: "ごせん ひゃく えん", correct: false }
                 ],
-                explanation: "1.500 Yen = 1.000 (sen) + 500 (gohyaku) + Yen (en) = Sen gohyaku en (せんごひゃくえん)."
+                explanation: "1,500 Yen = 1,000 (sen) + 500 (gohyaku) + Yen (en) = Sen gohyaku en."
             },
             {
                 id: 21,
-                category: "Latihan Harga (円)",
+                category: "Menyebut Harga",
                 prompt: "Bagaimana cara membaca nominal harga 25,000 Yen (二万五千円)?",
                 hiragana: "にまん ごせん えん",
                 romaji: "niman gosen en",
@@ -604,17 +634,17 @@
             },
             {
                 id: 22,
-                category: "Angka Campuran",
-                prompt: "Berapakah nilai angka dari 'Kyuu juu kyuu' (九十九)?",
-                hiragana: "きゅうじゅうきゅう",
-                romaji: "kyuu juu kyuu",
+                category: "Kosakata Belanja",
+                prompt: "Apa arti kata 'Takai' (高い) dan 'Yasui' (安い) dalam konteks belanja?",
+                hiragana: "たかい / やすい",
+                romaji: "takai / yasui",
                 options: [
-                    { text: "89", romaji: "89", hiragana: "89", correct: false },
-                    { text: "99", romaji: "99", hiragana: "99", correct: true },
-                    { text: "909", romaji: "909", hiragana: "909", correct: false },
-                    { text: "990", romaji: "990", hiragana: "990", correct: false }
+                    { text: "Mahal / Murah", romaji: "Mahal / Murah", hiragana: "Mahal / Murah", correct: true },
+                    { text: "Bagus / Jelek", romaji: "Bagus / Jelek", hiragana: "Bagus / Jelek", correct: false },
+                    { text: "Besar / Kecil", romaji: "Besar / Kecil", hiragana: "Besar / Kecil", correct: false },
+                    { text: "Banyak / Sedikit", romaji: "Banyak / Sedikit", hiragana: "Banyak / Sedikit", correct: false }
                 ],
-                explanation: "Kyuu (9) + Juu (10) + Kyuu (9) = 99."
+                explanation: "Takai (高い) berarti mahal, sedangkan Yasui (安い) berarti murah."
             },
             {
                 id: 23,
@@ -688,7 +718,7 @@
             },
             {
                 id: 28,
-                category: "Latihan Harga (円)",
+                category: "Menyebut Harga",
                 prompt: "Nominal 3,800 Yen (三千八百円) dibaca sebagai...",
                 hiragana: "さんぜん はっぴゃく えん",
                 romaji: "sanzen happyaku en",
@@ -698,7 +728,7 @@
                     { text: "Sanbyaku hassen en", romaji: "Sanbyaku hassen en", hiragana: "さんびゃく はっせん えん", correct: false },
                     { text: "Sanzen roppyaku en", romaji: "Sanzen roppyaku en", hiragana: "さんぜん ろっぴゃく えん", correct: false }
                 ],
-                explanation: "3.000 (Sanzen) + 800 (Happyaku) + Yen (en) = Sanzen happyaku en."
+                explanation: "3,000 (Sanzen) + 800 (Happyaku) + Yen (en) = Sanzen happyaku en."
             },
             {
                 id: 29,
@@ -722,11 +752,11 @@
                 romaji: "Nan-nensei desu ka?",
                 options: [
                     { text: "Nan-nensei desu ka?", romaji: "Nan-nensei desu ka?", hiragana: "なんねんせい です か", correct: true },
-                    { text: "Nonsai desu ka?", romaji: "Nonsai desu ka?", hiragana: "なんさい です か", correct: false },
+                    { text: "Nan-sai desu ka?", romaji: "Nan-sai desu ka?", hiragana: "なんさい です か", correct: false },
                     { text: "Ikura desu ka?", romaji: "Ikura desu ka?", hiragana: "いくら です か", correct: false },
                     { text: "Doko desu ka?", romaji: "Doko desu ka?", hiragana: "どこ です か", correct: false }
                 ],
-                explanation: "Menanyakan tingkat kelas menggunakan 何年生 (Nan-nensei desu ka?). Jika menanyakan umur memakai 何歳 (Nansai desu ka?)."
+                explanation: "Menanyakan tingkat kelas menggunakan 何年生 (Nan-nensei desu ka?). Menanyakan umur memakai 何歳 (Nan-sai desu ka?). Menanyakan harga memakai いくら (Ikura desu ka?)."
             }
         ];
 
@@ -745,10 +775,10 @@
         // Speech Synthesis Function
         function speakText(text, lang = 'ja-JP') {
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); // Stop any active audio
+                window.speechSynthesis.cancel(); // Stop active audio
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = lang;
-                utterance.rate = 0.85; // Slightly slower for clear learning
+                utterance.rate = 0.85; // Slightly slower speed for clearer listening
                 window.speechSynthesis.speak(utterance);
             } else {
                 console.warn('Speech synthesis not supported in this browser.');
@@ -792,7 +822,7 @@
                             <td class="py-2.5 px-3 jp-text text-xs text-sakura-600 font-medium">${item.hiragana}</td>
                             <td class="py-2.5 px-3 text-xs text-slate-500 italic font-mono">${item.romaji}</td>
                             <td class="py-2.5 px-3 text-right">
-                                <button onclick="speakText('${item.kanji}', 'ja-JP')" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-sakura-100 text-slate-600 hover:text-sakura-600 text-xs transition inline-flex items-center justify-center">
+                                <button onclick="speakText('${item.kanji}', 'ja-JP')" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-sakura-100 text-slate-600 hover:text-sakura-600 text-xs transition inline-flex items-center justify-center" title="Dengar Audio">
                                     <i class="fa-solid fa-volume-high"></i>
                                 </button>
                             </td>
@@ -810,8 +840,8 @@
                             <table class="w-full text-left border-collapse">
                                 <thead>
                                     <tr class="border-b border-slate-200 text-[10px] uppercase text-slate-400">
-                                        <th class="py-2 px-3">Item</th>
-                                        <th class="py-2 px-3">Kanji/Angka</th>
+                                        <th class="py-2 px-3">Item / Konteks</th>
+                                        <th class="py-2 px-3">Kanji/Teks</th>
                                         <th class="py-2 px-3">Hiragana</th>
                                         <th class="py-2 px-3">Romaji</th>
                                         <th class="py-2 px-3 text-right">Audio</th>
@@ -833,7 +863,9 @@
             document.querySelectorAll('.materi-filter-btn').forEach(btn => {
                 btn.className = "materi-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-200 text-slate-700 hover:bg-slate-300 transition";
             });
-            event.target.className = "materi-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-white transition";
+            if (event && event.target) {
+                event.target.className = "materi-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-white transition";
+            }
             renderMateriCards(cat);
         }
 
@@ -895,7 +927,7 @@
         }
 
         function selectOption(index) {
-            if (selectedOptionIndex !== null) return; // Prevent changing after answer
+            if (selectedOptionIndex !== null) return; // Prevent changing choice after answering
             selectedOptionIndex = index;
 
             const q = QUIZ_QUESTIONS[currentQuestionIndex];
@@ -977,13 +1009,13 @@
             const evalMsg = document.getElementById('result-evaluation-msg');
             if (percentage >= 85) {
                 evalMsg.className = "p-4 rounded-xl text-sm font-medium mb-6 bg-emerald-100 text-emerald-800 border border-emerald-200";
-                evalMsg.innerText = "🎉 Jōzu! (上手) Kemampuan angka dan tingkatan sekolah bahasa Jepang Anda luar biasa!";
+                evalMsg.innerText = "🎉 Jōzu! (上手) Kemampuan angka, nomor HP, harga & tingkatan sekolah Anda sangat luar biasa!";
             } else if (percentage >= 60) {
                 evalMsg.className = "p-4 rounded-xl text-sm font-medium mb-6 bg-amber-100 text-amber-800 border border-amber-200";
-                evalMsg.innerText = "👍 Bagus! Anda sudah menguasai sebagian besar materi. Perhatikan pengecualian ratusan/ribuan lagi!";
+                evalMsg.innerText = "👍 Bagus! Anda sudah menguasai sebagian besar materi. Perhatikan pengecualian angka dan ungkapan harga lagi!";
             } else {
                 evalMsg.className = "p-4 rounded-xl text-sm font-medium mb-6 bg-rose-100 text-rose-800 border border-rose-200";
-                evalMsg.innerText = "💪 Jangan menyerah! Pelajari kembali modul materi ringkasan dan ulangi latihannya.";
+                evalMsg.innerText = "💪 Jangan menyerah! Pelajari kembali tabel materi ringkasan dan ulangi latihannya.";
             }
         }
 
