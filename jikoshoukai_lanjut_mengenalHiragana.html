@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jikoshoukai Master - Kotoba & Kana Edukasi Bahasa Jepang SMK</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Kosugi+Maru&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        jp: {
+                            red: '#E60012',
+                            pink: '#FFB7C5',
+                            sakura: '#FFE4E1',
+                            dark: '#1F2937',
+                            accent: '#FF4757',
+                            bg: '#F8FAFC'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        japanese: ['Kosugi Maru', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .flip-card {
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            backface-visibility: hidden;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+        .sakura-bg {
+            background-color: #fdf2f8;
+            background-image: radial-gradient(#fbcfe8 0.75px, transparent 0.75px), radial-gradient(#fbcfe8 0.75px, #fdf2f8 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+        }
+        .kana-btn {
+            transition: all 0.2s ease;
+        }
+        .kana-btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 min-h-screen flex flex-col justify-between sakura-bg">
+
+    <header class="bg-white/90 backdrop-blur-md border-b border-rose-100 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center space-x-3">
+                <div class="bg-rose-500 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xl shadow-md shadow-rose-200 font-japanese">
+                    あ
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold text-slate-800 tracking-tight flex items-center gap-2">
+                        Jikoshoukai Master <span class="text-xs bg-rose-100 text-rose-600 px-2 py-0.5 rounded-full font-semibold">Kana & Kotoba SMK</span>
+                    </h1>
+                    <p class="text-xs text-slate-500">Media Pembelajaran Interaktif Kana, Greetings & Kotoba Perkenalan Diri</p>
+                </div>
+            </div>
+
+            <!-- Stats & Romaji Helper -->
+            <div class="flex items-center space-x-3">
+                <div class="bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-xl flex items-center gap-2 text-amber-700 font-semibold text-sm">
+                    <i class="fa-solid fa-star text-amber-500"></i>
+                    <span>XP: <span id="user-xp">0</span></span>
+                </div>
+                <button id="toggle-romaji-btn" onclick="toggleRomajiGlobal()" class="bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 text-indigo-600 px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-eye"></i>
+                    <span id="romaji-toggle-text">Romaji: Tampil</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-6 flex-1 w-full">
+        <!-- Navigation Tabs -->
+        <div class="flex flex-wrap gap-2 mb-6 border-b border-slate-200 pb-2">
+            <button onclick="switchTab('kana')" id="tab-kana" class="tab-btn active border-b-2 border-rose-500 text-rose-600 font-bold px-4 py-2.5 rounded-t-xl transition flex items-center gap-2 bg-white/60">
+                <i class="fa-solid fa-language"></i> 1. Pengenalan Kana
+            </button>
+            <button onclick="switchTab('learn')" id="tab-learn" class="tab-btn text-slate-500 font-semibold px-4 py-2.5 rounded-t-xl hover:text-slate-700 transition flex items-center gap-2 bg-white/60">
+                <i class="fa-solid fa-book-open"></i> 2. Kotoba Per Kata
+            </button>
+            <button onclick="switchTab('match')" id="tab-match" class="tab-btn text-slate-500 font-semibold px-4 py-2.5 rounded-t-xl hover:text-slate-700 transition flex items-center gap-2 bg-white/60">
+                <i class="fa-solid fa-puzzle-piece"></i> 3. Game Cocokkan
+            </button>
+            <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn text-slate-500 font-semibold px-4 py-2.5 rounded-t-xl hover:text-slate-700 transition flex items-center gap-2 bg-white/60">
+                <i class="fa-solid fa-gamepad"></i> 4. Kuis Tantangan
+            </button>
+        </div>
+
+        <section id="section-kana" class="tab-content space-y-6">
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+                <div class="relative z-10">
+                    <h2 class="text-2xl font-bold mb-2">Pengenalan Huruf Kana (ひらがな・カタカナ)</h2>
+                    <p class="text-indigo-100 text-sm max-w-2xl">
+                        Aksara Jepang terbagi menjadi Hiragana (untuk kata asli) dan Katakana (untuk serapan asing/nama luar). Klik karakter untuk mendengarkan pelafalan audionya!
+                    </p>
+                </div>
+                <div class="absolute -right-6 -bottom-6 opacity-20 text-9xl font-japanese select-none">
+                    あア
+                </div>
+            </div>
+
+            <!-- Kana Sub-tabs (Hiragana vs Katakana) -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <div class="flex space-x-2">
+                        <button id="kana-type-hira" onclick="switchKanaType('hiragana')" class="px-4 py-1.5 bg-rose-500 text-white rounded-xl text-xs font-bold transition">Hiragana (平仮名)</button>
+                        <button id="kana-type-kata" onclick="switchKanaType('katakana')" class="px-4 py-1.5 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl text-xs font-bold transition">Katakana (片仮名)</button>
+                    </div>
+                    <span class="text-xs text-slate-400">Klik kartu untuk mendengar suara</span>
+                </div>
+
+                <!-- Kana Grid Display -->
+                <div id="kana-grid" class="grid grid-cols-5 sm:grid-cols-10 gap-2.5 text-center">
+                    <!-- Dynamic Kana Cards injected by JS -->
+                </div>
+            </div>
+        </section>
+
+        <section id="section-learn" class="tab-content hidden space-y-6">
+            <div class="bg-gradient-to-r from-rose-500 to-pink-500 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+                <div class="relative z-10">
+                    <h2 class="text-2xl font-bold mb-2">Daftar Kotoba Per Kata & Aisatsu (自己紹介の言葉)</h2>
+                    <p class="text-rose-100 text-sm max-w-2xl">
+                        Pelajari kata per kata unsur *Jikoshoukai* dan salam penyapaan (*Aisatsu*). Klik kartu untuk memutar balik dan menekan speaker untuk mendengarkan pelafalan!
+                    </p>
+                </div>
+                <div class="absolute -right-6 -bottom-6 opacity-20 text-9xl font-japanese select-none">
+                    私
+                </div>
+            </div>
+
+            <!-- Category Filter Buttons -->
+            <div class="flex flex-wrap gap-2" id="kotoba-category-filters">
+                <button onclick="filterKotobaCategory('all')" class="cat-filter-btn active bg-rose-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-sm">Semua</button>
+                <button onclick="filterKotobaCategory('aisatsu')" class="cat-filter-btn bg-white border border-slate-200 text-slate-600 hover:border-rose-300 px-3.5 py-1.5 rounded-xl text-xs font-semibold">Salam (Aisatsu)</button>
+                <button onclick="filterKotobaCategory('identitas')" class="cat-filter-btn bg-white border border-slate-200 text-slate-600 hover:border-rose-300 px-3.5 py-1.5 rounded-xl text-xs font-semibold">Identitas & Profil</button>
+                <button onclick="filterKotobaCategory('sekolah')" class="cat-filter-btn bg-white border border-slate-200 text-slate-600 hover:border-rose-300 px-3.5 py-1.5 rounded-xl text-xs font-semibold">Sekolah SMK</button>
+                <button onclick="filterKotobaCategory('hobi_favorit')" class="cat-filter-btn bg-white border border-slate-200 text-slate-600 hover:border-rose-300 px-3.5 py-1.5 rounded-xl text-xs font-semibold">Hobi & Kesukaan</button>
+            </div>
+
+            <!-- Flashcard Grid for Words -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="flashcards-container">
+                <!-- Javascript will inject word cards here -->
+            </div>
+        </section>
+
+        <section id="section-match" class="tab-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex flex-wrap justify-between items-center mb-4 gap-2">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800">Game Cocokkan Pasangan Kotoba Per Kata</h2>
+                        <p class="text-xs text-slate-500">Pasangkan kartu Bahasa Jepang (Hiragana/Katakana/Romaji) dengan artinya dalam Bahasa Indonesia!</p>
+                    </div>
+                    <button onclick="initMatchGame()" class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-rotate-right"></i> Acak Ulang
+                    </button>
+                </div>
+
+                <!-- Match Grid -->
+                <div id="match-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                    <!-- Cards injected by JS -->
+                </div>
+            </div>
+        </section>
+
+        <section id="section-quiz" class="tab-content hidden space-y-6">
+            <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <div id="quiz-header" class="flex justify-between items-center pb-4 border-b border-slate-100 mb-6">
+                    <div>
+                        <span id="quiz-progress-label" class="text-xs font-bold text-rose-500 uppercase tracking-wider">Soal 1 Dari 10</span>
+                        <h3 class="text-lg font-bold text-slate-800">Tebak Makna Kotoba & Salam</h3>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-slate-400 block">Skor Kuis</span>
+                        <span id="quiz-score" class="text-xl font-black text-emerald-500">0</span>
+                    </div>
+                </div>
+
+                <div id="quiz-body" class="space-y-6">
+                    <!-- Quiz Question Box -->
+                    <div class="bg-rose-50/50 border border-rose-100 p-6 rounded-2xl text-center relative">
+                        <button onclick="playQuizAudio()" class="absolute right-4 top-4 text-slate-400 hover:text-rose-500 p-2 rounded-full transition" title="Dengar Suara">
+                            <i class="fa-solid fa-volume-high text-lg"></i>
+                        </button>
+                        <span class="text-xs font-bold text-rose-400 uppercase tracking-widest block mb-2">Kata / Aksara</span>
+                        <div id="quiz-hiragana" class="text-3xl font-bold font-japanese text-slate-800 mb-1">---</div>
+                        <div id="quiz-romaji" class="text-sm font-semibold text-rose-600 font-mono romaji-text">---</div>
+                    </div>
+
+                    <!-- Answers Options -->
+                    <div id="quiz-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- Dynamic Buttons -->
+                    </div>
+                </div>
+
+                <!-- Quiz Completion Screen -->
+                <div id="quiz-result" class="hidden text-center py-8 space-y-4">
+                    <div class="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center text-4xl mx-auto shadow-inner">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-800">Selesai! Kemampuan Kotoba Hebat!</h3>
+                    <p class="text-sm text-slate-500">Kamu mendapatkan total <span id="final-quiz-score" class="font-bold text-slate-800">0</span> poin dari kuis ini.</p>
+                    <button onclick="startQuiz()" class="bg-rose-500 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-rose-200 hover:bg-rose-600 transition">
+                        Coba Lagi
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-800 text-white px-4 py-3 rounded-xl shadow-2xl transition transform translate-y-20 opacity-0 flex items-center space-x-3 z-50">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toast-message" class="text-xs font-semibold">Pesan Notifikasi</span>
+    </div>
+
+    <footer class="bg-white border-t border-slate-200 mt-12 py-4">
+        <div class="max-w-6xl mx-auto px-4 text-center text-xs text-slate-400">
+            <p>© 2026 Media Pembelajaran Interaktif Bahasa Jepang SMK • Modul Kana, Greetings & Jikoshoukai</p>
+        </div>
+    </footer>
+
+    <script>
+        /* Kana Dataset (Hiragana & Katakana Basic Seion) */
+        const kanaData = [
+            { hira: 'あ', kata: 'ア', romaji: 'a' },
+            { hira: 'い', kata: 'イ', romaji: 'i' },
+            { hira: 'う', kata: 'ウ', romaji: 'u' },
+            { hira: 'え', kata: 'エ', romaji: 'e' },
+            { hira: 'お', kata: 'オ', romaji: 'o' },
+            { hira: 'か', kata: 'カ', romaji: 'ka' },
+            { hira: 'き', kata: 'キ', romaji: 'ki' },
+            { hira: 'く', kata: 'ク', romaji: 'ku' },
+            { hira: 'け', kata: 'ケ', romaji: 'ke' },
+            { hira: 'こ', kata: 'コ', romaji: 'ko' },
+            { hira: 'さ', kata: 'サ', romaji: 'sa' },
+            { hira: 'し', kata: 'シ', romaji: 'shi' },
+            { hira: 'す', kata: 'ス', romaji: 'su' },
+            { hira: 'せ', kata: 'セ', romaji: 'se' },
+            { hira: 'そ', kata: 'ソ', romaji: 'so' },
+            { hira: 'た', kata: 'タ', romaji: 'ta' },
+            { hira: 'ち', kata: 'チ', romaji: 'chi' },
+            { hira: 'つ', kata: 'ツ', romaji: 'tsu' },
+            { hira: 'て', kata: 'テ', romaji: 'te' },
+            { hira: 'と', kata: 'ト', romaji: 'to' },
+            { hira: 'な', kata: 'ナ', romaji: 'na' },
+            { hira: 'に', kata: 'ニ', romaji: 'ni' },
+            { hira: 'ぬ', kata: 'ヌ', romaji: 'nu' },
+            { hira: 'ね', kata: 'ネ', romaji: 'ne' },
+            { hira: 'の', kata: 'ノ', romaji: 'no' },
+            { hira: 'は', kata: 'ハ', romaji: 'ha' },
+            { hira: 'ひ', kata: 'ヒ', romaji: 'hi' },
+            { hira: 'ふ', kata: 'フ', romaji: 'fu' },
+            { hira: 'へ', kata: 'ヘ', romaji: 'he' },
+            { hira: 'ほ', kata: 'ホ', romaji: 'ho' },
+            { hira: 'ま', kata: 'マ', romaji: 'ma' },
+            { hira: 'み', kata: 'ミ', romaji: 'mi' },
+            { hira: 'む', kata: 'ム', romaji: 'mu' },
+            { hira: 'め', kata: 'メ', romaji: 'me' },
+            { hira: 'も', kata: 'モ', romaji: 'mo' },
+            { hira: 'や', kata: 'ヤ', romaji: 'ya' },
+            { hira: 'ゆ', kata: 'ユ', romaji: 'yu' },
+            { hira: 'よ', kata: 'ヨ', romaji: 'yo' },
+            { hira: 'ら', kata: 'ラ', romaji: 'ra' },
+            { hira: 'り', kata: 'リ', romaji: 'ri' },
+            { hira: 'る', kata: 'ル', romaji: 'ru' },
+            { hira: 'れ', kata: 'レ', romaji: 're' },
+            { hira: 'ろ', kata: 'ロ', romaji: 'ro' },
+            { hira: 'わ', kata: 'ワ', romaji: 'wa' },
+            { hira: 'を', kata: 'ヲ', romaji: 'wo' },
+            { hira: 'ん', kata: 'ン', romaji: 'n' }
+        ];
+
+        /* Single-Word Vocabulary Dataset covering 10 Jikoshoukai items + Aisatsu */
+        const vocabularyData = [
+            // GREETINGS (AISATSU)
+            {
+                id: 'hajimemashite',
+                categoryTag: 'aisatsu',
+                categoryLabel: 'Aisatsu (Salam)',
+                wordHira: 'はじめまして',
+                wordKata: 'ハジメマシテ',
+                romaji: 'Hajimemashite',
+                indonesiano: 'Perkenalkan / Senang bertemu',
+                exampleSentence: 'はじめまして、よろしく おねがいします。',
+                exampleRomaji: 'Hajimemashite, yoroshiku onegaishimasu.'
+            },
+            {
+                id: 'ohayou',
+                categoryTag: 'aisatsu',
+                categoryLabel: 'Aisatsu (Salam)',
+                wordHira: 'おはよう ございます',
+                wordKata: 'オハヨウ ゴザイマス',
+                romaji: 'Ohayou gozaimasu',
+                indonesiano: 'Selamat Pagi',
+                exampleSentence: 'せんせい、おはよう ございます。',
+                exampleRomaji: 'Sensei, ohayou gozaimasu.'
+            },
+            {
+                id: 'konnichiwa',
+                categoryTag: 'aisatsu',
+                categoryLabel: 'Aisatsu (Salam)',
+                wordHira: 'こんにちは',
+                wordKata: 'コンニチハ',
+                romaji: 'Konnichiwa',
+                indonesiano: 'Selamat Siang / Halo',
+                exampleSentence: 'みなさん、こんにちは！',
+                exampleRomaji: 'Minasan, konnichiwa!'
+            },
+            {
+                id: 'douzo_yoroshiku',
+                categoryTag: 'aisatsu',
+                categoryLabel: 'Aisatsu (Salam)',
+                wordHira: 'どうぞ よろしく おねがいします',
+                wordKata: 'ドウゾ ヨロシク オネガイシマス',
+                romaji: 'Douzo yoroshiku onegaishimasu',
+                indonesiano: 'Senang berkenalan dengan Anda',
+                exampleSentence: 'どうぞ よろしく おねがいします。',
+                exampleRomaji: 'Douzo yoroshiku onegaishimasu.'
+            },
+            {
+                id: 'arigatou',
+                categoryTag: 'aisatsu',
+                categoryLabel: 'Aisatsu (Salam)',
+                wordHira: 'ありがとう ございます',
+                wordKata: 'アリガトウ ゴザイマス',
+                romaji: 'Arigatou gozaimasu',
+                indonesiano: 'Terima kasih banyak',
+                exampleSentence: 'どうも ありがとう ございます。',
+                exampleRomaji: 'Doumo arigatou gozaimasu.'
+            },
+
+            // IDENTITAS & PROFIL
+            {
+                id: 'watashi',
+                categoryTag: 'identitas',
+                categoryLabel: '1. Kata Ganti Orang',
+                wordHira: 'わたし',
+                wordKata: 'ワタシ',
+                romaji: 'Watashi',
+                indonesiano: 'Saya / Aku',
+                exampleSentence: 'わたし は ぶでぃ です。',
+                exampleRomaji: 'Watashi wa Budi desu.'
+            },
+            {
+                id: 'namae',
+                categoryTag: 'identitas',
+                categoryLabel: '2. Nama Lengkap',
+                wordHira: 'なまえ',
+                wordKata: 'ナマエ',
+                romaji: 'Namae',
+                indonesiano: 'Nama',
+                exampleSentence: 'わたし の なまえ は ... です。',
+                exampleRomaji: 'Watashi no namae wa ... desu.'
+            },
+            {
+                id: 'yobina',
+                categoryTag: 'identitas',
+                categoryLabel: '3. Panggilan',
+                wordHira: 'よびな / よんで ください',
+                wordKata: 'ヨビナ / ヨンデ クダサイ',
+                romaji: 'Yobina / Yonde kudasai',
+                indonesiano: 'Nama Panggilan / Silakan panggil',
+                exampleSentence: 'ぶでぃ と よんで ください。',
+                exampleRomaji: 'Budi to yonde kudasai.'
+            },
+            {
+                id: 'shusshin',
+                categoryTag: 'identitas',
+                categoryLabel: '4. Asal Daerah',
+                wordHira: 'しゅっしん / から きました',
+                wordKata: 'シュッシン / カラ キマシタ',
+                romaji: 'Shusshin / Kara kimashita',
+                indonesiano: 'Asal / Datang dari',
+                exampleSentence: 'せまらん から きました。',
+                exampleRomaji: 'Semarang kara kimashita.'
+            },
+            {
+                id: 'juusho',
+                categoryTag: 'identitas',
+                categoryLabel: '5. Alamat Tinggal',
+                wordHira: 'じゅうしょ / すんでいます',
+                wordKata: 'ジュウショ / スンデイマス',
+                romaji: 'Juusho / Sunde imasu',
+                indonesiano: 'Alamat / Tinggal di',
+                exampleSentence: 'けんだる に すんでいます。',
+                exampleRomaji: 'Kendal ni sunde imasu.'
+            },
+            {
+                id: 'sai',
+                categoryTag: 'identitas',
+                categoryLabel: '6. Usia / Umur',
+                wordHira: 'さい / ねんれい',
+                wordKata: 'サイ / ネンレイ',
+                romaji: 'Sai / Nenrei',
+                indonesiano: 'Tahun Usia / Umur',
+                exampleSentence: 'じゅうろく さい です。',
+                exampleRomaji: 'Juuroku sai desu.'
+            },
+
+            // SEKOLAH SMK
+            {
+                id: 'senmonkoukou',
+                categoryTag: 'sekolah',
+                categoryLabel: '7. Sekolah SMK',
+                wordHira: 'せんもんこうこう',
+                wordKata: 'センモンコウコウ',
+                romaji: 'Senmonkoukou',
+                indonesiano: 'SMK (Sekolah Menengah Kejuruan)',
+                exampleSentence: 'わたし は せんもんこうこう の せいと です。',
+                exampleRomaji: 'Watashi wa senmonkoukou no seito desu.'
+            },
+            {
+                id: 'nensei',
+                categoryTag: 'sekolah',
+                categoryLabel: '8. Tingkat Kelas',
+                wordHira: 'ねんせい',
+                wordKata: 'ネンセイ',
+                romaji: 'Nensei',
+                indonesiano: 'Tingkat / Kelas',
+                exampleSentence: 'じゅう ねんせい です (Kelas 10).',
+                exampleRomaji: 'Juu nensei desu.'
+            },
+
+            // HOBI, KESUKAAN & KONTAK
+            {
+                id: 'shumi',
+                categoryTag: 'hobi_favorit',
+                categoryLabel: '9. Hobi',
+                wordHira: 'しゅみ',
+                wordKata: 'シュミ',
+                romaji: 'Shumi',
+                indonesiano: 'Hobi / Kegemaran',
+                exampleSentence: 'しゅみ は どくしょ です。',
+                exampleRomaji: 'Shumi wa dokusho desu.'
+            },
+            {
+                id: 'denwa_bangou',
+                categoryTag: 'identitas',
+                categoryLabel: '10. Nomor HP',
+                wordHira: 'でんわ ばんごう',
+                wordKata: 'デンワ バンゴウ',
+                romaji: 'Denwa bangou',
+                indonesiano: 'Nomor Telepon/HP',
+                exampleSentence: 'でんわ ばんごう は ... です。',
+                exampleRomaji: 'Denwa bangou wa ... desu.'
+            },
+            {
+                id: 'tabemono',
+                categoryTag: 'hobi_favorit',
+                categoryLabel: '11. Makanan Kesukaan',
+                wordHira: 'すきな たべもの',
+                wordKata: 'スキナ タベモノ',
+                romaji: 'Suki na tabemono',
+                indonesiano: 'Makanan Favorit',
+                exampleSentence: 'すきな たべもの は ラーメン です。',
+                exampleRomaji: 'Suki na tabemono wa Raamen desu.'
+            },
+            {
+                id: 'iro',
+                categoryTag: 'hobi_favorit',
+                categoryLabel: '12. Warna Kesukaan',
+                wordHira: 'すきな いろ',
+                wordKata: 'スキナ イロ',
+                romaji: 'Suki na iro',
+                indonesiano: 'Warna Favorit',
+                exampleSentence: 'すきな いろ は あか です。',
+                exampleRomaji: 'Suki na iro wa Aka desu.'
+            }
+        ];
+
+        let currentKanaType = 'hiragana';
+        let userXP = 0;
+        let isRomajiVisible = true;
+        let activeKotobaFilter = 'all';
+        let currentQuizIndex = 0;
+        let quizScore = 0;
+        let quizQuestions = [];
+        let selectedMatchCards = [];
+        let matchedPairsCount = 0;
+
+        // Initialize App on DOM Load
+        window.onload = function() {
+            renderKanaGrid();
+            renderFlashcards();
+            initMatchGame();
+            startQuiz();
+        };
+
+        function playJapaneseAudio(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Stop ongoing audio
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'ja-JP';
+                utterance.rate = 0.85; // Slower rate for Japanese educational speech
+                window.speechSynthesis.speak(utterance);
+                showToast(`Memutar audio: "${text}"`, 'fa-volume-high');
+            } else {
+                showToast('Fitur audio tidak didukung browser ini.', 'fa-triangle-exclamation');
+            }
+        }
+
+        function switchKanaType(type) {
+            currentKanaType = type;
+            const btnHira = document.getElementById('kana-type-hira');
+            const btnKata = document.getElementById('kana-type-kata');
+
+            if (type === 'hiragana') {
+                btnHira.className = 'px-4 py-1.5 bg-rose-500 text-white rounded-xl text-xs font-bold transition';
+                btnKata.className = 'px-4 py-1.5 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl text-xs font-bold transition';
+            } else {
+                btnKata.className = 'px-4 py-1.5 bg-rose-500 text-white rounded-xl text-xs font-bold transition';
+                btnHira.className = 'px-4 py-1.5 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl text-xs font-bold transition';
+            }
+            renderKanaGrid();
+        }
+
+        function renderKanaGrid() {
+            const container = document.getElementById('kana-grid');
+            container.innerHTML = '';
+
+            kanaData.forEach(item => {
+                const char = currentKanaType === 'hiragana' ? item.hira : item.kata;
+                const card = document.createElement('div');
+                card.className = 'kana-btn bg-slate-50 hover:bg-rose-50 border border-slate-200 hover:border-rose-300 rounded-xl p-3 cursor-pointer select-none transition text-center shadow-2xs';
+                card.onclick = () => playJapaneseAudio(char);
+
+                card.innerHTML = `
+                    <div class="text-2xl font-bold font-japanese text-slate-800">${char}</div>
+                    <div class="text-[11px] font-mono text-rose-500 font-semibold mt-0.5 romaji-text ${isRomajiVisible ? '' : 'hidden'}">${item.romaji}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterKotobaCategory(catTag) {
+            activeKotobaFilter = catTag;
+            document.querySelectorAll('.cat-filter-btn').forEach(btn => {
+                btn.className = 'cat-filter-btn bg-white border border-slate-200 text-slate-600 hover:border-rose-300 px-3.5 py-1.5 rounded-xl text-xs font-semibold';
+            });
+            event.target.className = 'cat-filter-btn active bg-rose-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-sm';
+            renderFlashcards();
+        }
+
+        function renderFlashcards() {
+            const container = document.getElementById('flashcards-container');
+            container.innerHTML = '';
+
+            const filteredData = activeKotobaFilter === 'all' 
+                ? vocabularyData 
+                : vocabularyData.filter(item => item.categoryTag === activeKotobaFilter);
+
+            filteredData.forEach((item, idx) => {
+                const cardHTML = `
+                    <div class="flip-card h-60 cursor-pointer" onclick="this.classList.toggle('flipped')">
+                        <div class="flip-card-inner relative w-full h-full duration-500 rounded-2xl shadow-sm hover:shadow-md border border-slate-200">
+                            
+                            <!-- Front Side -->
+                            <div class="flip-card-front absolute w-full h-full bg-white rounded-2xl p-5 flex flex-col justify-between">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] font-bold px-2.5 py-1 bg-rose-50 text-rose-600 rounded-full border border-rose-100">
+                                        ${item.categoryLabel}
+                                    </span>
+                                    <button onclick="event.stopPropagation(); playJapaneseAudio('${item.wordHira}')" class="text-slate-400 hover:text-rose-500 p-2 rounded-full transition" title="Dengar Suara">
+                                        <i class="fa-solid fa-volume-high text-lg"></i>
+                                    </button>
+                                </div>
+
+                                <div class="text-center my-auto space-y-1">
+                                    <h3 class="text-2xl font-extrabold text-slate-800 font-japanese">${item.wordHira}</h3>
+                                    <p class="text-xs text-slate-400 font-japanese">${item.wordKata}</p>
+                                    <p class="text-xs font-semibold text-rose-500 font-mono romaji-text ${isRomajiVisible ? '' : 'hidden'}">${item.romaji}</p>
+                                </div>
+
+                                <div class="text-center border-t border-slate-100 pt-2.5">
+                                    <span class="text-xs text-slate-400 font-medium">Klik untuk lihat arti <i class="fa-solid fa-rotate text-[10px] ml-1"></i></span>
+                                </div>
+                            </div>
+
+                            <!-- Back Side -->
+                            <div class="flip-card-back absolute w-full h-full bg-slate-900 text-white rounded-2xl p-5 flex flex-col justify-between">
+                                <div>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 bg-slate-800 text-slate-300 rounded">Arti Kata</span>
+                                    <h4 class="text-xl font-bold text-rose-300 mt-1">${item.indonesiano}</h4>
+                                </div>
+
+                                <div class="bg-slate-800/80 p-3 rounded-xl border border-slate-700 space-y-1 text-left">
+                                    <p class="text-[10px] text-slate-400 font-bold uppercase">Contoh Penggunaan:</p>
+                                    <p class="text-xs font-japanese text-amber-200">${item.exampleSentence}</p>
+                                    <p class="text-[11px] text-slate-300 font-mono romaji-text ${isRomajiVisible ? '' : 'hidden'}">${item.exampleRomaji}</p>
+                                </div>
+
+                                <div class="text-right">
+                                    <button onclick="event.stopPropagation(); playJapaneseAudio('${item.exampleSentence}')" class="text-xs text-rose-400 hover:text-rose-300 flex items-center justify-end gap-1 font-semibold">
+                                        <i class="fa-solid fa-play"></i> Dengar Contoh
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHTML;
+            });
+        }
+
+        function initMatchGame() {
+            const container = document.getElementById('match-grid');
+            container.innerHTML = '';
+            selectedMatchCards = [];
+            matchedPairsCount = 0;
+
+            // Pick 6 random vocabulary items for matching
+            const shuffledVocab = [...vocabularyData].sort(() => 0.5 - Math.random()).slice(0, 6);
+            let cards = [];
+
+            shuffledVocab.forEach(item => {
+                // Card A: Japanese (Hiragana)
+                cards.push({
+                    id: item.id,
+                    type: 'jp',
+                    text: item.wordHira,
+                    subtext: item.romaji
+                });
+                // Card B: Indonesian Meaning
+                cards.push({
+                    id: item.id,
+                    type: 'id',
+                    text: item.indonesiano,
+                    subtext: item.categoryLabel
+                });
+            });
+
+            // Shuffle cards
+            cards.sort(() => 0.5 - Math.random());
+
+            cards.forEach((c, index) => {
+                const cardEl = document.createElement('div');
+                cardEl.className = `match-card bg-white border-2 border-slate-200 rounded-xl p-4 text-center cursor-pointer transition hover:border-rose-300 flex flex-col items-center justify-center min-h-[95px] select-none shadow-sm`;
+                cardEl.dataset.id = c.id;
+
+                cardEl.innerHTML = `
+                    <div class="font-bold text-slate-800 ${c.type === 'jp' ? 'font-japanese text-lg' : 'text-sm'}">${c.text}</div>
+                    <div class="text-[11px] text-slate-400 mt-1 ${c.type === 'jp' ? 'romaji-text font-mono ' + (isRomajiVisible ? '' : 'hidden') : ''}">${c.subtext}</div>
+                `;
+
+                cardEl.onclick = () => handleMatchCardClick(cardEl, c);
+                container.appendChild(cardEl);
+            });
+        }
+
+        function handleMatchCardClick(element, cardData) {
+            if (element.classList.contains('matched') || element.classList.contains('selected')) return;
+            if (selectedMatchCards.length >= 2) return;
+
+            element.classList.add('selected', 'border-rose-500', 'bg-rose-50');
+            selectedMatchCards.push({ element, data: cardData });
+
+            if (selectedMatchCards.length === 2) {
+                const [card1, card2] = selectedMatchCards;
+
+                if (card1.data.id === card2.data.id && card1.data.type !== card2.data.type) {
+                    // Match Success
+                    setTimeout(() => {
+                        card1.element.classList.remove('selected', 'border-rose-500', 'bg-rose-50');
+                        card2.element.classList.remove('selected', 'border-rose-500', 'bg-rose-50');
+                        card1.element.classList.add('matched', 'bg-emerald-50', 'border-emerald-400', 'opacity-60', 'pointer-events-none');
+                        card2.element.classList.add('matched', 'bg-emerald-50', 'border-emerald-400', 'opacity-60', 'pointer-events-none');
+                        
+                        addXP(20);
+                        showToast('Pasangan Cocok! +20 XP', 'fa-circle-check');
+                        selectedMatchCards = [];
+                        matchedPairsCount++;
+
+                        if (matchedPairsCount === 6) {
+                            showToast('Selamat! Semua Pasangan Ditemukan!', 'fa-trophy');
+                        }
+                    }, 350);
+                } else {
+                    // Match Failed
+                    setTimeout(() => {
+                        card1.element.classList.remove('selected', 'border-rose-500', 'bg-rose-50');
+                        card2.element.classList.remove('selected', 'border-rose-500', 'bg-rose-50');
+                        card1.element.classList.add('border-red-400', 'bg-red-50');
+                        card2.element.classList.add('border-red-400', 'bg-red-50');
+
+                        setTimeout(() => {
+                            card1.element.classList.remove('border-red-400', 'bg-red-50');
+                            card2.element.classList.remove('border-red-400', 'bg-red-50');
+                            selectedMatchCards = [];
+                        }, 500);
+                    }, 350);
+                }
+            }
+        }
+
+        function startQuiz() {
+            quizScore = 0;
+            currentQuizIndex = 0;
+            document.getElementById('quiz-score').innerText = quizScore;
+            document.getElementById('quiz-body').classList.remove('hidden');
+            document.getElementById('quiz-result').classList.add('hidden');
+
+            quizQuestions = [...vocabularyData].sort(() => 0.5 - Math.random());
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            if (currentQuizIndex >= quizQuestions.length) {
+                // Quiz Finish
+                document.getElementById('quiz-body').classList.add('hidden');
+                document.getElementById('quiz-result').classList.remove('hidden');
+                document.getElementById('final-quiz-score').innerText = quizScore;
+                return;
+            }
+
+            const q = quizQuestions[currentQuizIndex];
+            document.getElementById('quiz-progress-label').innerText = `Soal ${currentQuizIndex + 1} Dari ${quizQuestions.length}`;
+            document.getElementById('quiz-hiragana').innerText = q.wordHira;
+            document.getElementById('quiz-romaji').innerText = q.romaji;
+
+            // Generate options
+            const otherVocab = vocabularyData.filter(v => v.id !== q.id);
+            const wrongOptions = otherVocab.sort(() => 0.5 - Math.random()).slice(0, 3).map(v => v.indonesiano);
+            const correctOption = q.indonesiano;
+
+            const options = [...wrongOptions, correctOption].sort(() => 0.5 - Math.random());
+
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full p-4 text-left border border-slate-200 rounded-xl hover:border-rose-400 hover:bg-rose-50/50 transition font-semibold text-sm text-slate-700 flex justify-between items-center';
+                btn.innerHTML = `<span>${opt}</span> <i class="fa-solid fa-chevron-right text-xs text-slate-300"></i>`;
+                btn.onclick = () => answerQuiz(opt === correctOption, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function playQuizAudio() {
+            const q = quizQuestions[currentQuizIndex];
+            if (q) playJapaneseAudio(q.wordHira);
+        }
+
+        function answerQuiz(isCorrect, btnElement) {
+            if (isCorrect) {
+                btnElement.classList.add('bg-emerald-500', 'text-white', 'border-emerald-500');
+                quizScore += 10;
+                addXP(15);
+                document.getElementById('quiz-score').innerText = quizScore;
+                showToast('Jawaban Benar! +15 XP', 'fa-circle-check');
+            } else {
+                btnElement.classList.add('bg-rose-500', 'text-white', 'border-rose-500');
+                showToast('Kurang Tepat!', 'fa-circle-xmark');
+            }
+
+            setTimeout(() => {
+                currentQuizIndex++;
+                renderQuizQuestion();
+            }, 750);
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('border-b-2', 'border-rose-500', 'text-rose-600', 'font-bold');
+                el.classList.add('text-slate-500');
+            });
+
+            document.getElementById(`section-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            activeBtn.classList.add('border-b-2', 'border-rose-500', 'text-rose-600', 'font-bold');
+            activeBtn.classList.remove('text-slate-500');
+        }
+
+        function toggleRomajiGlobal() {
+            isRomajiVisible = !isRomajiVisible;
+            document.getElementById('romaji-toggle-text').innerText = isRomajiVisible ? 'Romaji: Tampil' : 'Romaji: Sembunyi';
+            
+            document.querySelectorAll('.romaji-text').forEach(el => {
+                if (isRomajiVisible) {
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+        }
+
+        function addXP(points) {
+            userXP += points;
+            document.getElementById('user-xp').innerText = userXP;
+        }
+
+        function showToast(message, iconClass = 'fa-circle-check') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastMsg.innerText = message;
+            toastIcon.className = `fa-solid ${iconClass} text-emerald-400`;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2300);
+        }
+    </script>
+</body>
+</html>
