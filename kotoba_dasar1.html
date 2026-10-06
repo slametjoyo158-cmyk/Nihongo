@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kotoba Quest - Belajar Bahasa Jepang Bersama Sensei</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Kosugi+Maru&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sakura: { 100: '#FFE4E8', 300: '#FFB3C1', 500: '#FF758F', 600: '#FF4D6D' },
+                        matcha: { 100: '#E8F5E9', 300: '#A5D6A7', 500: '#66BB6A', 600: '#4CAF50' },
+                        sky: { 100: '#E0F7FA', 300: '#80DEEA', 500: '#26C6DA', 600: '#00ACC1' },
+                        sun: { 100: '#FFFDE7', 300: '#FFF59D', 500: '#FFCA28', 600: '#FFB300' }
+                    },
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        japanese: ['Kosugi Maru', 'sans-serif'],
+                        nunito: ['Nunito', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #F8FAF8;
+            background-image: radial-gradient(#FFB3C1 0.75px, transparent 0.75px), radial-gradient(#FFB3C1 0.75px, #F8FAF8 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+        }
+        .japanese-font {
+            font-family: 'Kosugi Maru', sans-serif;
+        }
+        .title-font {
+            font-family: 'Fredoka', cursive;
+        }
+        .bounce-hover {
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .bounce-hover:hover {
+            transform: translateY(-6px) scale(1.02);
+        }
+        .card-flip {
+            perspective: 1000px;
+        }
+        .card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .card-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            backface-visibility: hidden;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between select-none">
+
+    <header class="bg-white/90 backdrop-blur-md border-b-4 border-sakura-300 sticky top-0 z-40 px-4 py-3 shadow-sm">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('home')">
+                <div class="w-12 h-12 rounded-2xl bg-sakura-500 flex items-center justify-center text-white text-2xl shadow-md transform rotate-3">
+                    🌸
+                </div>
+                <div>
+                    <h1 class="title-font text-2xl font-bold text-sakura-600 tracking-wide">Kotoba Quest</h1>
+                    <p class="text-xs text-slate-500 font-semibold">Belajar Bahasa Jepang Bersama Sensei!</p>
+                </div>
+            </div>
+
+            <!-- Header Status & Controls -->
+            <div class="flex items-center gap-3">
+                <div class="bg-sun-100 border-2 border-sun-300 px-4 py-1.5 rounded-full flex items-center gap-2 shadow-sm">
+                    <span class="text-xl">⭐</span>
+                    <span id="starCount" class="font-bold text-sun-600 text-lg">0</span>
+                </div>
+                <button onclick="toggleAudio()" id="audioBtn" class="w-10 h-10 rounded-full bg-slate-100 border-2 border-slate-300 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto w-full p-4 md:p-6 flex-grow">
+
+        <!-- Sensei Greeting Banner -->
+        <div id="senseiBox" class="bg-white border-2 border-sakura-300 rounded-3xl p-4 md:p-6 mb-6 shadow-md flex items-center gap-4 relative overflow-hidden">
+            <div class="w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-sakura-100 border-2 border-sakura-300 flex-shrink-0 flex items-center justify-center text-4xl md:text-5xl shadow-inner">
+                👩‍🏫
+            </div>
+            <div class="flex-grow">
+                <div class="inline-block bg-sakura-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-1">
+                    Sensei Sakura
+                </div>
+                <p id="senseiSpeech" class="text-slate-700 font-semibold text-sm md:text-base leading-snug">
+                    "Konnichiwa! (Selamat Siang) 👋 Ayo pilih kategori di bawah ini untuk belajar *kotoba* (kosakata) baru dan bermain kuis seru!"
+                </p>
+            </div>
+        </div>
+
+        <!-- HOME VIEW (Category Selection) -->
+        <div id="homeView" class="space-y-6">
+            <h2 class="title-font text-xl md:text-2xl font-bold text-slate-700 flex items-center gap-2">
+                <span>📚</span> Pilih Topik Belajar:
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Category 1: Jikoshoukai -->
+                <div onclick="selectCategory('jikoshoukai')" class="bg-white border-3 border-sakura-300 hover:border-sakura-500 rounded-3xl p-6 shadow-md bounce-hover cursor-pointer group transition flex flex-col justify-between">
+                    <div>
+                        <div class="w-16 h-16 rounded-2xl bg-sakura-100 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
+                            🙋‍♀️
+                        </div>
+                        <span class="text-xs font-bold text-sakura-500 bg-sakura-100 px-3 py-1 rounded-full">Topik 1</span>
+                        <h3 class="title-font text-2xl font-bold text-slate-800 mt-2">Jikoshoukai</h3>
+                        <p class="text-xs text-slate-500 font-medium mt-1">じこうしょうかい (Perkenalan Diri)</p>
+                        <p class="text-xs text-slate-600 mt-3">Belajar menyapa, menyebutkan nama, umur, dan salam perkenalan.</p>
+                    </div>
+                    <div class="mt-6 flex justify-between items-center pt-4 border-t border-slate-100">
+                        <span class="text-xs font-bold text-slate-400">15 Kosakata</span>
+                        <span class="text-sakura-500 font-bold group-hover:translate-x-1 transition flex items-center gap-1 text-sm">
+                            Mulai <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Category 2: Gakkou no Mono -->
+                <div onclick="selectCategory('gakkou')" class="bg-white border-3 border-sky-300 hover:border-sky-500 rounded-3xl p-6 shadow-md bounce-hover cursor-pointer group transition flex flex-col justify-between">
+                    <div>
+                        <div class="w-16 h-16 rounded-2xl bg-sky-100 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
+                            🎒
+                        </div>
+                        <span class="text-xs font-bold text-sky-600 bg-sky-100 px-3 py-1 rounded-full">Topik 2</span>
+                        <h3 class="title-font text-2xl font-bold text-slate-800 mt-2">Gakkou no Mono</h3>
+                        <p class="text-xs text-slate-500 font-medium mt-1">がっこうのもの (Benda di Sekolah)</p>
+                        <p class="text-xs text-slate-600 mt-3">Mengenal pensil, buku, penghapus, meja, dan perlengkapan kelas.</p>
+                    </div>
+                    <div class="mt-6 flex justify-between items-center pt-4 border-t border-slate-100">
+                        <span class="text-xs font-bold text-slate-400">15 Kosakata</span>
+                        <span class="text-sky-600 font-bold group-hover:translate-x-1 transition flex items-center gap-1 text-sm">
+                            Mulai <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Category 3: Ie no Mono -->
+                <div onclick="selectCategory('ie')" class="bg-white border-3 border-matcha-300 hover:border-matcha-500 rounded-3xl p-6 shadow-md bounce-hover cursor-pointer group transition flex flex-col justify-between">
+                    <div>
+                        <div class="w-16 h-16 rounded-2xl bg-matcha-100 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
+                            🏠
+                        </div>
+                        <span class="text-xs font-bold text-matcha-600 bg-matcha-100 px-3 py-1 rounded-full">Topik 3</span>
+                        <h3 class="title-font text-2xl font-bold text-slate-800 mt-2">Ie no Mono</h3>
+                        <p class="text-xs text-slate-500 font-medium mt-1">いえのもの (Benda di Rumah)</p>
+                        <p class="text-xs text-slate-600 mt-3">Mengenal kasur, TV, jam, kulkas, dan perlengkapan rumah.</p>
+                    </div>
+                    <div class="mt-6 flex justify-between items-center pt-4 border-t border-slate-100">
+                        <span class="text-xs font-bold text-slate-400">15 Kosakata</span>
+                        <span class="text-matcha-600 font-bold group-hover:translate-x-1 transition flex items-center gap-1 text-sm">
+                            Mulai <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Category 4: Yasai (Sayuran) -->
+                <div onclick="selectCategory('yasai')" class="bg-white border-3 border-emerald-300 hover:border-emerald-500 rounded-3xl p-6 shadow-md bounce-hover cursor-pointer group transition flex flex-col justify-between">
+                    <div>
+                        <div class="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
+                            🥕
+                        </div>
+                        <span class="text-xs font-bold text-emerald-600 bg-emerald-100 px-3 py-1 rounded-full">Topik 4</span>
+                        <h3 class="title-font text-2xl font-bold text-slate-800 mt-2">Yasai</h3>
+                        <p class="text-xs text-slate-500 font-medium mt-1">やさい (Sayuran)</p>
+                        <p class="text-xs text-slate-600 mt-3">Mengenal wortel, tomat, timun, kentang, dan sayuran segar.</p>
+                    </div>
+                    <div class="mt-6 flex justify-between items-center pt-4 border-t border-slate-100">
+                        <span class="text-xs font-bold text-slate-400">15 Kosakata</span>
+                        <span class="text-emerald-600 font-bold group-hover:translate-x-1 transition flex items-center gap-1 text-sm">
+                            Mulai <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Category 5: Kudamono (Buah-buahan) -->
+                <div onclick="selectCategory('kudamono')" class="bg-white border-3 border-orange-300 hover:border-orange-500 rounded-3xl p-6 shadow-md bounce-hover cursor-pointer group transition flex flex-col justify-between">
+                    <div>
+                        <div class="w-16 h-16 rounded-2xl bg-orange-100 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
+                            🍎
+                        </div>
+                        <span class="text-xs font-bold text-orange-600 bg-orange-100 px-3 py-1 rounded-full">Topik 5</span>
+                        <h3 class="title-font text-2xl font-bold text-slate-800 mt-2">Kudamono</h3>
+                        <p class="text-xs text-slate-500 font-medium mt-1">くだもの (Buah-buahan)</p>
+                        <p class="text-xs text-slate-600 mt-3">Mengenal apel, jeruk, stroberi, pisang, dan buah-buahan manis.</p>
+                    </div>
+                    <div class="mt-6 flex justify-between items-center pt-4 border-t border-slate-100">
+                        <span class="text-xs font-bold text-slate-400">15 Kosakata</span>
+                        <span class="text-orange-600 font-bold group-hover:translate-x-1 transition flex items-center gap-1 text-sm">
+                            Mulai <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODE SELECT VIEW (Flashcards vs Games) -->
+        <div id="modeSelectView" class="hidden space-y-6">
+            <div class="flex items-center gap-2">
+                <button onclick="switchTab('home')" class="text-slate-500 hover:text-slate-800 font-bold text-sm bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-sm">
+                    <i class="fas fa-chevron-left mr-1"></i> Kembali
+                </button>
+                <h2 id="selectedCategoryTitle" class="title-font text-2xl font-bold text-slate-800">Nama Topik</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Learning Mode: Flashcards -->
+                <div onclick="startMode('learn')" class="bg-white border-2 border-slate-200 hover:border-sakura-400 rounded-3xl p-6 shadow-md bounce-hover cursor-pointer text-center group">
+                    <div class="w-20 h-20 mx-auto rounded-3xl bg-sakura-100 flex items-center justify-center text-4xl mb-4 group-hover:rotate-6 transition">
+                        📖
+                    </div>
+                    <h3 class="title-font text-xl font-bold text-slate-800">Flashcard Kotoba</h3>
+                    <p class="text-xs text-slate-500 mt-2">Pelajari kata, dengarkan suara penutur, dan hafalkan artinya.</p>
+                </div>
+
+                <!-- Game Mode 1: Quiz -->
+                <div onclick="startMode('quiz')" class="bg-white border-2 border-slate-200 hover:border-sky-400 rounded-3xl p-6 shadow-md bounce-hover cursor-pointer text-center group">
+                    <div class="w-20 h-20 mx-auto rounded-3xl bg-sky-100 flex items-center justify-center text-4xl mb-4 group-hover:-rotate-6 transition">
+                        🎮
+                    </div>
+                    <h3 class="title-font text-xl font-bold text-slate-800">Kuis Tebak Kotoba</h3>
+                    <p class="text-xs text-slate-500 mt-2">Uji ingatanmu! Pilih jawaban yang tepat untuk mengumpulkan bintang.</p>
+                </div>
+
+                <!-- Game Mode 2: Memory Game / Builder -->
+                <div onclick="startMode('interactive')" class="bg-white border-2 border-slate-200 hover:border-matcha-400 rounded-3xl p-6 shadow-md bounce-hover cursor-pointer text-center group">
+                    <div id="interactiveIcon" class="w-20 h-20 mx-auto rounded-3xl bg-matcha-100 flex items-center justify-center text-4xl mb-4 group-hover:scale-110 transition">
+                        🧩
+                    </div>
+                    <h3 id="interactiveTitle" class="title-font text-xl font-bold text-slate-800">Game Pencocokan</h3>
+                    <p id="interactiveDesc" class="text-xs text-slate-500 mt-2">Jodohkan kartu gambar dengan kosakata bahasa Jepang yang tepat.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FLASHCARD LEARNING VIEW -->
+        <div id="learnView" class="hidden space-y-6">
+            <div class="flex justify-between items-center">
+                <button onclick="switchTab('modeSelect')" class="text-slate-500 hover:text-slate-800 font-bold text-sm bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-sm">
+                    <i class="fas fa-chevron-left mr-1"></i> Pilih Mode
+                </button>
+                <div class="text-xs font-bold bg-slate-200 text-slate-700 px-3 py-1 rounded-full">
+                    Kartu <span id="cardIndex">1</span> dari <span id="cardTotal">8</span>
+                </div>
+            </div>
+
+            <!-- Main Flashcard Container -->
+            <div class="max-w-md mx-auto">
+                <div id="flashcard" class="bg-white border-4 border-sakura-300 rounded-3xl p-8 shadow-xl text-center space-y-4 relative min-h-[340px] flex flex-col justify-between items-center">
+                    <button onclick="playCurrentAudio()" class="absolute top-4 right-4 w-12 h-12 bg-sakura-100 hover:bg-sakura-300 text-sakura-600 rounded-2xl flex items-center justify-center text-xl transition shadow-sm">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+
+                    <div id="cardEmoji" class="text-7xl pt-4 animate-bounce">🎒</div>
+                    
+                    <div>
+                        <h3 id="cardJapanese" class="japanese-font text-4xl font-bold text-slate-800 tracking-wider">えんぴつ</h3>
+                        <p id="cardRomaji" class="text-lg font-bold text-sakura-500 mt-1">Enpitsu</p>
+                        <p id="cardIndonesian" class="text-base text-slate-600 font-semibold mt-2 bg-slate-100 px-4 py-1 rounded-full inline-block">Pensil</p>
+                    </div>
+
+                    <button onclick="playCurrentAudio()" class="w-full py-3 bg-sakura-500 hover:bg-sakura-600 text-white font-bold rounded-2xl shadow-md text-sm transition flex items-center justify-center gap-2">
+                        <i class="fas fa-headphones"></i> Dengarkan Pelafalan
+                    </button>
+                </div>
+
+                <!-- Flashcard Controls -->
+                <div class="flex justify-between items-center mt-6 gap-4">
+                    <button onclick="prevCard()" class="flex-1 py-3 bg-white border-2 border-slate-300 hover:bg-slate-50 font-bold text-slate-700 rounded-2xl shadow-sm transition">
+                        <i class="fas fa-arrow-left mr-2"></i> Sebelumnya
+                    </button>
+                    <button onclick="nextCard()" class="flex-1 py-3 bg-matcha-500 hover:bg-matcha-600 font-bold text-white rounded-2xl shadow-md transition">
+                        Berikutnya <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- QUIZ GAME VIEW -->
+        <div id="quizView" class="hidden space-y-6">
+            <div class="flex justify-between items-center">
+                <button onclick="switchTab('modeSelect')" class="text-slate-500 hover:text-slate-800 font-bold text-sm bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-sm">
+                    <i class="fas fa-chevron-left mr-1"></i> Keluar Kuis
+                </button>
+                <div id="quizProgress" class="text-xs font-bold bg-sky-100 text-sky-700 px-3 py-1 rounded-full">
+                    Soal 1 / 5
+                </div>
+            </div>
+
+            <div class="max-w-xl mx-auto bg-white border-3 border-sky-300 rounded-3xl p-6 md:p-8 shadow-xl space-y-6">
+                <!-- Question Display -->
+                <div class="text-center space-y-3">
+                    <span class="text-xs font-bold text-sky-500 uppercase tracking-wider">Apa Arti Kosakata Ini?</span>
+                    <div class="flex items-center justify-center gap-3">
+                        <h3 id="quizQuestion" class="japanese-font text-4xl md:text-5xl font-bold text-slate-800">ほん</h3>
+                        <button onclick="playQuizAudio()" class="w-10 h-10 bg-sky-100 hover:bg-sky-200 text-sky-600 rounded-xl flex items-center justify-center text-lg transition">
+                            <i class="fas fa-volume-up"></i>
+                        </button>
+                    </div>
+                    <p id="quizSubText" class="text-sm font-semibold text-slate-400">(Hon)</p>
+                </div>
+
+                <!-- Answer Options -->
+                <div id="quizOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                    <!-- Dynamic option buttons inserted via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- MEMORY GAME / INTERACTIVE VIEW -->
+        <div id="interactiveView" class="hidden space-y-6">
+            <div class="flex justify-between items-center">
+                <button onclick="switchTab('modeSelect')" class="text-slate-500 hover:text-slate-800 font-bold text-sm bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-sm">
+                    <i class="fas fa-chevron-left mr-1"></i> Kembali
+                </button>
+                <div id="gameInstruction" class="text-xs font-bold bg-matcha-100 text-matcha-700 px-3 py-1 rounded-full">
+                    Jodohkan Kartu Bahasa Jepang & Artinya
+                </div>
+            </div>
+
+            <!-- Container Memory Game Grid -->
+            <div id="memoryGridContainer" class="max-w-2xl mx-auto">
+                <div id="memoryGrid" class="grid grid-cols-3 sm:grid-cols-4 gap-3 md:gap-4">
+                    <!-- Memory cards dynamically rendered -->
+                </div>
+            </div>
+
+            <!-- Jikoshoukai Builder Container -->
+            <div id="builderContainer" class="hidden max-w-xl mx-auto bg-white border-3 border-sakura-300 rounded-3xl p-6 md:p-8 shadow-xl space-y-6">
+                <div class="text-center">
+                    <h3 class="title-font text-2xl font-bold text-slate-800">Latihan Jikoshoukai 🌸</h3>
+                    <p class="text-xs text-slate-500 mt-1">Isi bagian yang kosong untuk memperkenalkan dirimu!</p>
+                </div>
+
+                <div class="space-y-4 text-sm md:text-base font-semibold">
+                    <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 flex flex-wrap items-center gap-2">
+                        <span>1.</span>
+                        <span class="japanese-font text-lg font-bold text-sakura-600">はじめまして。</span>
+                        <span class="text-xs text-slate-400">(Hajimemashite - Salam Kenal)</span>
+                    </div>
+
+                    <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>2. わたしは</span>
+                            <input type="text" id="builderName" placeholder="Nama Kamu" class="px-3 py-1 border-2 border-sakura-300 rounded-xl focus:outline-none focus:border-sakura-500 font-bold text-slate-700 w-36 text-center text-sm">
+                            <span>です。</span>
+                        </div>
+                        <p class="text-xs text-slate-400">(Watashi wa [Nama] desu - Nama saya [Nama])</p>
+                    </div>
+
+                    <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>3. わたしは</span>
+                            <select id="builderRole" class="px-3 py-1 border-2 border-sakura-300 rounded-xl focus:outline-none focus:border-sakura-500 font-bold text-slate-700 text-sm">
+                                <option value="しょうがくせい">Gakusei (Siswa)</option>
+                                <option value="せんせい">Sensei (Guru)</option>
+                            </select>
+                            <span>です。</span>
+                        </div>
+                        <p class="text-xs text-slate-400">(Saya adalah seorang siswa/guru)</p>
+                    </div>
+
+                    <div class="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span>4. よろしく おねがいします。</span>
+                        </div>
+                        <p class="text-xs text-slate-400">(Yoroshiku onegaishimasu - Senang berkenalan denganmu)</p>
+                    </div>
+                </div>
+
+                <button onclick="readJikoshoukai()" class="w-full py-3 bg-sakura-500 hover:bg-sakura-600 text-white font-bold rounded-2xl shadow-md transition flex items-center justify-center gap-2">
+                    <i class="fas fa-play-circle text-lg"></i> Dengarkan Perkenalan Diri Saya!
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white/80 border-t border-slate-200 py-3 text-center text-xs text-slate-500 font-semibold">
+        <p>Kotoba Quest • Media Pembelajaran Interaktif Bahasa Jepang Anak 🌸</p>
+    </footer>
+
+    <!-- Result Modal -->
+    <div id="resultModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-white border-4 border-sun-400 rounded-3xl p-6 md:p-8 max-w-sm w-full text-center space-y-4 shadow-2xl animate-bounce-in">
+            <div class="text-6xl">🌟</div>
+            <h3 class="title-font text-3xl font-bold text-slate-800">Sugoi! (Hebat!)</h3>
+            <p id="resultText" class="text-sm font-semibold text-slate-600">Kamu berhasil menyelesaikan kuis!</p>
+            <div class="bg-sun-100 p-3 rounded-2xl flex items-center justify-center gap-2 text-sun-600 font-bold text-lg">
+                <span>+<span id="earnedStars">10</span> Bintang ⭐</span>
+            </div>
+            <button onclick="closeModal()" class="w-full py-3 bg-matcha-500 hover:bg-matcha-600 font-bold text-white rounded-2xl shadow-md transition">
+                Lanjutkan
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Database Kosakata (Kotoba Data - 15 items per category)
+        const KOTOBA_DATA = {
+            jikoshoukai: {
+                title: "Jikoshoukai (Perkenalan Diri)",
+                items: [
+                    { japanese: "はじめまして", romaji: "Hajimemashite", indonesian: "Salam Kenal", emoji: "🤝" },
+                    { japanese: "わたし", romaji: "Watashi", indonesian: "Saya / Aku", emoji: "🙋‍♂️" },
+                    { japanese: "なまえ", romaji: "Namae", indonesian: "Nama", emoji: "🪪" },
+                    { japanese: "がくせい", romaji: "Gakusei", indonesian: "Siswa / Murid", emoji: "🎒" },
+                    { japanese: "せんせい", romaji: "Sensei", indonesian: "Guru / Pengajar", emoji: "👩‍🏫" },
+                    { japanese: "どうぞ よろしく", romaji: "Douzo Yoroshiku", indonesian: "Senang Berkenalan", emoji: "😊" },
+                    { japanese: "おはよう", romaji: "Ohayou", indonesian: "Selamat Pagi", emoji: "🌅" },
+                    { japanese: "ありがとう", romaji: "Arigatou", indonesian: "Terima Kasih", emoji: "🙏" },
+                    { japanese: "こんにちは", romaji: "Konnichiwa", indonesian: "Selamat Siang", emoji: "👋" },
+                    { japanese: "こんばんは", romaji: "Konbanwa", indonesian: "Selamat Malam", emoji: "🌙" },
+                    { japanese: "さようなら", romaji: "Sayounara", indonesian: "Selamat Tinggal", emoji: "🖐️️" },
+                    { japanese: "すみません", romaji: "Sumimasen", indonesian: "Permisi / Maaf", emoji: "🙇" },
+                    { japanese: "はい", romaji: "Hai", indonesian: "Ya", emoji: "🙆‍♂️" },
+                    { japanese: "いいえ", romaji: "Iie", indonesian: "Tidak", emoji: "🙅‍♂️" },
+                    { japanese: "ともだち", romaji: "Tomodachi", indonesian: "Teman", emoji: "👫" }
+                ]
+            },
+            gakkou: {
+                title: "Gakkou no Mono (Benda Sekolah)",
+                items: [
+                    { japanese: "えんぴつ", romaji: "Enpitsu", indonesian: "Pensil", emoji: "✏️" },
+                    { japanese: "ほん", romaji: "Hon", indonesian: "Buku", emoji: "📖" },
+                    { japanese: "けしごむ", romaji: "Keshigomu", indonesian: "Penghapus", emoji: "🧹" },
+                    { japanese: "つくえ", romaji: "Tsukue", indonesian: "Meja Belajar", emoji: "🪑" },
+                    { japanese: "いす", romaji: "Isu", indonesian: "Kursi", emoji: "🪑" },
+                    { japanese: "かばん", romaji: "Kaban", indonesian: "Tas Sekolah", emoji: "🎒" },
+                    { japanese: "ものさし", romaji: "Monosashi", indonesian: "Penggaris", emoji: "📏" },
+                    { japanese: "きょうしつ", romaji: "Kyoushitsu", indonesian: "Ruang Kelas", emoji: "🏫" },
+                    { japanese: "ペン", romaji: "Pen", indonesian: "Pulpen", emoji: "🖊️" },
+                    { japanese: "ノート", romaji: "Nooto", indonesian: "Buku Catatan", emoji: "📓" },
+                    { japanese: "はさみ", romaji: "Hasami", indonesian: "Gunting", emoji: "✂️" },
+                    { japanese: "ふでばこ", romaji: "Fudebako", indonesian: "Kotak Pensil", emoji: "👝" },
+                    { japanese: "こくばん", romaji: "Kokuban", indonesian: "Papan Tulis", emoji: "🖊️" },
+                    { japanese: "とけい", romaji: "Tokei", indonesian: "Jam Dinding", emoji: "⏰" },
+                    { japanese: "ごみばこ", romaji: "Gomibako", indonesian: "Tempat Sampah", emoji: "🗑️" }
+                ]
+            },
+            ie: {
+                title: "Ie no Mono (Benda di Rumah)",
+                items: [
+                    { japanese: "テレビ", romaji: "Terebi", indonesian: "Televisi", emoji: "📺" },
+                    { japanese: "ベッド", romaji: "Beddo", indonesian: "Tempat Tidur", emoji: "🛏️" },
+                    { japanese: "とけい", romaji: "Tokei", indonesian: "Jam", emoji: "⏰" },
+                    { japanese: "れいぞうこ", romaji: "Reizouko", indonesian: "Kulkas", emoji: "🧊" },
+                    { japanese: "でんき", romaji: "Denki", indonesian: "Lampu / Listrik", emoji: "💡" },
+                    { japanese: "かがみ", romaji: "Kagami", indonesian: "Cermin", emoji: "🪞" },
+                    { japanese: "ドア", romaji: "Doa", indonesian: "Pintu", emoji: "🚪" },
+                    { japanese: "テーブル", romaji: "Teeburu", indonesian: "Meja Makan", emoji: "🍽️" },
+                    { japanese: "えあこん", romaji: "Eakon", indonesian: "AC", emoji: "❄️" },
+                    { japanese: "せんぷうき", romaji: "Senpuuki", indonesian: "Kipas Angin", emoji: "🌀" },
+                    { japanese: "ソファー", romaji: "Sofaa", indonesian: "Sofa", emoji: "🛋️" },
+                    { japanese: "ほんだな", romaji: "Hondana", indonesian: "Rak Buku", emoji: "📚" },
+                    { japanese: "まど", romaji: "Mado", indonesian: "Jendela", emoji: "🪟" },
+                    { japanese: "でんわ", romaji: "Denwa", indonesian: "Telepon", emoji: "📞" },
+                    { japanese: "せんたくき", romaji: "Sentakuki", indonesian: "Mesin Cuci", emoji: "🧺" }
+                ]
+            },
+            yasai: {
+                title: "Yasai (Sayuran)",
+                items: [
+                    { japanese: "にんじん", romaji: "Ninjin", indonesian: "Wortel", emoji: "🥕" },
+                    { japanese: "トマト", romaji: "Tomato", indonesian: "Tomat", emoji: "🍅" },
+                    { japanese: "きゅうり", romaji: "Kyuuri", indonesian: "Timun", emoji: "🥒" },
+                    { japanese: "キャベツ", romaji: "Kyabetsu", indonesian: "Kol / Kubis", emoji: "🥬" },
+                    { japanese: "じゃがいも", romaji: "Jagaimo", indonesian: "Kentang", emoji: "🥔" },
+                    { japanese: "たまねぎ", romaji: "Tamanegi", indonesian: "Bawang Bombay", emoji: "🧅" },
+                    { japanese: "とうもろこし", romaji: "Toumorokoshi", indonesian: "Jagung", emoji: "🌽" },
+                    { japanese: "ブロッコリー", romaji: "Burokkorii", indonesian: "Brokoli", emoji: "🥦" },
+                    { japanese: "なす", romaji: "Nasu", indonesian: "Terong", emoji: "🍆" },
+                    { japanese: "かぼちゃ", romaji: "Kabocha", indonesian: "Labu Kuning", emoji: "🎃" },
+                    { japanese: "ほうれんそう", romaji: "Hourensou", indonesian: "Bayam", emoji: "🌿" },
+                    { japanese: "ねぎ", romaji: "Negi", indonesian: "Daun Bawang", emoji: "🧅" },
+                    { japanese: "ピーマン", romaji: "Piiman", indonesian: "Paprika Hijau", emoji: "🫑" },
+                    { japanese: "きのこ", romaji: "Kinoko", indonesian: "Jamur", emoji: "🍄" },
+                    { japanese: "だいこん", romaji: "Daikon", indonesian: "Lobak Putih", emoji: "🥬" }
+                ]
+            },
+            kudamono: {
+                title: "Kudamono (Buah-buahan)",
+                items: [
+                    { japanese: "りんご", romaji: "Ringo", indonesian: "Apel", emoji: "🍎" },
+                    { japanese: "みかん", romaji: "Mikan", indonesian: "Jeruk", emoji: "🍊" },
+                    { japanese: "いちご", romaji: "Ichigo", indonesian: "Stroberi", emoji: "🍓" },
+                    { japanese: "ぶどう", romaji: "Budou", indonesian: "Anggur", emoji: "🍇" },
+                    { japanese: "バナナ", romaji: "Banana", indonesian: "Pisang", emoji: "🍌" },
+                    { japanese: "すいか", romaji: "Suika", indonesian: "Semangka", emoji: "🍉" },
+                    { japanese: "もも", romaji: "Momo", indonesian: "Persik", emoji: "🍑" },
+                    { japanese: "メロン", romaji: "Meron", indonesian: "Melon", emoji: "🍈" },
+                    { japanese: "パイナップル", romaji: "Painappuru", indonesian: "Nanas", emoji: "🍍" },
+                    { japanese: "さくらんぼ", romaji: "Sakuranbo", indonesian: "Ceri", emoji: "🍒" },
+                    { japanese: "マンゴー", romaji: "Mangoo", indonesian: "Mangga", emoji: "🥭" },
+                    { japanese: "くり", romaji: "Kuri", indonesian: "Kacang Kastanye", emoji: "🌰" },
+                    { japanese: "かき", romaji: "Kaki", indonesian: "Buah Kesemek", emoji: "🍊" },
+                    { japanese: "レモン", romaji: "Remon", indonesian: "Lemon", emoji: "🍋" },
+                    { japanese: "キウイ", romaji: "Kiui", indonesian: "Buah Kiwi", emoji: "🥝" }
+                ]
+            }
+        };
+
+        // State Management
+        let currentCategoryKey = 'jikoshoukai';
+        let currentCardIndex = 0;
+        let starCount = parseInt(localStorage.getItem('kotoba_stars') || '0');
+        let soundEnabled = true;
+
+        // Quiz State
+        let quizQuestions = [];
+        let quizCurrentIndex = 0;
+        let quizScore = 0;
+
+        // Memory Game State
+        let memoryCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+
+        // DOM Loaded Init
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('starCount').innerText = starCount;
+        });
+
+        // Text-to-Speech (Japanese Audio)
+        function speakJapanese(text) {
+            if (!soundEnabled) return;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Stop current speech
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'ja-JP';
+                utterance.rate = 0.85; // Slightly slower for kids
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function toggleAudio() {
+            soundEnabled = !soundEnabled;
+            const audioBtn = document.getElementById('audioBtn');
+            if (soundEnabled) {
+                audioBtn.classList.remove('opacity-50');
+                audioBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+            } else {
+                audioBtn.classList.add('opacity-50');
+                audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            }
+        }
+
+        // Navigation Handler
+        function switchTab(tabName) {
+            const views = ['homeView', 'modeSelectView', 'learnView', 'quizView', 'interactiveView'];
+            views.forEach(v => document.getElementById(v).classList.add('hidden'));
+
+            if (tabName === 'home') {
+                document.getElementById('homeView').classList.remove('hidden');
+                updateSenseiSpeech("Konnichiwa! 👋 Pilih topik di bawah ini untuk belajar *kotoba* bersama Sensei!");
+            } else if (tabName === 'modeSelect') {
+                document.getElementById('modeSelectView').classList.remove('hidden');
+                document.getElementById('selectedCategoryTitle').innerText = KOTOBA_DATA[currentCategoryKey].title;
+                
+                // Adjust 3rd mode option depending on category
+                const isJikoshoukai = currentCategoryKey === 'jikoshoukai';
+                document.getElementById('interactiveIcon').innerText = isJikoshoukai ? '🗣️' : '🧩';
+                document.getElementById('interactiveTitle').innerText = isJikoshoukai ? 'Praktik Jikoshoukai' : 'Game Memori Kartu';
+                document.getElementById('interactiveDesc').innerText = isJikoshoukai ? 'Susun kalimat perkenalan dirimu sendiri secara otomatis!' : 'Cocokkan gambar benda dengan kosakata Jepang!';
+
+                updateSenseiSpeech(`Topik ${KOTOBA_DATA[currentCategoryKey].title} dipilih! Mau belajar flashcard atau main game dulu?`);
+            }
+        }
+
+        function selectCategory(catKey) {
+            currentCategoryKey = catKey;
+            switchTab('modeSelect');
+        }
+
+        function updateSenseiSpeech(text) {
+            document.getElementById('senseiSpeech').innerText = text;
+        }
+
+        // MODE 1: Flashcard Logic
+        function startMode(mode) {
+            if (mode === 'learn') {
+                currentCardIndex = 0;
+                updateFlashcard();
+                const views = ['homeView', 'modeSelectView', 'quizView', 'interactiveView'];
+                views.forEach(v => document.getElementById(v).classList.add('hidden'));
+                document.getElementById('learnView').classList.remove('hidden');
+                updateSenseiSpeech("Klik tombol audio untuk mendengarkan pengucapan yang benar ya!");
+            } else if (mode === 'quiz') {
+                startQuiz();
+            } else if (mode === 'interactive') {
+                if (currentCategoryKey === 'jikoshoukai') {
+                    startJikoshoukaiBuilder();
+                } else {
+                    startMemoryGame();
+                }
+            }
+        }
+
+        function updateFlashcard() {
+            const items = KOTOBA_DATA[currentCategoryKey].items;
+            const item = items[currentCardIndex];
+
+            document.getElementById('cardEmoji').innerText = item.emoji;
+            document.getElementById('cardJapanese').innerText = item.japanese;
+            document.getElementById('cardRomaji').innerText = item.romaji;
+            document.getElementById('cardIndonesian').innerText = item.indonesian;
+
+            document.getElementById('cardIndex').innerText = currentCardIndex + 1;
+            document.getElementById('cardTotal').innerText = items.length;
+
+            speakJapanese(item.japanese);
+        }
+
+        function prevCard() {
+            const items = KOTOBA_DATA[currentCategoryKey].items;
+            currentCardIndex = (currentCardIndex - 1 + items.length) % items.length;
+            updateFlashcard();
+        }
+
+        function nextCard() {
+            const items = KOTOBA_DATA[currentCategoryKey].items;
+            currentCardIndex = (currentCardIndex + 1) % items.length;
+            updateFlashcard();
+        }
+
+        function playCurrentAudio() {
+            const item = KOTOBA_DATA[currentCategoryKey].items[currentCardIndex];
+            speakJapanese(item.japanese);
+        }
+
+        // MODE 2: Quiz Logic
+        function startQuiz() {
+            const items = [...KOTOBA_DATA[currentCategoryKey].items];
+            quizQuestions = items.sort(() => Math.random() - 0.5).slice(0, 5); // Pick 5 random
+            quizCurrentIndex = 0;
+            quizScore = 0;
+
+            const views = ['homeView', 'modeSelectView', 'learnView', 'interactiveView'];
+            views.forEach(v => document.getElementById(v).classList.add('hidden'));
+            document.getElementById('quizView').classList.remove('hidden');
+            
+            showQuizQuestion();
+            updateSenseiSpeech("Pilih arti Bahasa Indonesia yang cocok dengan kata di bawah ini!");
+        }
+
+        function showQuizQuestion() {
+            const currentItem = quizQuestions[quizCurrentIndex];
+            document.getElementById('quizProgress').innerText = `Soal ${quizCurrentIndex + 1} / ${quizQuestions.length}`;
+            document.getElementById('quizQuestion').innerText = currentItem.japanese;
+            document.getElementById('quizSubText').innerText = `(${currentItem.romaji})`;
+
+            speakJapanese(currentItem.japanese);
+
+            // Generate Options (1 correct, 3 wrong distractors)
+            const allItems = KOTOBA_DATA[currentCategoryKey].items;
+            let distractors = allItems.filter(i => i.japanese !== currentItem.japanese);
+            distractors = distractors.sort(() => Math.random() - 0.5).slice(0, 3);
+
+            const options = [currentItem, ...distractors].sort(() => Math.random() - 0.5);
+
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "p-4 bg-slate-50 border-2 border-slate-200 hover:border-sky-400 hover:bg-sky-50 rounded-2xl font-bold text-slate-700 transition flex items-center justify-between group shadow-sm text-base";
+                btn.innerHTML = `
+                    <span>${opt.emoji} ${opt.indonesian}</span>
+                    <i class="fas fa-chevron-right text-slate-300 group-hover:text-sky-500 transition"></i>
+                `;
+                btn.onclick = () => checkQuizAnswer(opt.japanese === currentItem.japanese, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function playQuizAudio() {
+            const currentItem = quizQuestions[quizCurrentIndex];
+            speakJapanese(currentItem.japanese);
+        }
+
+        function checkQuizAnswer(isCorrect, buttonElem) {
+            if (isCorrect) {
+                buttonElem.classList.remove('bg-slate-50', 'border-slate-200');
+                buttonElem.classList.add('bg-matcha-100', 'border-matcha-500', 'text-matcha-700');
+                quizScore += 2;
+                addStars(2);
+            } else {
+                buttonElem.classList.remove('bg-slate-50', 'border-slate-200');
+                buttonElem.classList.add('bg-red-100', 'border-red-400', 'text-red-600');
+            }
+
+            setTimeout(() => {
+                quizCurrentIndex++;
+                if (quizCurrentIndex < quizQuestions.length) {
+                    showQuizQuestion();
+                } else {
+                    finishGame("Kamu menjawab semua pertanyaan kuis dengan baik!", quizScore);
+                }
+            }, 800);
+        }
+
+        // MODE 3A: Memory Match Game
+        function startMemoryGame() {
+            const views = ['homeView', 'modeSelectView', 'learnView', 'quizView'];
+            views.forEach(v => document.getElementById(v).classList.add('hidden'));
+            document.getElementById('interactiveView').classList.remove('hidden');
+
+            document.getElementById('memoryGridContainer').classList.remove('hidden');
+            document.getElementById('builderContainer').classList.add('hidden');
+            document.getElementById('gameInstruction').innerText = 'Jodohkan Kartu Bahasa Jepang & Artinya';
+
+            // Pick 6 random items from the 15 items for memory game
+            const shuffledItems = [...KOTOBA_DATA[currentCategoryKey].items].sort(() => Math.random() - 0.5);
+            const items = shuffledItems.slice(0, 6);
+            memoryCards = [];
+
+            items.forEach((item, index) => {
+                memoryCards.push({ id: index, type: 'jp', text: item.japanese, sub: item.romaji, speech: item.japanese });
+                memoryCards.push({ id: index, type: 'id', text: `${item.emoji} ${item.indonesian}`, sub: '', speech: item.japanese });
+            });
+
+            memoryCards.sort(() => Math.random() - 0.5);
+            flippedCards = [];
+            matchedPairs = 0;
+
+            const grid = document.getElementById('memoryGrid');
+            grid.innerHTML = '';
+
+            memoryCards.forEach((card, idx) => {
+                const cardEl = document.createElement('div');
+                cardEl.className = "card-flip h-28 cursor-pointer";
+                cardEl.innerHTML = `
+                    <div id="mcard-${idx}" class="card-inner w-full h-full relative border-2 border-matcha-300 rounded-2xl shadow-sm bg-white flex items-center justify-center p-2 text-center">
+                        <div class="card-front absolute inset-0 bg-matcha-100 rounded-2xl flex items-center justify-center text-2xl font-bold text-matcha-600">
+                            🌸
+                        </div>
+                        <div class="card-back absolute inset-0 bg-white rounded-2xl flex flex-col items-center justify-center p-2">
+                            <span class="japanese-font font-bold text-slate-800 text-sm md:text-base">${card.text}</span>
+                            ${card.sub ? `<span class="text-xs text-matcha-600 font-semibold">${card.sub}</span>` : ''}
+                        </div>
+                    </div>
+                `;
+                cardEl.onclick = () => flipMemoryCard(idx);
+                grid.appendChild(cardEl);
+            });
+
+            updateSenseiSpeech("Cari dua kartu yang berpasangan antara Bahasa Jepang dan artinya!");
+        }
+
+        function flipMemoryCard(idx) {
+            if (flippedCards.length >= 2) return;
+            const cardEl = document.getElementById(`mcard-${idx}`);
+            if (cardEl.classList.contains('card-flipped')) return;
+
+            cardEl.classList.add('card-flipped');
+            speakJapanese(memoryCards[idx].speech);
+            flippedCards.push({ idx, card: memoryCards[idx] });
+
+            if (flippedCards.length === 2) {
+                const [c1, c2] = flippedCards;
+                if (c1.card.id === c2.card.id) {
+                    matchedPairs++;
+                    flippedCards = [];
+                    addStars(2);
+                    if (matchedPairs === 6) {
+                        setTimeout(() => {
+                            finishGame("Hebat! Semua kartu ingatan telah terpasang!", 12);
+                        }, 600);
+                    }
+                } else {
+                    setTimeout(() => {
+                        document.getElementById(`mcard-${c1.idx}`).classList.remove('card-flipped');
+                        document.getElementById(`mcard-${c2.idx}`).classList.remove('card-flipped');
+                        flippedCards = [];
+                    }, 1000);
+                }
+            }
+        }
+/* ... existing code ... -->
