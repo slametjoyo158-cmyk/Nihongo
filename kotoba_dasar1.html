@@ -798,4 +798,63 @@
                 }
             }
         }
-/* ... existing code ... -->
+
+        function startJikoshoukaiBuilder() {
+            const views = ['homeView', 'modeSelectView', 'learnView', 'quizView'];
+            views.forEach(v => document.getElementById(v).classList.add('hidden'));
+            document.getElementById('interactiveView').classList.remove('hidden');
+
+            document.getElementById('memoryGridContainer').classList.add('hidden');
+            document.getElementById('builderContainer').classList.remove('hidden');
+            document.getElementById('gameInstruction').innerText = 'Praktik Perkenalan Diri (Jikoshoukai)';
+
+            updateSenseiSpeech("Tulis nama kamu dan pilih peranmu, lalu tekan tombol dengarkan!");
+        }
+
+        function readJikoshoukai() {
+            const name = document.getElementById('builderName').value.trim() || 'Tomodachi';
+            const role = document.getElementById('builderRole').value;
+
+            const text1 = "はじめまして。";
+            const text2 = `わたしは ${name} です。`;
+            const text3 = `わたしは ${role} です。`;
+            const text4 = "よろしく おねがいします。";
+
+            const fullText = `${text1} ${text2} ${text3} ${text4}`;
+            speakJapanese(fullText);
+            addStars(5);
+
+            finishGame("Sugoi! Kamu sudah berhasil membuat perkenalan dirimu!", 5);
+        }
+
+        function addStars(amount) {
+            starCount += amount;
+            localStorage.setItem('kotoba_stars', starCount);
+            document.getElementById('starCount').innerText = starCount;
+        }
+
+        function finishGame(message, earned) {
+            document.getElementById('resultText').innerText = message;
+            document.getElementById('earnedStars').innerText = earned;
+            const modal = document.getElementById('resultModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('resultModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            switchTab('modeSelect');
+        }
+    </script>
+</body>
+</html>
